@@ -14,6 +14,8 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    'semi': ['warn', 'never'],
+    semi: ['warn', 'never'],
+    'object-curly-spacing': ['warn', 'always'],
+    'eol-last': ['warn', 'always'],
   },
 }
