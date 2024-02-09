@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export default class AxiosController {
   private static instance: AxiosController
@@ -18,18 +18,33 @@ export default class AxiosController {
   }
 
   async checkAuth(): Promise<boolean> {
-    try {
-      await this.axiosInstance.get('/session')
-      return true
-    } catch (error) {
-      return false
-    }
+    const response = await this.request({
+      url: '/auth/session',
+      method: 'GET'
+    })
+
+    return response.status === 200
   }
 
   async login(body: FormLogin): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: '/auth/login',
+      method: 'POST',
+      data: body
+    })
+  }
+
+  async getUsers(): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: '/user/list',
+      method: 'GET'
+    })
+  }
+
+  private async request<T>(config: AxiosRequestConfig): Promise<AxiosError | AxiosResponse<T>> {
     try {
-      const response = await this.axiosInstance.post('/login', body)
-      return response.data
+      const response = await this.axiosInstance.request<T>(config)
+      return response
     } catch (error) {
       return error as AxiosError
     }
