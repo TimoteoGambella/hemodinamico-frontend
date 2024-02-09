@@ -4,15 +4,17 @@ import {
   SolutionOutlined,
   TeamOutlined,
 } from '@ant-design/icons'
+import { useEffect, useState } from 'react'
 import { Layout, Menu } from 'antd'
-import { useState } from 'react'
-import { Navigate, Route, Routes as Switch } from 'react-router-dom'
-import Users from '../Users'
-import Dashboard from '../Dashboard'
+import { Navigate, Route, Routes as Switch, useNavigate } from 'react-router-dom'
 import { getItem, renderMenuItems } from './controller'
+import AxiosController from '../../utils/axios.controller'
+import Dashboard from '../Dashboard'
+import Users from '../Users'
 import './index.css'
 
 const { Content, Sider } = Layout
+const axios = new AxiosController()
 const items: MenuItem[] = [
   getItem('Dashboard', 'dashboard', <PieChartOutlined />),
   getItem('Usuarios', 'usuarios', <TeamOutlined />),
@@ -26,6 +28,13 @@ const items: MenuItem[] = [
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false)
+  const navigateTo = useNavigate()
+
+  useEffect(() => {
+    axios.checkAuth().then((isAuth) => {
+      if (!isAuth) navigateTo('/login')
+    })
+  }, [navigateTo])
 
   return (
     <Layout>

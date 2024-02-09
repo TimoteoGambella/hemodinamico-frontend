@@ -17,6 +17,15 @@ export default class AxiosController {
     AxiosController.instance = this
   }
 
+  async checkAuth(): Promise<boolean> {
+    try {
+      await this.axiosInstance.get('/session')
+      return true
+    } catch (error) {
+      return false
+    }
+  }
+
   async login(body: FormLogin): Promise<AxiosError | AxiosResponse> {
     try {
       const response = await this.axiosInstance.post('/login', body)

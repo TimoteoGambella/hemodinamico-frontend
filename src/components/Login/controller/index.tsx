@@ -39,6 +39,6 @@ export const handleSubmit =
         content: 'Inicio de sesión exitoso',
       })
       console.log(res)
-      navigateTo('/dashboard')
+      setTimeout(() => navigateTo('/dashboard'), 1200)
     }
   }
