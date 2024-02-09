@@ -33,13 +33,19 @@ const items: MenuItem[] = [
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false)
+  const [isAuthChecked, setIsAuthChecked] = useState(false)
   const navigateTo = useNavigate()
 
   useEffect(() => {
     axios.checkAuth().then((isAuth) => {
       if (!isAuth) navigateTo('/login')
+      setIsAuthChecked(true)
     })
   }, [navigateTo])
+
+  if (!isAuthChecked) {
+    return null
+  }
 
   return (
     <Layout>
