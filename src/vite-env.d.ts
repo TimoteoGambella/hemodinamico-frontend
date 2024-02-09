@@ -11,3 +11,11 @@ type MenuItem = {
   icon?: React.ReactNode
   children?: MenuItem[]
 }
+
+type UserData = {
+  _id: string
+  name: string
+  lastName: string
+  username: string
+  isAdmin: boolean
+}
