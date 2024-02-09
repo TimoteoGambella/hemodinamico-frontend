@@ -1,0 +1,55 @@
+.container {
+  width: 100%;
+  min-height: 100dvh;
+  font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji';
+  background-color: rgb(17, 24, 39);
+  padding: 10rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.text-bold {
+  font-weight: 600;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  color: white;
+}
+.text {
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  line-height: 1.35em;
+  color: rgb(156, 163, 175);
+}
+.button {
+  font-weight: 600;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  color: rgb(17, 24, 39);
+  background-color: rgb(167, 139, 250);
+}
+.title {
+  margin-bottom: 2rem;
+  font-size: 8rem;
+  line-height: 1;
+  font-weight: 800;
+  color: rgb(75, 85, 99);
+}
+.box {
+  text-align: center;
+  max-width: 28rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .text-bold {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+}

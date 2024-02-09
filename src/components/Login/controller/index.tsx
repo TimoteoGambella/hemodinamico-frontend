@@ -4,12 +4,13 @@ import AxiosController from '../../../utils/axios.controller'
 interface handleSubmitProps {
   setIsLoading: (value: boolean) => void
   msgApi: MessageInstance
+  navigateTo: (path: string) => void
 }
 
 const axios = new AxiosController()
 
 export const handleSubmit =
-  ({ setIsLoading, msgApi }: handleSubmitProps) =>
+  ({ setIsLoading, msgApi, navigateTo }: handleSubmitProps) =>
   async (values: FormLogin) => {
     setIsLoading(true)
     const res = await axios.login(values)
@@ -38,5 +39,6 @@ export const handleSubmit =
         content: 'Inicio de sesión exitoso',
       })
       console.log(res)
+      navigateTo('/dashboard')
     }
   }
