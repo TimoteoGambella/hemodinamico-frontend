@@ -6,7 +6,12 @@ import {
 } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
 import { Layout, Menu } from 'antd'
-import { Navigate, Route, Routes as Switch, useNavigate } from 'react-router-dom'
+import {
+  Navigate,
+  Route,
+  Routes as Switch,
+  useNavigate,
+} from 'react-router-dom'
 import { getItem, renderMenuItems } from './controller'
 import AxiosController from '../../utils/axios.controller'
 import Dashboard from '../Dashboard'
@@ -44,9 +49,12 @@ const App = () => {
         onCollapse={(value) => setCollapsed(value)}
       >
         <div className="logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={['dashboard']} mode="inline">
-          {items.map((item) => renderMenuItems(item))}
-        </Menu>
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={['dashboard']}
+          mode="inline"
+          items={items.map((item) => renderMenuItems(item))}
+        />
       </Sider>
       <Layout>
         <Content>

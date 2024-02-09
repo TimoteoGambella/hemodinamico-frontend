@@ -1,4 +1,3 @@
-import { Menu } from 'antd'
 import { Link } from 'react-router-dom'
 
 export function getItem(
@@ -15,22 +14,28 @@ export function getItem(
   }
 }
 
-export function renderMenuItems(item: MenuItem): JSX.Element {
+export function renderMenuItems(item: MenuItem, previousKey?: string): MenuItem {
+  const generateLink = () => {
+    if (previousKey) return `${previousKey}/${item.key}`
+    return `/${item.key}`
+  }
+
   if (item.children) {
-    return (
-      <Menu.SubMenu key={item.key} icon={item.icon} title={item.label}>
-        {item.children.map((child) => (
-          <Menu.Item key={child.key} icon={child.icon}>
-            <Link to={`/${item.key}/${child.key}`}>{child.label}</Link>
-          </Menu.Item>
-        ))}
-      </Menu.SubMenu>
-    )
+    return {
+      key: item.key,
+      icon: item.icon,
+      label: item.label,
+      children: item.children.map((child) => renderMenuItems(child, String(item.key))),
+    }
   } else {
-    return (
-      <Menu.Item key={item.key} icon={item.icon}>
-        <Link to={`/${item.key}`}>{item.label}</Link>
-      </Menu.Item>
-    )
+    return {
+      key: item.key,
+      icon: item.icon,
+      label: (
+        <Link to={generateLink()}>
+          <span>{item.label}</span>
+        </Link>
+      ),
+    }
   }
 }
