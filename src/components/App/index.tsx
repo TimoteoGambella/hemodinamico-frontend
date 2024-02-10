@@ -35,6 +35,7 @@ const App = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [isAuthChecked, setIsAuthChecked] = useState(false)
   const [msgApi, contextHolder] = message.useMessage()
+  const [defaultSelectedKey, setDefaultSelectedKey] = useState('dashboard')
   const navigateTo = useNavigate()
 
   useEffect(() => {
@@ -43,6 +44,11 @@ const App = () => {
       setIsAuthChecked(true)
     })
   }, [navigateTo])
+
+  useEffect(() => {
+    const path = window.location.pathname.split('/')[1]
+    if (path) setDefaultSelectedKey(path)
+  }, [])
 
   if (!isAuthChecked) {
     return null
@@ -60,7 +66,7 @@ const App = () => {
           <div className="logo-vertical" />
           <Menu
             theme="dark"
-            defaultSelectedKeys={['dashboard']}
+            defaultSelectedKeys={[defaultSelectedKey]}
             mode="inline"
             items={items.map((item) => renderMenuItems(item))}
           />
