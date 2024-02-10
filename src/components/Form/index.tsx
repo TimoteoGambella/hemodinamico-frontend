@@ -80,7 +80,7 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
         rules={[
           {
             required: true,
-            message: 'Por favor confirme una contraseña',
+            message: 'Por favor ingrese una contraseña',
           },
         ]}
         hasFeedback
@@ -96,7 +96,7 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
         rules={[
           {
             required: true,
-            message: 'Por favor confirme una contraseña',
+            message: 'Por favor confirme la contraseña',
           },
           ({ getFieldValue }) => ({
             validator(_, value) {
