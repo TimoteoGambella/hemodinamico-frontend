@@ -41,6 +41,14 @@ export default class AxiosController {
     })
   }
 
+  async createUser(body: UserData): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: '/user/create',
+      method: 'POST',
+      data: body
+    })
+  }
+
   private async request<T>(config: AxiosRequestConfig): Promise<AxiosError | AxiosResponse<T>> {
     try {
       const response = await this.axiosInstance.request<T>(config)

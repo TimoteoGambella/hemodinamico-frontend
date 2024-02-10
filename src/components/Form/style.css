@@ -1,0 +1,9 @@
+.ant-form {
+  max-width: 600px;
+  padding-right: 2rem;
+  padding-top: .5rem;
+}
+
+.ant-form .anticon {
+  margin-right: 1px;
+}

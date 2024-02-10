@@ -19,3 +19,10 @@ type UserData = {
   username: string
   isAdmin: boolean
 }
+
+type FormPropType = {
+  shouldSubmit: boolean
+  status: 'ok' | 'form-error' | 'loading' | 'initial' | 'server-error'
+  message: string | null
+  setFormProp?: React.Dispatch<React.SetStateAction<FormPropType>>
+}

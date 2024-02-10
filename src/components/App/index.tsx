@@ -5,7 +5,7 @@ import {
   TeamOutlined,
 } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
-import { Layout, Menu } from 'antd'
+import { Layout, Menu, message } from 'antd'
 import {
   Navigate,
   Route,
@@ -34,6 +34,7 @@ const items: MenuItem[] = [
 const App = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [isAuthChecked, setIsAuthChecked] = useState(false)
+  const [msgApi, contextHolder] = message.useMessage()
   const navigateTo = useNavigate()
 
   useEffect(() => {
@@ -48,31 +49,34 @@ const App = () => {
   }
 
   return (
-    <Layout>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-      >
-        <div className="logo-vertical" />
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={['dashboard']}
-          mode="inline"
-          items={items.map((item) => renderMenuItems(item))}
-        />
-      </Sider>
+    <>
+      {contextHolder}
       <Layout>
-        <Content>
-          <Switch>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/usuarios" element={<Users />} />
-            <Route path="*" element={<Navigate to="/404" replace />} />
-          </Switch>
-        </Content>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
+          <div className="logo-vertical" />
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={['dashboard']}
+            mode="inline"
+            items={items.map((item) => renderMenuItems(item))}
+          />
+        </Sider>
+        <Layout>
+          <Content>
+            <Switch>
+              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/usuarios" element={<Users msgApi={msgApi} />} />
+              <Route path="*" element={<Navigate to="/404" replace />} />
+            </Switch>
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
+    </>
   )
 }
 
