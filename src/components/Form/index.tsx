@@ -33,6 +33,7 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       scrollToFirstError
+      className='form-component'
     >
       <Form.Item
         name="name"

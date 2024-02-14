@@ -20,15 +20,36 @@
   right: 0;
   width: 45%;
   height: 100dvh;
+  max-width: 750px;
   min-width: 200px;
+  transition: all 0.5s;
 }
 .ant-typography {
   text-align: center;
   margin-bottom: 2rem !important;
 }
-.ant-form {
+.ant-form.login-form {
   display: flex;
   height: 100%;
   flex-direction: column;
   justify-content: center;
+  max-width: 700px;
+  padding: .5rem 2rem;
+  transition: padding 0.5s;
+}
+
+@media screen and (max-width: 1023px) {
+  .ant-form.login-form {
+    padding: .5rem 0;
+  }
+}
+@media screen and (max-width: 767px) {
+  .login {
+    height: auto;
+    border-radius: 20px;
+    right: unset;
+    left: 50%;
+    bottom: 50%;
+    transform: translate(-50%, 50%);
+  }
 }
