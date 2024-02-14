@@ -26,3 +26,9 @@ type FormPropType = {
   message: string | null
   setFormProp?: React.Dispatch<React.SetStateAction<FormPropType>>
 }
+
+interface IconAssetsProps {
+  width?: string | number | undefined
+  height?: string | number | undefined
+  style?: React.CSSProperties | undefined
+}

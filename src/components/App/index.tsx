@@ -5,17 +5,18 @@ import {
   TeamOutlined,
 } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
-import { Layout, Menu, message } from 'antd'
+import { Button, Layout, Menu, message } from 'antd'
 import {
   Navigate,
   Route,
   Routes as Switch,
   useNavigate,
 } from 'react-router-dom'
-import { getItem, renderMenuItems } from './controller'
+import { getItem, handleLogout, renderMenuItems } from './controller'
 import AxiosController from '../../utils/axios.controller'
 import Dashboard from '../Dashboard'
 import Users from '../Users'
+import Icon from '../Icon'
 import './index.css'
 
 const { Content, Sider } = Layout
@@ -63,7 +64,15 @@ const App = () => {
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
         >
-          <div className="logo-vertical" />
+          <Button
+            icon={<Icon.CloseSessionIcon />}
+            className="logo-vertical"
+            type="primary"
+            onClick={() => handleLogout(msgApi, navigateTo)}
+            danger
+          >
+            Cerrar sesión
+          </Button>
           <Menu
             theme="dark"
             defaultSelectedKeys={[defaultSelectedKey]}

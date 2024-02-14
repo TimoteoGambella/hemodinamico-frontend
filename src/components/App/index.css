@@ -11,6 +11,12 @@
   margin: 16px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 6px;
+  width: calc(100% - 32px);
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
 }
 .ant-layout-sider-trigger {
   position: absolute !important;

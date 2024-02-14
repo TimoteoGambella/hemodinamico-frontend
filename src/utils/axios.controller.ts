@@ -34,6 +34,13 @@ export default class AxiosController {
     })
   }
 
+  async logout(): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: '/auth/logout',
+      method: 'GET'
+    })
+  }
+
   async getUsers(): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: '/user/list',

@@ -1,4 +1,9 @@
-import { Link } from 'react-router-dom'
+import { AxiosError } from 'axios'
+import { Link, NavigateFunction } from 'react-router-dom'
+import { MessageInstance } from 'antd/es/message/interface'
+import AxiosController from '../../../utils/axios.controller'
+
+const axios = new AxiosController()
 
 export function getItem(
   label: React.ReactNode,
@@ -37,5 +42,14 @@ export function renderMenuItems(item: MenuItem, previousKey?: string): MenuItem 
         </Link>
       ),
     }
+  }
+}
+
+export async function handleLogout(msgApi: MessageInstance, navigateTo: NavigateFunction){
+  const res = await axios.logout()
+  if (res instanceof AxiosError) {
+    msgApi.error('Error al cerrar sesión. Inténtelo de nuevo más tarde.')
+  } else {
+    navigateTo('/login')
   }
 }
