@@ -1,6 +1,10 @@
-import { UserFormController } from './controller'
-import { Form, Input } from 'antd'
-import { useEffect } from 'react'
+import {
+  UserFormController,
+  getStretchers,
+  validateInputNumber,
+} from './controller'
+import { Form, Input, InputNumber, Select } from 'antd'
+import { useEffect, useState } from 'react'
 import './style.css'
 
 interface FormProps {
@@ -13,10 +17,11 @@ export default function CustomForm(children: React.ReactNode) {
 
 CustomForm.User = function UserForm({ formProp }: FormProps) {
   const [form] = Form.useForm<UserData>()
-  const { onFinish, onFinishFailed, formItemLayout } = UserFormController(
+  const { onFinish, onFinishFailed, formItemLayout } = UserFormController({
+    formType: 'user',
     formProp,
-    form
-  )
+    form,
+  })
 
   useEffect(() => {
     if (formProp.shouldSubmit && formProp.status === 'initial') {
@@ -33,7 +38,7 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       scrollToFirstError
-      className='form-component'
+      className="form-component"
     >
       <Form.Item
         name="name"
@@ -112,6 +117,174 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
         ]}
       >
         <Input.Password />
+      </Form.Item>
+    </Form>
+  )
+}
+
+CustomForm.Patients = function UserForm({ formProp }: FormProps) {
+  const [form] = Form.useForm<UserData>()
+  const [selectedStretcher, setSelectedStretcher] = useState('1')
+  const [freeStretchers, setStretchers] = useState<StretcherData[]>([])
+  const { onFinish, onFinishFailed, formItemLayout } = UserFormController({
+    formType: 'patient',
+    formProp,
+    form,
+  })
+  const tooltipProp =
+    selectedStretcher === '1'
+      ? {
+          tooltip:
+            'El valor automático le asigna una camilla disponible al paciente o creará una.',
+        }
+      : {}
+
+  useEffect(() => {
+    if (formProp.shouldSubmit && formProp.status === 'initial') {
+      console.log('submitting form')
+      form.submit()
+    }
+  }, [formProp, form])
+
+  useEffect(() => {
+    getStretchers().then((res) => {
+      if (res) setStretchers(res)
+      else
+        formProp.setFormProp?.({
+          ...formProp,
+          status: 'server-error',
+          message: 'Error al obtener las camillas',
+        })
+    })
+  }, [selectedStretcher, formProp])
+
+  return (
+    <Form
+      {...formItemLayout}
+      form={form}
+      name="patientForm"
+      onFinish={onFinish}
+      onFinishFailed={onFinishFailed}
+      className="form-component"
+      initialValues={{
+        stretcherId: 'auto',
+      }}
+      scrollToFirstError
+    >
+      <Form.Item
+        name="fullname"
+        label="Nombre completo"
+        rules={[
+          {
+            required: true,
+            message: 'Por favor ingrese el nombre del paciente',
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        name="dni"
+        label="DNI"
+        rules={[
+          {
+            required: true,
+            message: 'Por favor ingrese el DNI del paciente',
+          },
+          () => ({
+            validator(_rule, value) {
+              if (!value) return Promise.reject()
+              if (value && value.toString().length === 8) {
+                return Promise.resolve()
+              } else {
+                return Promise.reject('El DNI debe tener 8 dígitos')
+              }
+            },
+          }),
+        ]}
+      >
+        <Input maxLength={8} onInput={validateInputNumber} />
+      </Form.Item>
+
+      <Form.Item
+        name="gender"
+        label="Sexo"
+        rules={[
+          {
+            required: true,
+            message: 'Por favor seleccione el sexo del paciente',
+          },
+        ]}
+      >
+        <Select>
+          <Select.Option value="M">Masculino</Select.Option>
+          <Select.Option value="F">Femenino</Select.Option>
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        name="age"
+        label="Edad"
+        rules={[
+          {
+            required: true,
+            message: 'Por favor ingrese la edad del paciente',
+          },
+        ]}
+      >
+        <Input maxLength={3} onInput={validateInputNumber} />
+      </Form.Item>
+
+      <Form.Item
+        name="height"
+        label="Talla (cm)"
+        rules={[
+          {
+            required: true,
+            type: 'number',
+            message: 'Por favor ingrese la talla del paciente',
+          },
+        ]}
+      >
+        <InputNumber step={0.1} />
+      </Form.Item>
+
+      <Form.Item
+        name="weight"
+        label="Peso (kg)"
+        rules={[
+          {
+            required: true,
+            type: 'number',
+            message: 'Por favor ingrese el peso del paciente',
+          },
+        ]}
+      >
+        <InputNumber step={0.1} />
+      </Form.Item>
+
+      <Form.Item
+        name="stretcherId"
+        label="Camilla"
+        {...tooltipProp}
+        rules={[
+          {
+            required: true,
+            message: 'Por favor selecione una camilla para el paciente',
+          },
+        ]}
+      >
+        <Select onChange={(e) => setSelectedStretcher(e)}>
+          <Select.Option value="auto">Automático</Select.Option>
+          {freeStretchers.map((stretcher) => {
+            if (stretcher.patientId) return null
+            return (
+              <Select.Option value={stretcher._id} key={stretcher._id}>
+                {stretcher.label ?? stretcher._id}
+              </Select.Option>
+            )
+          })}
+        </Select>
       </Form.Item>
     </Form>
   )

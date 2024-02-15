@@ -4,16 +4,40 @@ import { AxiosError } from 'axios'
 
 const axios = new AxiosController()
 
-export function UserFormController(formProp: FormPropType, form: FormInstance<UserData>) {
+export function validateInputNumber(e: React.ChangeEvent<HTMLInputElement>) {
+  const { value } = e.target
+  if (isNaN(Number(value))) {
+    e.target.value = value.slice(0, -1)
+  }
+}
+
+export async function getStretchers(): Promise<StretcherData[] | null>{
+  const res = await axios.getStretchers()
+  if (res instanceof AxiosError) {
+    console.error(res.message)
+    return null
+  }
+  return res.data.data
+}
+
+interface FormControllerProps {
+  formProp: FormPropType
+  form: FormInstance<UserData | PatientData>
+  formType: 'user' | 'patient'
+}
+
+export function UserFormController({ formProp, form, formType }: FormControllerProps) {
   return {
-    onFinish: async (values: UserData) => {
+    onFinish: async (values: UserData | PatientData) => {
       console.log('Received values of form: ', values)
       formProp.setFormProp?.({
         ...formProp,
         shouldSubmit: false,
         status: 'loading',
       })
-      const res = await axios.createUser(values)
+      const res = formType === 'user'
+        ? await axios.createUser(values as UserData)
+        : await axios.createPatient(values as PatientData)
       if (res instanceof AxiosError) {
         formProp.setFormProp?.({
           ...formProp,

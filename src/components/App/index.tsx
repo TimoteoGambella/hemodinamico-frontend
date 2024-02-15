@@ -1,9 +1,3 @@
-import {
-  PieChartOutlined,
-  AppstoreOutlined,
-  SolutionOutlined,
-  TeamOutlined,
-} from '@ant-design/icons'
 import { useEffect, useState } from 'react'
 import { Button, Layout, Menu, message } from 'antd'
 import {
@@ -12,44 +6,42 @@ import {
   Routes as Switch,
   useNavigate,
 } from 'react-router-dom'
-import { getItem, handleLogout, renderMenuItems } from './controller'
-import AxiosController from '../../utils/axios.controller'
+import * as Controller from './controller'
 import Dashboard from '../Dashboard'
+import Patients from '../Patients'
 import Users from '../Users'
 import Icon from '../Icon'
 import './index.css'
+import Stretcher from '../Stretcher'
 
 const { Content, Sider } = Layout
-const axios = new AxiosController()
-const items: MenuItem[] = [
-  getItem('Dashboard', 'dashboard', <PieChartOutlined />),
-  getItem('Usuarios', 'usuarios', <TeamOutlined />),
-  getItem('Pacientes', 'pacientes', <TeamOutlined />),
-  getItem('Camillas', 'camilla', <AppstoreOutlined />, [
-    getItem('Paciente Tom', '1', <SolutionOutlined />),
-    getItem('Paciente Bill', '2', <SolutionOutlined />),
-    getItem('Paciente Alex', '3', <SolutionOutlined />),
-  ]),
-]
 
 const App = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [isAuthChecked, setIsAuthChecked] = useState(false)
   const [msgApi, contextHolder] = message.useMessage()
   const [defaultSelectedKey, setDefaultSelectedKey] = useState('dashboard')
+  const [items, setItems] = useState<MenuItem[]>([])
+  const { handleLogout, renderMenuItems } = Controller
   const navigateTo = useNavigate()
 
   useEffect(() => {
-    axios.checkAuth().then((isAuth) => {
-      if (!isAuth) navigateTo('/login')
-      setIsAuthChecked(true)
-    })
+    Controller.handleUnAuth(navigateTo, setIsAuthChecked)
   }, [navigateTo])
 
   useEffect(() => {
-    const path = window.location.pathname.split('/')[1]
-    if (path) setDefaultSelectedKey(path)
+    const path = window.location.pathname.split('/')
+    if(path[1] === 'camilla') path.shift()
+    if (path) setDefaultSelectedKey(path[1])
   }, [])
+
+  useEffect(() => {
+    Controller.getItems().then((items) => {
+      setItems(items)
+    }).catch(() => {
+      msgApi.error('Error al cargar el menú. Inténtelo de nuevo más tarde.')
+    })
+  }, [msgApi])
 
   if (!isAuthChecked) {
     return null
@@ -86,6 +78,8 @@ const App = () => {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/usuarios" element={<Users msgApi={msgApi} />} />
+              <Route path="/pacientes" element={<Patients msgApi={msgApi} />} />
+              <Route path="/camilla/:id" element={<Stretcher msgApi={msgApi} />} />
               <Route path="*" element={<Navigate to="/404" replace />} />
             </Switch>
           </Content>

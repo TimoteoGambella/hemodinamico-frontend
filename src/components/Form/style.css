@@ -3,7 +3,9 @@
   padding-right: 2rem;
   padding-top: .5rem;
 }
-
+.ant-form.form-component .ant-input-number {
+  width: 100%;
+}
 .ant-form .anticon {
   margin-right: 1px;
 }

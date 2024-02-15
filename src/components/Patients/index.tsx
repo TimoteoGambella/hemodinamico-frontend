@@ -8,15 +8,15 @@ import AxiosController from '../../utils/axios.controller'
 import CustomForm from '../Form'
 import './style.css'
 
-interface UsersProps {
+interface PateintsProps {
   msgApi: MessageInstance
 }
 
 const axios = new AxiosController()
 
-const Users = ({ msgApi }: UsersProps) => {
+const Patients = ({ msgApi }: PateintsProps) => {
   const [open, setOpen] = useState(false)
-  const [data, setData] = useState<UserData[]>([])
+  const [data, setData] = useState<PatientData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [shouldGetUsers, setShouldGetUsers] = useState(true)
   const [confirmLoading, setConfirmLoading] = useState(false)
@@ -35,9 +35,9 @@ const Users = ({ msgApi }: UsersProps) => {
   useEffect(() => {
     if (!shouldGetUsers) return
 
-    axios.getUsers().then((response) => {
+    axios.getPatients().then((response) => {
       if (response instanceof AxiosError) return console.error(response.message)
-      setData(response.data.data as UserData[])
+      setData(response.data.data as PatientData[])
       setShouldGetUsers(false)
       setIsLoading(false)
     })
@@ -49,7 +49,7 @@ const Users = ({ msgApi }: UsersProps) => {
     // console.log('formProp', formProp)
 
     if (formProp.status === 'ok') {
-      msgApi.success('Usuario creado con éxito.')
+      msgApi.success('Paciente creado con éxito.')
       setOpen(false)
       setShouldGetUsers(true)
       setConfirmLoading(false)
@@ -68,7 +68,7 @@ const Users = ({ msgApi }: UsersProps) => {
 
   return (
     <>
-      <Typography.Title>Lista de usuarios</Typography.Title>
+      <Typography.Title>Lista de pacientes</Typography.Title>
       <Button
         type="primary"
         shape="round"
@@ -77,23 +77,23 @@ const Users = ({ msgApi }: UsersProps) => {
         onClick={() => setOpen(true)}
       />
       <Modal
-        title="Registro de usuario"
+        title="Registro de pacientes"
         open={open}
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={() => setOpen(false)}
       >
-        <CustomForm.User formProp={formProp} />
+        <CustomForm.Patients formProp={formProp} />
       </Modal>
       <Table
         loading={isLoading}
         columns={columns}
         rowKey={(user) => user._id}
         dataSource={data}
-        className="table-users"
+        className='table-patients'
       />
     </>
   )
 }
 
-export default Users
+export default Patients

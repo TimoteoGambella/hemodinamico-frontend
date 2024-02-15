@@ -56,6 +56,36 @@ export default class AxiosController {
     })
   }
 
+  async getPatients(): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: '/patient/list',
+      method: 'GET'
+    })
+  }
+
+  async createPatient(body: PatientData): Promise<AxiosError | AxiosResponse> {
+    if (body.stretcherId === 'auto') delete body.stretcherId
+    return await this.request({
+      url: '/patient/create',
+      method: 'POST',
+      data: body
+    })
+  }
+
+  async getStretchers(populate?: boolean): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/stretcher/list?populate=${populate ?? false}`,
+      method: 'GET'
+    })
+  }
+
+  async getStretcherById(id: string, populate?: boolean): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/stretcher/${id}?populate=${populate ?? false}`,
+      method: 'GET'
+    })
+  }
+
   private async request<T>(config: AxiosRequestConfig): Promise<AxiosError | AxiosResponse<T>> {
     try {
       const response = await this.axiosInstance.request<T>(config)
