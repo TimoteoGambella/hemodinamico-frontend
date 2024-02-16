@@ -5,14 +5,12 @@ export default function CloseSession({ width, height, style }: IconAssetsProps) 
   if (!style?.color) style = { ...style, color: '#ffffffb5' }
   return (
     <svg
-      width={width || '20px'}
-      height={height || '20px'}
-      style={style}
-      viewBox="0 0 24 24"
-      id="_24x24_On_Light_Session-Leave"
-      data-name="24x24/On Light/Session-Leave"
       xmlns="http://www.w3.org/2000/svg"
+      height={height || '20px'}
+      width={width || '20px'}
+      viewBox="0 0 24 24"
       fill="currentColor"
+      style={style}
     >
       <rect id="view-box" width="24" height="24" fill="none" />
       <path

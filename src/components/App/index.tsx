@@ -7,12 +7,13 @@ import {
   useNavigate,
 } from 'react-router-dom'
 import * as Controller from './controller'
+import Laboratory from '../Laboratory'
 import Dashboard from '../Dashboard'
+import Stretcher from '../Stretcher'
 import Patients from '../Patients'
 import Users from '../Users'
 import Icon from '../Icon'
 import './index.css'
-import Stretcher from '../Stretcher'
 
 const { Content, Sider } = Layout
 
@@ -30,18 +31,16 @@ const App = () => {
   }, [navigateTo])
 
   useEffect(() => {
-    const path = window.location.pathname.split('/')
-    if(path[1] === 'cama') path.shift()
-    if (path) setDefaultSelectedKey(path[1])
-  }, [])
-
-  useEffect(() => {
     Controller.getItems().then((items) => {
       setItems(items)
     }).catch(() => {
       msgApi.error('Error al cargar el menú. Inténtelo de nuevo más tarde.')
     })
   }, [msgApi])
+
+  useEffect(() => {
+    Controller.selectDefaultController(setDefaultSelectedKey)
+  }, [])
 
   if (!isAuthChecked) {
     return null
@@ -80,6 +79,7 @@ const App = () => {
               <Route path="/usuarios" element={<Users msgApi={msgApi} />} />
               <Route path="/pacientes" element={<Patients msgApi={msgApi} />} />
               <Route path="/cama/:id" element={<Stretcher msgApi={msgApi} />} />
+              <Route path="/laboratorio/:id" element={<Laboratory msgApi={msgApi} />} />
               <Route path="*" element={<Navigate to="/404" replace />} />
             </Switch>
           </Content>

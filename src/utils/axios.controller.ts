@@ -63,6 +63,13 @@ export default class AxiosController {
     })
   }
 
+  async getPatientById(id: string, populate?: boolean): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/patient/${id}?populate=${populate ?? false}`,
+      method: 'GET'
+    })
+  }
+
   async createPatient(body: PatientData): Promise<AxiosError | AxiosResponse> {
     if (body.stretcherId === 'auto') delete body.stretcherId
     return await this.request({
@@ -72,16 +79,30 @@ export default class AxiosController {
     })
   }
 
-  async getStretchers(populate?: boolean): Promise<AxiosError | AxiosResponse> {
+  async getStretchers(populate = false): Promise<AxiosError | AxiosResponse> {
     return await this.request({
-      url: `/stretcher/list?populate=${populate ?? false}`,
+      url: `/stretcher/list?populate=${populate}`,
       method: 'GET'
     })
   }
 
-  async getStretcherById(id: string, populate?: boolean): Promise<AxiosError | AxiosResponse> {
+  async getStretcherById(id: string, populate = false): Promise<AxiosError | AxiosResponse> {
     return await this.request({
-      url: `/stretcher/${id}?populate=${populate ?? false}`,
+      url: `/stretcher/${id}?populate=${populate}`,
+      method: 'GET'
+    })
+  }
+
+  async getLabs(populate = false): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/laboratory/list?populate=${populate}`,
+      method: 'GET'
+    })
+  }
+
+  async getLab(id: string, populate = false): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/laboratory/${id}?populate=${populate}`,
       method: 'GET'
     })
   }

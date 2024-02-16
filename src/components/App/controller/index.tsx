@@ -8,6 +8,7 @@ import { AxiosError } from 'axios'
 import { Link, NavigateFunction } from 'react-router-dom'
 import { MessageInstance } from 'antd/es/message/interface'
 import AxiosController from '../../../utils/axios.controller'
+import Icon from '../../Icon'
 
 const axios = new AxiosController()
 
@@ -70,26 +71,37 @@ export async function handleLogout(msgApi: MessageInstance, navigateTo: Navigate
 }
 
 export async function getItems(): Promise<MenuItem[]> {
+  const reqStretchers = await axios.getStretchers(true)
+  const reqLabs = await axios.getLabs(true)
   return new Promise((resolve, reject) => {
-    axios
-      .getStretchers(true)
-      .then((res) => {
-        if (res instanceof AxiosError) return reject([])
-        const stretchers = (res.data.data as StretcherData[]).map((stretcher) =>
-          getItem(
-            stretcher.label ?? stretcher._id,
-            stretcher._id,
-            <SolutionOutlined />
-          )
-        )
-        return resolve([
-          getItem('Dashboard', 'dashboard', <PieChartOutlined />),
-          getItem('Usuarios', 'usuarios', <TeamOutlined />),
-          getItem('Pacientes', 'pacientes', <TeamOutlined />),
-          getItem('Camillas', 'camilla', <AppstoreOutlined />, stretchers),
-          getItem('Camas', 'cama', <AppstoreOutlined />, stretchers),
-        ])
-      })
-      .catch(() => reject([]))
+    if (reqStretchers instanceof AxiosError) return reject([])
+    if (reqLabs instanceof AxiosError) return reject([])
+    const stretchers = (reqStretchers.data.data as StretcherData[]).map((stretcher) =>
+      getItem(
+        stretcher.label ?? stretcher._id,
+        stretcher._id,
+        <SolutionOutlined />
+      )
+    )
+    const laboratories = (reqLabs.data.data as LaboratoryData[]).map((lab) =>
+      getItem(
+        typeof lab.patientId === 'string' ? lab.patientId : lab.patientId.fullname ?? lab._id,
+        lab._id,
+        <SolutionOutlined />
+      )
+    )
+    return resolve([
+      getItem('Dashboard', 'dashboard', <PieChartOutlined />),
+      getItem('Usuarios', 'usuarios', <TeamOutlined />),
+      getItem('Pacientes', 'pacientes', <TeamOutlined />),
+      getItem('Laboratorio', 'laboratorio', <Icon.FlaskIcon />, laboratories),
+      getItem('Camas', 'cama', <AppstoreOutlined />, stretchers),
+    ])
   })
+}
+
+export function selectDefaultController(setSelected: (_: string) => void){
+  const path = window.location.pathname.split('/')
+  if(path[1] === 'cama' || path[1] === 'laboratorio') path.shift()
+  if (path) setSelected(path[1])
 }
