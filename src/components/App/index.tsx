@@ -31,7 +31,7 @@ const App = () => {
 
   useEffect(() => {
     const path = window.location.pathname.split('/')
-    if(path[1] === 'camilla') path.shift()
+    if(path[1] === 'cama') path.shift()
     if (path) setDefaultSelectedKey(path[1])
   }, [])
 
@@ -79,7 +79,7 @@ const App = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/usuarios" element={<Users msgApi={msgApi} />} />
               <Route path="/pacientes" element={<Patients msgApi={msgApi} />} />
-              <Route path="/camilla/:id" element={<Stretcher msgApi={msgApi} />} />
+              <Route path="/cama/:id" element={<Stretcher msgApi={msgApi} />} />
               <Route path="*" element={<Navigate to="/404" replace />} />
             </Switch>
           </Content>

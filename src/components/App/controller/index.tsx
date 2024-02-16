@@ -87,6 +87,7 @@ export async function getItems(): Promise<MenuItem[]> {
           getItem('Usuarios', 'usuarios', <TeamOutlined />),
           getItem('Pacientes', 'pacientes', <TeamOutlined />),
           getItem('Camillas', 'camilla', <AppstoreOutlined />, stretchers),
+          getItem('Camas', 'cama', <AppstoreOutlined />, stretchers),
         ])
       })
       .catch(() => reject([]))
