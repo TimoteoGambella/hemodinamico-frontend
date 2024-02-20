@@ -107,6 +107,14 @@ export default class AxiosController {
     })
   }
 
+  async updateLab(id: string, body: LaboratoryData): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/laboratory/${id}`,
+      method: 'PUT',
+      data: body
+    })
+  }
+
   private async request<T>(config: AxiosRequestConfig): Promise<AxiosError | AxiosResponse<T>> {
     try {
       const response = await this.axiosInstance.request<T>(config)

@@ -21,10 +21,7 @@ const Laboratory = ({}: LaboratoryProps) => {
   useEffect(() => {
     if (!id) return
     loadLabData({ id, msgApi })
-      .then((res) => {
-        console.log(res)
-        setLabData(res)
-      })
+      .then((res) => setLabData(res))
       .catch((err) => {
         console.error(err)
         setShouldRender(false)

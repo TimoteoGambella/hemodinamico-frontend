@@ -1,6 +1,6 @@
 import { FormInstance } from 'antd'
 import AxiosController from '../../../utils/axios.controller'
-import { AxiosError } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 
 const axios = new AxiosController()
 
@@ -23,10 +23,10 @@ export async function getStretchers(): Promise<StretcherData[] | null>{
 interface FormControllerProps {
   formProp: FormPropType
   form: FormInstance
-  formType: 'user' | 'patient'
+  formType: 'user' | 'patient' | 'lab'
 }
 interface FormFinishProp {
-  values: UserData | PatientData | Hematology | LiverProfile | CardiacProfile | Infective | Kidney
+  values: UserData | PatientData | LaboratoryData
 }
 
 export function FormController({ formProp, form, formType }: FormControllerProps) {
@@ -38,9 +38,15 @@ export function FormController({ formProp, form, formType }: FormControllerProps
         shouldSubmit: false,
         status: 'loading',
       })
-      const res = formType === 'user'
-        ? await axios.createUser(values as UserData)
-        : await axios.createPatient(values as PatientData)
+
+      let res: AxiosError | AxiosResponse | undefined = undefined
+      if (formType === 'user')
+        res = await axios.createUser(values as UserData)
+      else if (formType === 'patient') 
+        await axios.createPatient(values as PatientData)
+      else 
+        await axios.updateLab(values._id, values as LaboratoryData)
+
       if (res instanceof AxiosError) {
         formProp.setFormProp?.({
           ...formProp,

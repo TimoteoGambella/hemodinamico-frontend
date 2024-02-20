@@ -7,6 +7,8 @@
   padding-right: 0;
   & .submit-container {
     text-align: right;
+    position: sticky;
+    bottom: 10px;
     & button {
       margin-bottom: 5px;
     }

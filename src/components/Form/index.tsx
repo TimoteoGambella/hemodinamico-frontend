@@ -3,15 +3,7 @@ import {
   getStretchers,
   validateInputNumber,
 } from './controller'
-import {
-  Button,
-  Divider,
-  Empty,
-  Form,
-  Input,
-  InputNumber,
-  Select,
-} from 'antd'
+import { Button, Divider, Empty, Form, Input, InputNumber, Select } from 'antd'
 import { useEffect, useState } from 'react'
 import LabPatientForm from './items/LabPatientForm'
 import HemotologyForm from './items/HematologyForm'
@@ -20,6 +12,7 @@ import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
 import './style.css'
+import useMsgApi from '../../hooks/useMsgApi'
 
 interface FormProps {
   formProp: FormPropType
@@ -306,12 +299,29 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
 }
 
 CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
-  const [form] = Form.useForm<Kidney>()
+  const msgApi = useMsgApi()
+  const [form] = Form.useForm<LaboratoryData>()
+  const [isLoading, setIsLoading] = useState(false)
   const { onFinish, onFinishFailed, formItemLayout } = FormController({
-    formType: 'patient',
+    formType: 'lab',
     formProp,
     form,
   })
+
+  const handleSubmit = (values: LaboratoryData) => {
+    if(typeof values.patientId === 'string') {
+      msgApi.error('Error al obtener la información del paciente')
+      return
+    }
+
+    const patient: PatientData = values.patientId
+    patient._id = data!._id
+    values._id = data!._id
+    values.patientId = data!._id
+  
+    console.log(values)
+    console.log(patient)
+  }
 
   useEffect(() => {
     if (formProp.shouldSubmit && formProp.status === 'initial') {
@@ -327,7 +337,7 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
       {...formItemLayout}
       form={form}
       name="labForm"
-      onFinish={onFinish}
+      onFinish={handleSubmit}
       onFinishFailed={onFinishFailed}
       className="form-component"
       initialValues={data}
@@ -345,8 +355,8 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
       <InfectiveProfileForm form={form} />
       <Divider />
       <KidneyProfileForm />
-      <div className='submit-container'>
-        <Button>
+      <div className="submit-container">
+        <Button type="primary" htmlType="submit" loading={isLoading}>
           Guardar registro
         </Button>
       </div>

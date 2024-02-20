@@ -9,19 +9,13 @@ import {
 } from 'antd'
 
 const InfectiveProfileForm = ({ form }: { form: FormInstance }) => {
-  const [germenValue, setGermenValue] = useState('')
   const [isRequired, setIsRequired] = useState(false)
 
   const handleChange = (e: 'true' | 'false') => {
+    setIsRequired(e === 'true')
     if (e === 'false') {
-      setGermenValue('')
-      setIsRequired(false)
-    } else {
-      setIsRequired(true)
+      form.setFieldValue(['infective', 'germen'], '')
     }
-  }
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setGermenValue(e.target.value)
   }
 
   return (
@@ -103,13 +97,11 @@ const InfectiveProfileForm = ({ form }: { form: FormInstance }) => {
       >
         {() => {
           return (
-            <Input
-              onInput={handleInput}
-              value={germenValue}
-              disabled={
-                form.getFieldValue(['infective', 'resultado']) !== 'true'
-              }
-            />
+            <Form.Item name={['infective', 'germen']} noStyle>
+              <Input
+                disabled={!isRequired}
+              />
+            </Form.Item>
           )
         }}
       </Form.Item>

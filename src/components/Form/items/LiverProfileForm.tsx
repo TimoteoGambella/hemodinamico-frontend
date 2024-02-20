@@ -81,7 +81,7 @@ const LiverProfileForm = ({ form }: { form: FormInstance }) => {
 
       <Form.Item shouldUpdate label="B. indirecta (mg/dL)">
         {() => {
-          return <Input value={handleIndirectB()} readOnly />
+          return <Input value={handleIndirectB()} readOnly disabled />
         }}
       </Form.Item>
 
