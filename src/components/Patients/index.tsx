@@ -1,20 +1,19 @@
 import { AxiosError } from 'axios'
 import { getColumns } from './controller'
-import { useEffect, useState } from 'react'
 import { PlusOutlined } from '@ant-design/icons'
+import { useEffect, useState } from 'react'
 import { Button, Modal, Table, Typography } from 'antd'
-import { MessageInstance } from 'antd/es/message/interface'
 import AxiosController from '../../utils/axios.controller'
+import useMsgApi from '../../hooks/useMsgApi'
 import CustomForm from '../Form'
 import './style.css'
 
-interface PateintsProps {
-  msgApi: MessageInstance
-}
+interface PateintsProps {}
 
 const axios = new AxiosController()
 
-const Patients = ({ msgApi }: PateintsProps) => {
+// eslint-disable-next-line no-empty-pattern
+const Patients = ({}: PateintsProps) => {
   const [open, setOpen] = useState(false)
   const [data, setData] = useState<PatientData[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -25,7 +24,9 @@ const Patients = ({ msgApi }: PateintsProps) => {
     message: null,
     status: 'initial',
     setFormProp: undefined,
+    enable: true,
   })
+  const msgApi = useMsgApi()
   const columns = getColumns()
 
   const handleOk = () => {

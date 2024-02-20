@@ -30,6 +30,7 @@ type PatientData = {
   weight: number
   age: number
   dni: number
+  bloodType: string | null
   timestamp: number
 }
 
@@ -44,6 +45,7 @@ type FormPropType = {
   shouldSubmit: boolean
   status: 'ok' | 'form-error' | 'loading' | 'initial' | 'server-error'
   message: string | null
+  enable: boolean
   setFormProp?: React.Dispatch<React.SetStateAction<FormPropType>>
 }
 

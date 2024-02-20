@@ -3,9 +3,42 @@
   padding-right: 2rem;
   padding-top: .5rem;
 }
+.ant-form.form-component.fix-form{
+  min-width: 410px;
+  padding-right: 0;
+}
+.ant-form.form-component.fix-form .ant-col:first-child {
+  all: unset;
+  min-width: 165px;
+  & label {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
 .ant-form.form-component .ant-input-number {
   width: 100%;
 }
 .ant-form .anticon {
   margin-right: 1px;
+}
+
+@media screen and (max-width: 550px) {
+  .ant-form.form-component.fix-form {
+    min-width: unset;
+    padding-right: 0;
+  }
+  .ant-space.patient-container {
+    width: 100%;
+    & .ant-space-item {
+      width: inherit;
+    }
+  }
+}
+@media screen and (max-width: 575px) {
+  .ant-form.form-component.fix-form .ant-col:first-child {
+    flex: 0 0 100%;
+    & label {
+      justify-content: flex-start;
+    }
+  }
 }

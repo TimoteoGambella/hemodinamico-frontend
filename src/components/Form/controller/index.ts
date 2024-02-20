@@ -22,13 +22,16 @@ export async function getStretchers(): Promise<StretcherData[] | null>{
 
 interface FormControllerProps {
   formProp: FormPropType
-  form: FormInstance<UserData | PatientData>
+  form: FormInstance
   formType: 'user' | 'patient'
 }
+interface FormFinishProp {
+  values: UserData | PatientData | Hematology | LiverProfile | CardiacProfile | Infective | Kidney
+}
 
-export function UserFormController({ formProp, form, formType }: FormControllerProps) {
+export function FormController({ formProp, form, formType }: FormControllerProps) {
   return {
-    onFinish: async (values: UserData | PatientData) => {
+    onFinish: async (values: FormFinishProp["values"] ) => {
       console.log('Received values of form: ', values)
       formProp.setFormProp?.({
         ...formProp,

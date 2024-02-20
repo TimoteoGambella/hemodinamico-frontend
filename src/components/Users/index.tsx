@@ -1,20 +1,19 @@
-import { AxiosError } from 'axios'
-import { getColumns } from './controller'
 import { useEffect, useState } from 'react'
-import { PlusOutlined } from '@ant-design/icons'
 import { Button, Modal, Table, Typography } from 'antd'
-import { MessageInstance } from 'antd/es/message/interface'
 import AxiosController from '../../utils/axios.controller'
+import { PlusOutlined } from '@ant-design/icons'
+import useMsgApi from '../../hooks/useMsgApi'
+import { getColumns } from './controller'
+import { AxiosError } from 'axios'
 import CustomForm from '../Form'
 import './style.css'
 
-interface UsersProps {
-  msgApi: MessageInstance
-}
+interface UsersProps {}
 
 const axios = new AxiosController()
 
-const Users = ({ msgApi }: UsersProps) => {
+// eslint-disable-next-line no-empty-pattern
+const Users = ({}: UsersProps) => {
   const [open, setOpen] = useState(false)
   const [data, setData] = useState<UserData[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -25,7 +24,9 @@ const Users = ({ msgApi }: UsersProps) => {
     message: null,
     status: 'initial',
     setFormProp: undefined,
+    enable: true,
   })
+  const msgApi = useMsgApi()
   const columns = getColumns()
 
   const handleOk = () => {

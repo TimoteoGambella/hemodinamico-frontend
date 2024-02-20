@@ -1,0 +1,26 @@
+.ant-space.patient-container {
+  flex-direction: column;
+  background-color: white;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: 3px 4px 20px 0px #00000059;
+}
+.patient-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  & > .ant-typography {
+    margin: 0 !important;
+  }
+}
+.patient-form {
+  min-width: 300px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+}
+#edit-lab-forms {
+  position: sticky;
+  top: 10px;
+  z-index: 1;
+}

@@ -1,16 +1,17 @@
 import { MessageInstance } from 'antd/es/message/interface'
 import { Empty, Flex, Space, Spin, Typography } from 'antd'
+import { useEffect, useState } from 'react'
 import { loadStretcherData } from './controller'
 import { useParams } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import useMsgApi from '../../hooks/useMsgApi'
 import './style.css'
 
-interface StretcherProps {
-  msgApi: MessageInstance
-}
+interface StretcherProps {}
 
-const Stretcher = ({ msgApi }: StretcherProps) => {
+// eslint-disable-next-line no-empty-pattern
+const Stretcher = ({}: StretcherProps) => {
   const { id } = useParams()
+  const msgApi = useMsgApi()
   const [isLoading, setIsLoading] = useState(true)
   const [shouldRender, setShouldRender] = useState(true)
   const [stretcherData, setStretcherData] = useState<StretcherData | null>(null)

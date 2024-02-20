@@ -24,7 +24,7 @@ export const handleSubmit =
           content: (res.response?.data as { message?: string })?.message,
         })
         return
-      } else if (res.request.status !== 200) {
+      } else {
         msgApi.open({
           type: 'error',
           content:
