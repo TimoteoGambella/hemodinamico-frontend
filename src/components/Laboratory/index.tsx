@@ -1,12 +1,5 @@
 import { MessageInstance } from 'antd/es/message/interface'
-import {
-  Empty,
-  Flex,
-  Spin,
-  Typography,
-  Space,
-  Button,
-} from 'antd'
+import { Empty, Flex, Spin, Typography, Space, Button } from 'antd'
 import { loadLabData } from './controller'
 import { useParams } from 'react-router-dom'
 import { EditOutlined } from '@ant-design/icons'
@@ -47,7 +40,7 @@ const Laboratory = ({}: LaboratoryProps) => {
   return (
     <Spin spinning={isLoading}>
       {shouldRender && labData ? (
-        <MainContent labInfo={labData} msgApi={msgApi} />
+        <MainContent data={labData} msgApi={msgApi} />
       ) : (
         <Empty />
       )}
@@ -57,10 +50,10 @@ const Laboratory = ({}: LaboratoryProps) => {
 
 interface MainContentProps {
   msgApi: MessageInstance
-  labInfo: LaboratoryData
+  data: LaboratoryData
 }
 
-const MainContent = ({ labInfo }: MainContentProps) => {
+const MainContent = ({ data }: MainContentProps) => {
   const [formProp, setFormProp] = useState<FormPropType>({
     enable: false,
     message: null,
@@ -68,11 +61,28 @@ const MainContent = ({ labInfo }: MainContentProps) => {
     shouldSubmit: false,
     setFormProp: undefined,
   })
-  const { patientId: patientInfo } = labInfo
+  const [labInfo, setLabInfo] = useState<LaboratoryData | null>(null)
+  const { patientId: patientInfo } = data
 
   const handleEnableEdit = () => {
-    setFormProp({ ...formProp, shouldSubmit: false, setFormProp, enable: !formProp.enable})
+    setFormProp({
+      ...formProp,
+      shouldSubmit: false,
+      setFormProp,
+      enable: !formProp.enable,
+    })
   }
+
+  useEffect(() => {
+    if(labInfo) return
+    setLabInfo({
+      ...data,
+      infective: {
+        ...data.infective,
+        resultado: data.infective.resultado ? 'true' : 'false',
+      },
+    })
+  }, [labInfo, data])
 
   if (typeof patientInfo === 'string') return <Empty />
   return (
@@ -84,61 +94,14 @@ const MainContent = ({ labInfo }: MainContentProps) => {
         size="large"
         onClick={handleEnableEdit}
         icon={<EditOutlined />}
-        id='edit-lab-forms'
+        id="edit-lab-forms"
       ></Button>
-      <Flex justify='center' gap={10} wrap='wrap'>
+      <Flex justify="center" gap={10} wrap="wrap">
         <Space className="patient-container">
-          <div className="patient-header">
-            <Typography.Title level={4}>
-              Información del paciente
-            </Typography.Title>
-          </div>
-          <CustomForm.LabPatient formProp={formProp} data={patientInfo}></CustomForm.LabPatient>
-        </Space>
-
-        <Space className="patient-container">
-          <div className="patient-header">
-            <Typography.Title level={4}>
-              Hematología y Coagulación
-            </Typography.Title>
-          </div>
-          <CustomForm.LabHema formProp={formProp} data={labInfo.hematology} ></CustomForm.LabHema>
-        </Space>
-
-        <Space className="patient-container">
-          <div className="patient-header">
-            <Typography.Title level={4}>
-              Perfil  hepático
-            </Typography.Title>
-          </div>
-          <CustomForm.LabLiver formProp={formProp} data={labInfo.liver_profile} ></CustomForm.LabLiver>
-        </Space>
-
-        <Space className="patient-container">
-          <div className="patient-header">
-            <Typography.Title level={4}>
-              Infeccioso e inflamatorio
-            </Typography.Title>
-          </div>
-          <CustomForm.LabInfec formProp={formProp} data={labInfo.infective} ></CustomForm.LabInfec>
-        </Space>
-
-        <Space className="patient-container">
-          <div className="patient-header">
-            <Typography.Title level={4}>
-              Perfil  cardiaco
-            </Typography.Title>
-          </div>
-          <CustomForm.LabCardiac formProp={formProp} data={labInfo.cardiac_profile} ></CustomForm.LabCardiac>
-        </Space>
-        
-        <Space className="patient-container">
-          <div className="patient-header">
-            <Typography.Title level={4}>
-              Información renal
-            </Typography.Title>
-          </div>
-          <CustomForm.LabKidney formProp={formProp} data={labInfo.kidney} ></CustomForm.LabKidney>
+          <CustomForm.Laboratory
+            formProp={formProp}
+            data={labInfo!}
+          ></CustomForm.Laboratory>
         </Space>
       </Flex>
     </>

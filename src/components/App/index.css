@@ -18,9 +18,6 @@
   justify-content: flex-start;
   overflow: hidden;
 }
-.ant-layout-sider-trigger {
-  position: absolute !important;
-}
 @media screen and (max-width: 768px){
   .ant-layout-sider-trigger {
     display: none;

@@ -1,13 +1,18 @@
 .ant-form.form-component {
-  max-width: 600px;
   padding-right: 2rem;
   padding-top: .5rem;
 }
-.ant-form.form-component.fix-form{
+#labForm.ant-form.form-component {
   min-width: 410px;
   padding-right: 0;
+  & .submit-container {
+    text-align: right;
+    & button {
+      margin-bottom: 5px;
+    }
+  }
 }
-.ant-form.form-component.fix-form .ant-col:first-child {
+#labForm.ant-form.form-component .ant-col:first-child {
   all: unset;
   min-width: 165px;
   & label {
@@ -23,7 +28,7 @@
 }
 
 @media screen and (max-width: 550px) {
-  .ant-form.form-component.fix-form {
+  #labForm.ant-form.form-component {
     min-width: unset;
     padding-right: 0;
   }
@@ -35,7 +40,7 @@
   }
 }
 @media screen and (max-width: 575px) {
-  .ant-form.form-component.fix-form .ant-col:first-child {
+  #labForm.ant-form.form-component .ant-col:first-child {
     flex: 0 0 100%;
     & label {
       justify-content: flex-start;

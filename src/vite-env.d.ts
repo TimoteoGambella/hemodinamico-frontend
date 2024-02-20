@@ -89,7 +89,7 @@ interface Infective {
   proteinaC: number | null
   procalcitonina: number | null
   cultivo: 'hemocultivo' | 'urocultivo' | 'cultivo de secreción' | null
-  resultado: boolean | null
+  resultado: boolean | string | null
   germen: string | null
 }
 
