@@ -1,6 +1,6 @@
 import { MsgApiContext } from '../../contexts/MsgApiProvider'
 import { useContext, useEffect, useState } from 'react'
-import { Button, Layout, Menu } from 'antd'
+import { Button, Layout, Menu, Spin } from 'antd'
 import {
   Navigate,
   Route,
@@ -26,6 +26,7 @@ const App = () => {
   const { msgApi, contextHolder } = useContext(MsgApiContext)
   const [defaultSelectedKey, setDefaultSelectedKey] = useState('dashboard')
   const [items, setItems] = useState<MenuItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const { handleLogout, renderMenuItems } = Controller
   const navigateTo = useNavigate()
 
@@ -37,6 +38,7 @@ const App = () => {
     Controller.getItems()
       .then((items) => {
         setItems(items)
+        setIsLoading(false)
       })
       .catch(() => {
         msgApi!.error('Error al cargar el menú. Inténtelo de nuevo más tarde.')
@@ -64,6 +66,7 @@ const App = () => {
 
   return (
     <>
+      <Spin spinning={isLoading} tip="Cargando..." fullscreen></Spin>
       {contextHolder}
       <Layout>
         <Sider
