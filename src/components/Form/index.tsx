@@ -11,8 +11,9 @@ import LiverProfileForm from './items/LiverProfileForm'
 import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
-import './style.css'
 import useMsgApi from '../../hooks/useMsgApi'
+import { AxiosError } from 'axios'
+import './style.css'
 
 interface FormProps {
   formProp: FormPropType
@@ -25,11 +26,13 @@ export default function CustomForm(children: React.ReactNode) {
 
 CustomForm.User = function UserForm({ formProp }: FormProps) {
   const [form] = Form.useForm<UserData>()
-  const { onFinish, onFinishFailed, formItemLayout } = FormController({
-    formType: 'user',
-    formProp,
-    form,
-  })
+  const { onFinish, onFinishFailed, formItemLayout } = FormController(
+    {
+      formType: 'user',
+      formProp,
+    },
+    () => form.resetFields()
+  )
 
   useEffect(() => {
     if (formProp.shouldSubmit && formProp.status === 'initial') {
@@ -134,11 +137,13 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
   const [form] = Form.useForm<PatientData>()
   const [selectedStretcher, setSelectedStretcher] = useState('1')
   const [freeStretchers, setStretchers] = useState<StretcherData[]>([])
-  const { onFinish, onFinishFailed, formItemLayout } = FormController({
-    formType: 'patient',
-    formProp,
-    form,
-  })
+  const { onFinish, onFinishFailed, formItemLayout } = FormController(
+    {
+      formType: 'patient',
+      formProp,
+    },
+    () => form.resetFields()
+  )
   const tooltipProp =
     selectedStretcher === '1'
       ? {
@@ -302,25 +307,43 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
   const msgApi = useMsgApi()
   const [form] = Form.useForm<LaboratoryData>()
   const [isLoading, setIsLoading] = useState(false)
-  const { onFinish, onFinishFailed, formItemLayout } = FormController({
-    formType: 'lab',
-    formProp,
-    form,
-  })
+  const {
+    onFinish: onFinishLab,
+    onFinishFailed,
+    formItemLayout,
+  } = FormController(
+    {
+      formType: 'lab',
+      formProp,
+    },
+    () => setIsLoading(false)
+  )
+  const { onFinish: onFinishPatient } = FormController(
+    {
+      formType: 'update-patient',
+      execSetFormProp: false,
+      formProp,
+    },
+    (res) => {
+      if (res instanceof AxiosError) {
+        msgApi.error('Error al actualizar la información del paciente.')
+      } else {
+        msgApi.success('Información del paciente actualizada con éxito.')
+      }
+    }
+  )
 
   const handleSubmit = (values: LaboratoryData) => {
-    if(typeof values.patientId === 'string') {
-      msgApi.error('Error al obtener la información del paciente')
-      return
-    }
+    const lab: Partial<LaboratoryData> = JSON.parse(JSON.stringify(values))
+    delete lab.patientId
+    lab._id = data!._id
 
-    const patient: PatientData = values.patientId
-    patient._id = data!._id
-    values._id = data!._id
-    values.patientId = data!._id
-  
-    console.log(values)
-    console.log(patient)
+    const patient = values.patientId as PatientData
+    patient._id = (data!.patientId as PatientData)._id
+
+    setIsLoading(true)
+    onFinishLab(lab as LaboratoryData)
+    onFinishPatient(patient)
   }
 
   useEffect(() => {

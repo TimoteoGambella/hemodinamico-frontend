@@ -79,6 +79,14 @@ export default class AxiosController {
     })
   }
 
+  async updatePatient(id: string, body: PatientData): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/patient/update/${id}`,
+      method: 'PATCH',
+      data: body
+    })
+  }
+
   async getStretchers(populate = false): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: `/stretcher/list?populate=${populate}`,
@@ -109,8 +117,8 @@ export default class AxiosController {
 
   async updateLab(id: string, body: LaboratoryData): Promise<AxiosError | AxiosResponse> {
     return await this.request({
-      url: `/laboratory/${id}`,
-      method: 'PUT',
+      url: `/laboratory/update/${id}`,
+      method: 'PATCH',
       data: body
     })
   }

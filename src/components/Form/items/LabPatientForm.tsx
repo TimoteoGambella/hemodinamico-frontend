@@ -109,14 +109,14 @@ const LabPatientForm = () => {
         ]}
       >
         <Select>
-          <Select.Option value="a+">A+</Select.Option>
-          <Select.Option value="a-">A-</Select.Option>
-          <Select.Option value="b+">B+</Select.Option>
-          <Select.Option value="b-">B-</Select.Option>
-          <Select.Option value="ab+">AB+</Select.Option>
-          <Select.Option value="ab">AB-</Select.Option>
-          <Select.Option value="o+">O+</Select.Option>
-          <Select.Option value="o-">O-</Select.Option>
+          <Select.Option value="A+">A+</Select.Option>
+          <Select.Option value="A-">A-</Select.Option>
+          <Select.Option value="B+">B+</Select.Option>
+          <Select.Option value="B-">B-</Select.Option>
+          <Select.Option value="AB+">AB+</Select.Option>
+          <Select.Option value="AB-">AB-</Select.Option>
+          <Select.Option value="O+">O+</Select.Option>
+          <Select.Option value="O-">O-</Select.Option>
         </Select>
       </Form.Item>
     </>

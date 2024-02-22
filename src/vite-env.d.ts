@@ -23,14 +23,15 @@ type UserData = {
 
 type PatientData = {
   _id: string
-  stretcherId: string | undefined
+  stretcherId: string | null | undefined
+  laboratoryId: string | null | undefined
   gender: 'M' | 'F'
   fullname: string
   height: number
   weight: number
   age: number
   dni: number
-  bloodType: string | null
+  bloodType: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
   timestamp: number
 }
 
@@ -74,7 +75,6 @@ interface LiverProfile {
   bilirrubina: {
     total: number | null
     directa: number | null
-    indirecta: number | null
   }
 }
 
@@ -133,7 +133,6 @@ interface Diagnostic {
 interface LaboratoryData {
   _id: string
   patientId: string | PatientData
-  blood_type: string | null
   hematology: Hematology
   liver_profile: LiverProfile
   cardiac_profile: CardiacProfile

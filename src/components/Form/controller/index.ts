@@ -1,4 +1,3 @@
-import { FormInstance } from 'antd'
 import AxiosController from '../../../utils/axios.controller'
 import { AxiosError, AxiosResponse } from 'axios'
 
@@ -11,7 +10,7 @@ export function validateInputNumber(e: React.ChangeEvent<HTMLInputElement>) {
   }
 }
 
-export async function getStretchers(): Promise<StretcherData[] | null>{
+export async function getStretchers(): Promise<StretcherData[] | null> {
   const res = await axios.getStretchers()
   if (res instanceof AxiosError) {
     console.error(res.message)
@@ -22,16 +21,19 @@ export async function getStretchers(): Promise<StretcherData[] | null>{
 
 interface FormControllerProps {
   formProp: FormPropType
-  form: FormInstance
-  formType: 'user' | 'patient' | 'lab'
+  execSetFormProp?: boolean
+  formType: 'user' | 'patient' | 'update-patient' | 'lab'
 }
 interface FormFinishProp {
   values: UserData | PatientData | LaboratoryData
 }
 
-export function FormController({ formProp, form, formType }: FormControllerProps) {
+export function FormController(
+  { formProp, formType, execSetFormProp }: FormControllerProps,
+  callback?: (_: AxiosError | AxiosResponse) => void
+) {
   return {
-    onFinish: async (values: FormFinishProp["values"] ) => {
+    onFinish: async (values: FormFinishProp['values']) => {
       console.log('Received values of form: ', values)
       formProp.setFormProp?.({
         ...formProp,
@@ -39,13 +41,13 @@ export function FormController({ formProp, form, formType }: FormControllerProps
         status: 'loading',
       })
 
-      let res: AxiosError | AxiosResponse | undefined = undefined
-      if (formType === 'user')
-        res = await axios.createUser(values as UserData)
-      else if (formType === 'patient') 
-        await axios.createPatient(values as PatientData)
-      else 
-        await axios.updateLab(values._id, values as LaboratoryData)
+      let res: AxiosError | AxiosResponse
+      if (formType === 'user') res = await axios.createUser(values as UserData)
+      else if (formType === 'patient')
+        res = await axios.createPatient(values as PatientData)
+      else if (formType === 'update-patient')
+        res = await axios.updatePatient(values._id, values as PatientData)
+      else res = await axios.updateLab(values._id, values as LaboratoryData)
 
       if (res instanceof AxiosError) {
         formProp.setFormProp?.({
@@ -58,9 +60,14 @@ export function FormController({ formProp, form, formType }: FormControllerProps
         })
         console.info('Message error', res.response?.data)
       } else {
-        formProp.setFormProp?.({ ...formProp, shouldSubmit: false, status: 'ok' })
-        form.resetFields()
+        if (execSetFormProp === undefined || execSetFormProp)
+          formProp.setFormProp?.({
+            ...formProp,
+            shouldSubmit: false,
+            status: 'ok',
+          })
       }
+      if (callback) callback(res)
     },
     onFinishFailed: () => {
       formProp.setFormProp?.({
@@ -79,6 +86,6 @@ export function FormController({ formProp, form, formType }: FormControllerProps
         xs: { span: 24 },
         sm: { span: 16 },
       },
-    }
+    },
   }
 }

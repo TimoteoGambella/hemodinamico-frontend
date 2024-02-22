@@ -50,7 +50,7 @@ interface MainContentProps {
   data: LaboratoryData
 }
 
-const MainContent = ({ data }: MainContentProps) => {
+const MainContent = ({ data, msgApi }: MainContentProps) => {
   const [formProp, setFormProp] = useState<FormPropType>({
     enable: false,
     message: null,
@@ -71,7 +71,7 @@ const MainContent = ({ data }: MainContentProps) => {
   }
 
   useEffect(() => {
-    if(labInfo) return
+    if (labInfo) return
     setLabInfo({
       ...data,
       infective: {
@@ -80,6 +80,28 @@ const MainContent = ({ data }: MainContentProps) => {
       },
     })
   }, [labInfo, data])
+
+  useEffect(() => {
+    if (formProp.shouldSubmit) return
+    if (formProp.status === 'initial') return
+    if (formProp.status === 'loading') return
+
+    if (formProp.status === 'ok') {
+      msgApi.success('Laboratorio actualizado con éxito.')
+      setFormProp({
+        ...formProp,
+        status: 'initial',
+        message: null,
+        enable: false,
+      })
+    } else if (formProp.status === 'form-error') {
+      msgApi.warning(formProp.message)
+      setFormProp({ ...formProp, status: 'initial', message: null })
+    } else if (formProp.status === 'server-error') {
+      msgApi.error(formProp.message)
+      setFormProp({ ...formProp, status: 'initial', message: null })
+    }
+  }, [formProp, msgApi])
 
   if (typeof patientInfo === 'string') return <Empty />
   return (

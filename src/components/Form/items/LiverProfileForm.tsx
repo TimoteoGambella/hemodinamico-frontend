@@ -87,7 +87,7 @@ const LiverProfileForm = ({ form }: { form: FormInstance }) => {
 
       <Form.Item
         name={['liver_profile', 'fosfatasa']}
-        label="Foafatasa alcalina (U/L)"
+        label="Fosfatasa alcalina (U/L)"
         rules={[
           {
             required: true,

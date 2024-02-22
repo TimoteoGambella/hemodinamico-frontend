@@ -73,7 +73,7 @@ export async function handleLogout(msgApi: MessageInstance, navigateTo: Navigate
 export async function getItems(): Promise<MenuItem[]> {
   const reqStretchers = await axios.getStretchers(true)
   const reqLabs = await axios.getLabs(true)
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     if (reqStretchers instanceof AxiosError) return reject([])
     if (reqLabs instanceof AxiosError) return reject([])
     const stretchers = (reqStretchers.data.data as StretcherData[]).map((stretcher) =>
