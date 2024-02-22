@@ -1,17 +1,20 @@
 import { MessageInstance } from 'antd/es/message/interface'
-import { Empty, Flex, Spin, Typography, Space, Button } from 'antd'
+import { Empty, Flex, Spin, Typography, Space, FloatButton } from 'antd'
 import { loadLabData } from './controller'
 import { useParams } from 'react-router-dom'
-import { EditOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import useMsgApi from '../../hooks/useMsgApi'
 import { useEffect, useState } from 'react'
 import CustomForm from '../Form'
 import './style.css'
+import Icon from '../Icon'
 
-interface LaboratoryProps {}
+interface LaboratoryProps {
+  collapsed: boolean
+}
 
 // eslint-disable-next-line no-empty-pattern
-const Laboratory = ({}: LaboratoryProps) => {
+const Laboratory = ({ collapsed }: LaboratoryProps) => {
   const { id } = useParams()
   const msgApi = useMsgApi()
   const [isLoading, setIsLoading] = useState(true)
@@ -37,7 +40,7 @@ const Laboratory = ({}: LaboratoryProps) => {
   return (
     <Spin spinning={isLoading}>
       {shouldRender && labData ? (
-        <MainContent data={labData} msgApi={msgApi} />
+        <MainContent data={labData} msgApi={msgApi} collapsed={collapsed} />
       ) : (
         <Empty />
       )}
@@ -48,9 +51,12 @@ const Laboratory = ({}: LaboratoryProps) => {
 interface MainContentProps {
   msgApi: MessageInstance
   data: LaboratoryData
+  collapsed: boolean
 }
 
-const MainContent = ({ data, msgApi }: MainContentProps) => {
+const MainContent = ({ data, msgApi, collapsed }: MainContentProps) => {
+  const { patientId: patientInfo } = data
+  const [labInfo, setLabInfo] = useState<LaboratoryData | null>(null)
   const [formProp, setFormProp] = useState<FormPropType>({
     enable: false,
     message: null,
@@ -58,8 +64,6 @@ const MainContent = ({ data, msgApi }: MainContentProps) => {
     shouldSubmit: false,
     setFormProp: undefined,
   })
-  const [labInfo, setLabInfo] = useState<LaboratoryData | null>(null)
-  const { patientId: patientInfo } = data
 
   const handleEnableEdit = () => {
     setFormProp({
@@ -68,6 +72,27 @@ const MainContent = ({ data, msgApi }: MainContentProps) => {
       setFormProp,
       enable: !formProp.enable,
     })
+  }
+  // TODO: Esta función se debe corregir
+  const handleOpen = (open: boolean) => {
+    const el = document.querySelector('.float-btn-lab-form') as HTMLElement
+    const flushAnimation = () => {
+      if (!el.style.animation.includes('rotateAnim')) return
+      if (el.style.transform === '') return
+      el.style.animation = ''
+      el.style.transform = ''
+      el.removeEventListener('animationend', flushAnimation)
+    }
+    el.addEventListener('animationend', flushAnimation)
+    if (open) {
+      el.style.bottom = 'calc(100dvh - 192px)'
+      el.style.transform = 'rotate(180deg)'
+    } else {
+      setTimeout(() => {
+        el.style.bottom = ''
+        el.style.animation = 'rotateAnim .3s ease-in-out'
+      }, 320)
+    }
   }
 
   useEffect(() => {
@@ -107,14 +132,17 @@ const MainContent = ({ data, msgApi }: MainContentProps) => {
   return (
     <>
       <Typography.Title level={2}>EXÁMEN DE LABORATORIO</Typography.Title>
-      <Button
+      <FloatButton.Group
         type="primary"
-        shape="round"
-        size="large"
-        onClick={handleEnableEdit}
-        icon={<EditOutlined />}
-        id="edit-lab-forms"
-      ></Button>
+        trigger="click"
+        className="float-btn-lab-form"
+        onOpenChange={handleOpen}
+        icon={<Icon.SyncIcon />}
+        style={!collapsed ? { left: 220 } : { left: 100 }}
+      >
+        <FloatButton onClick={handleEnableEdit} icon={<EditOutlined />} />
+        <FloatButton icon={<DeleteOutlined />} />
+      </FloatButton.Group>
       <Flex justify="center" gap={10} wrap="wrap">
         <Space className="patient-container">
           <CustomForm.Laboratory

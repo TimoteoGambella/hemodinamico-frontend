@@ -11,6 +11,8 @@ import LiverProfileForm from './items/LiverProfileForm'
 import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
+import DiagnosticForm from './items/DiagnosticForm'
+import formItemLayout from './constants/formLayout'
 import useMsgApi from '../../hooks/useMsgApi'
 import { AxiosError } from 'axios'
 import './style.css'
@@ -26,7 +28,7 @@ export default function CustomForm(children: React.ReactNode) {
 
 CustomForm.User = function UserForm({ formProp }: FormProps) {
   const [form] = Form.useForm<UserData>()
-  const { onFinish, onFinishFailed, formItemLayout } = FormController(
+  const { onFinish, onFinishFailed } = FormController(
     {
       formType: 'user',
       formProp,
@@ -137,7 +139,7 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
   const [form] = Form.useForm<PatientData>()
   const [selectedStretcher, setSelectedStretcher] = useState('1')
   const [freeStretchers, setStretchers] = useState<StretcherData[]>([])
-  const { onFinish, onFinishFailed, formItemLayout } = FormController(
+  const { onFinish, onFinishFailed } = FormController(
     {
       formType: 'patient',
       formProp,
@@ -310,7 +312,6 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
   const {
     onFinish: onFinishLab,
     onFinishFailed,
-    formItemLayout,
   } = FormController(
     {
       formType: 'lab',
@@ -378,6 +379,8 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
       <InfectiveProfileForm form={form} />
       <Divider />
       <KidneyProfileForm />
+      <Divider />
+      <DiagnosticForm form={form} />
       <div className="submit-container">
         <Button type="primary" htmlType="submit" loading={isLoading}>
           Guardar registro

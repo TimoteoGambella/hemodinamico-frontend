@@ -98,7 +98,10 @@ const App = () => {
               <Route path="/usuarios" element={<Users />} />
               <Route path="/pacientes" element={<Patients />} />
               <Route path="/cama/:id" element={<Stretcher />} />
-              <Route path="/laboratorio/:id" element={<Laboratory />} />
+              <Route
+                path="/laboratorio/:id"
+                element={<Laboratory collapsed={collapsed} />}
+              />
               <Route path="*" element={<Navigate to="/404" replace />} />
             </Switch>
           </Content>

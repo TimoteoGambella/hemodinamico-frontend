@@ -100,34 +100,31 @@ interface Kidney {
 }
 
 interface Diagnostic {
-  type: 'shock' | 'falla cardíaca' | 'infarto' | 'valvular' | null
-  subtype: {
-    type:
-      | 'isquémico'
-      | 'no isquémico'
-      | 'crónica'
-      | 'f.c.a.d'
+  type: 'shock' | 'falla_cardiaca' | 'infarto' | 'valvular' | null
+  subtype:
+      | 'isquemico'
+      | 'no_isquemico'
+      | 'cronica'
+      | 'FCAD'
       | 'aguda'
-      | 'st no elevado'
-      | 'st elevado'
-      | 'aórtico'
+      | 'st_no_elevado'
+      | 'st_elevado'
+      | 'aortico'
       | 'mitral'
-      | 'tricúspide'
-      | null
-
-    subtype:
+      | 'tricuspide'
+      | null,
+  child:
       | 'isquemia'
-      | 'no isquemia'
+      | 'no_isquemica'
       | 'anterior'
       | 'anterosepta'
       | 'inferior'
-      | 'inf/post/la'
+      | 'inf_post_la'
       | 'insuficiente'
       | 'estenosis'
-      | 'doble lesión'
-      | null
-  }
-  FEVI: '>50%' | '40-' | '<40%' | null
+      | 'doble_lesion'
+      | null,
+  FEVI: '50' | '40-' | '40' | null
 }
 
 interface LaboratoryData {
@@ -136,6 +133,7 @@ interface LaboratoryData {
   hematology: Hematology
   liver_profile: LiverProfile
   cardiac_profile: CardiacProfile
+  diagnostic: Diagnostic
   infective: Infective
   kidney: Kidney
   timestamp: number

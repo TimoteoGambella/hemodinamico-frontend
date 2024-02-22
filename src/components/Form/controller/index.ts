@@ -76,16 +76,6 @@ export function FormController(
         status: 'form-error',
         message: 'Por favor corrija los campos resaltados.',
       })
-    },
-    formItemLayout: {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-      },
-    },
+    }
   }
 }
