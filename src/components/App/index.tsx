@@ -5,6 +5,7 @@ import {
   Navigate,
   Route,
   Routes as Switch,
+  useLocation,
   useNavigate,
 } from 'react-router-dom'
 import * as Controller from './controller'
@@ -24,11 +25,12 @@ const App = () => {
   )
   const [isAuthChecked, setIsAuthChecked] = useState(false)
   const { msgApi, contextHolder } = useContext(MsgApiContext)
-  const [defaultSelectedKey, setDefaultSelectedKey] = useState('dashboard')
+  const [defaultSelectedKey, setDefaultSelectedKey] = useState(['dashboard'])
   const [items, setItems] = useState<MenuItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { handleLogout, renderMenuItems } = Controller
   const navigateTo = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     Controller.handleUnAuth(navigateTo, setIsAuthChecked)
@@ -46,7 +48,6 @@ const App = () => {
   }, [msgApi])
 
   useEffect(() => {
-    Controller.selectDefaultController(setDefaultSelectedKey)
     const handleResize = () => {
       if (!collapsed && window.document.body.clientWidth <= 768)
         setCollapsed(true)
@@ -54,11 +55,14 @@ const App = () => {
 
     window.addEventListener('resize', handleResize)
 
-    // Limpiar el evento al desmontar el componente
     return () => {
       window.removeEventListener('resize', handleResize)
     }
   }, [collapsed])
+
+  useEffect(() => {
+    Controller.selectDefaultController(location.pathname, setDefaultSelectedKey)
+  }, [location])
 
   if (!isAuthChecked) {
     return null
@@ -85,8 +89,8 @@ const App = () => {
           </Button>
           <Menu
             theme="dark"
-            defaultSelectedKeys={[defaultSelectedKey]}
             mode="inline"
+            selectedKeys={defaultSelectedKey}
             items={items.map((item) => renderMenuItems(item))}
           />
         </Sider>

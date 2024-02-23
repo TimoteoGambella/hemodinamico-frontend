@@ -100,8 +100,8 @@ export async function getItems(): Promise<MenuItem[]> {
   })
 }
 
-export function selectDefaultController(setSelected: (_: string) => void){
-  const path = window.location.pathname.split('/')
+export function selectDefaultController(pathname: string, setSelected: (_: string[]) => void){
+  const path = pathname.split('/')
   if(path[1] === 'cama' || path[1] === 'laboratorio') path.shift()
-  if (path) setSelected(path[1])
+  if (path) setSelected([path[1]])
 }
