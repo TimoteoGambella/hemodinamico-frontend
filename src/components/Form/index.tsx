@@ -309,10 +309,7 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
   const msgApi = useMsgApi()
   const [form] = Form.useForm<LaboratoryData>()
   const [isLoading, setIsLoading] = useState(false)
-  const {
-    onFinish: onFinishLab,
-    onFinishFailed,
-  } = FormController(
+  const { onFinish: onFinishLab, onFinishFailed } = FormController(
     {
       formType: 'lab',
       formProp,
@@ -376,11 +373,11 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
       <Divider />
       <CardiacProfileForm />
       <Divider />
-      <InfectiveProfileForm form={form} />
+      <InfectiveProfileForm form={form} isEnabled={formProp.enable} />
       <Divider />
       <KidneyProfileForm />
       <Divider />
-      <DiagnosticForm form={form} />
+      <DiagnosticForm form={form} isEnabled={formProp.enable} />
       <div className="submit-container">
         <Button type="primary" htmlType="submit" loading={isLoading}>
           Guardar registro

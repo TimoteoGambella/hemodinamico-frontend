@@ -73,25 +73,13 @@ const MainContent = ({ data, msgApi, collapsed }: MainContentProps) => {
       enable: !formProp.enable,
     })
   }
-  // TODO: Esta función se debe corregir
+
   const handleOpen = (open: boolean) => {
     const el = document.querySelector('.float-btn-lab-form') as HTMLElement
-    const flushAnimation = () => {
-      if (!el.style.animation.includes('rotateAnim')) return
-      if (el.style.transform === '') return
-      el.style.animation = ''
-      el.style.transform = ''
-      el.removeEventListener('animationend', flushAnimation)
-    }
-    el.addEventListener('animationend', flushAnimation)
     if (open) {
-      el.style.bottom = 'calc(100dvh - 192px)'
-      el.style.transform = 'rotate(180deg)'
+      el.dataset.open = 'true'
     } else {
-      setTimeout(() => {
-        el.style.bottom = ''
-        el.style.animation = 'rotateAnim .3s ease-in-out'
-      }, 320)
+      el.dataset.open = 'false'
     }
   }
 

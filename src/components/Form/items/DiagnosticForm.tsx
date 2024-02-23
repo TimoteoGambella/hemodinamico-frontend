@@ -2,17 +2,18 @@ import { Form, FormInstance, Select, Typography } from 'antd'
 import schemeValues from '../constants/diagnosticSchemeValues'
 import { useState } from 'react'
 
+interface DiagnosticFormProps {
+  form: FormInstance
+  isEnabled: boolean
+}
 
-const DiagnosticForm = ({ form }: { form: FormInstance }) => {
+const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
   const [typeValue, setTypeValue] = useState<string | null>(null)
 
   return (
     <>
       <Typography.Title level={4}>DIAGNÓSTICO</Typography.Title>
-      <Form.Item
-        name={['diagnostic', 'tipo']}
-        label="Tipo"
-      >
+      <Form.Item name={['diagnostic', 'tipo']} label="Tipo">
         <Select
           onChange={(e) => {
             form.setFieldValue(['diagnostic', 'subTipo'], null)
@@ -44,7 +45,7 @@ const DiagnosticForm = ({ form }: { form: FormInstance }) => {
           const obj = schemeValues.find((value) => value.name === selected)
           return (
             <Form.Item name={['diagnostic', 'subTipo']} noStyle>
-              <Select disabled={!enabled}>
+              <Select disabled={!isEnabled || !enabled}>
                 {obj?.subType.map((value, index) => (
                   <Select.Option key={index} value={value.name}>
                     {value.label}
@@ -77,9 +78,9 @@ const DiagnosticForm = ({ form }: { form: FormInstance }) => {
           const enabled = selected ? true : false
           return (
             <Form.Item name={['diagnostic', 'child']} noStyle>
-              <Select disabled={!(enabled && !!obj?.child)}>
+              <Select disabled={!isEnabled || !(enabled && !!obj?.child)}>
                 {obj?.child?.map((value, index) => (
-                  <Select.Option key={index}>{value.label}</Select.Option>
+                  <Select.Option key={index} value={value.name}>{value.label}</Select.Option>
                 ))}
               </Select>
             </Form.Item>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Form,
   FormInstance,
@@ -8,8 +8,17 @@ import {
   Typography,
 } from 'antd'
 
-const InfectiveProfileForm = ({ form }: { form: FormInstance }) => {
+interface InfectiveProfileFormProps {
+  form: FormInstance
+  isEnabled: boolean
+}
+
+const InfectiveProfileForm = ({ form, isEnabled }: InfectiveProfileFormProps) => {
   const [isRequired, setIsRequired] = useState(false)
+
+  useEffect(() => {
+    setIsRequired(isEnabled && form.getFieldValue(['infective', 'resultado']) === 'true')
+  }, [isEnabled, form])
 
   const handleChange = (e: 'true' | 'false') => {
     setIsRequired(e === 'true')
@@ -90,8 +99,8 @@ const InfectiveProfileForm = ({ form }: { form: FormInstance }) => {
         label="Germen"
         rules={[
           {
-            required: isRequired,
-            message: 'Por favor ingrese el valor de CA-125 del paciente',
+            required: !isEnabled && isRequired,
+            message: 'Por favor ingrese el germen del paciente',
           },
         ]}
       >
