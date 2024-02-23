@@ -87,6 +87,7 @@ const Users = ({}: UsersProps) => {
         <CustomForm.User formProp={formProp} />
       </Modal>
       <Table
+        bordered
         loading={isLoading}
         columns={columns}
         rowKey={(user) => user._id}

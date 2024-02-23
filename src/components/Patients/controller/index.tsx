@@ -1,4 +1,5 @@
 import { Space, TableProps } from 'antd'
+import { Link } from 'react-router-dom'
 
 export function getColumns(): TableProps<PatientData>['columns'] {
   return [
@@ -37,20 +38,26 @@ export function getColumns(): TableProps<PatientData>['columns'] {
       render: (text) => text + ' kg',
     },
     {
-      title: 'Camilla',
-      key: 'stretcherId',
-      dataIndex: 'stretcherId',
-      render: (id) => {
-        let style = undefined
-        if (!id) style = { cursor: 'not-allowed', color: '#006aff8a' }
-        return (<Space size="middle">
-          <a href={`camilla/${id}`} style={style}>
-            Ver camilla
-          </a>
-          <a href={`camilla/${id}`} style={style}>
-            Más
-          </a>
-        </Space>)
+      title: 'Acciones',
+      key: 'action',
+      width: 250,
+      render: (_, data) => {
+        return (
+          <Space size="middle">
+            {data.stretcherId ? (
+              <Link to={`/camilla/${data.stretcherId}`}>Ver camilla</Link>
+            ) : (
+              <a onClick={() => console.log('click')}>Asignar camilla</a>
+            )}
+            {data.laboratoryId ? (
+              <Link to={`/laboratorio/${data.laboratoryId}`}>
+                Ver laboratorio
+              </Link>
+            ) : (
+              <a onClick={() => console.log('click')}>Asignar a laboratorio</a>
+            )}
+          </Space>
+        )
       },
     },
   ]
