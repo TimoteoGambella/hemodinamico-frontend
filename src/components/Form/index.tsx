@@ -1,16 +1,13 @@
-import {
-  FormController,
-  getStretchers,
-  validateInputNumber,
-} from './controller'
-import { Button, Divider, Empty, Form, Input, InputNumber, Select } from 'antd'
 import { useEffect, useState } from 'react'
+import { FormController, validateInputNumber } from './controller'
+import { Button, Divider, Empty, Form, Input, InputNumber, Select } from 'antd'
 import LabPatientForm from './items/LabPatientForm'
 import HemotologyForm from './items/HematologyForm'
 import LiverProfileForm from './items/LiverProfileForm'
 import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
+import useStretchers from '../../hooks/useStretchers'
 import DiagnosticForm from './items/DiagnosticForm'
 import formItemLayout from './constants/formLayout'
 import useMsgApi from '../../hooks/useMsgApi'
@@ -33,12 +30,14 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
       formType: 'user',
       formProp,
     },
-    () => form.resetFields()
+    () => {
+      form.resetFields()
+      formProp.handleUpdate?.(true)
+    }
   )
 
   useEffect(() => {
     if (formProp.shouldSubmit && formProp.status === 'initial') {
-      console.log('submitting form')
       form.submit()
     }
   }, [formProp, form])
@@ -138,13 +137,16 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
 CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
   const [form] = Form.useForm<PatientData>()
   const [selectedStretcher, setSelectedStretcher] = useState('1')
-  const [freeStretchers, setStretchers] = useState<StretcherData[]>([])
+  const stretchers = useStretchers()
   const { onFinish, onFinishFailed } = FormController(
     {
       formType: 'patient',
       formProp,
     },
-    () => form.resetFields()
+    () => {
+      form.resetFields()
+      formProp.handleUpdate?.(true)
+    }
   )
   const tooltipProp =
     selectedStretcher === '1'
@@ -160,18 +162,6 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
       form.submit()
     }
   }, [formProp, form])
-
-  useEffect(() => {
-    getStretchers().then((res) => {
-      if (res) setStretchers(res)
-      else
-        formProp.setFormProp?.({
-          ...formProp,
-          status: 'server-error',
-          message: 'Error al obtener las camillas',
-        })
-    })
-  }, [selectedStretcher, formProp])
 
   return (
     <Form
@@ -291,7 +281,7 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
       >
         <Select onChange={(e) => setSelectedStretcher(e)}>
           <Select.Option value="auto">Automático</Select.Option>
-          {freeStretchers.map((stretcher) => {
+          {stretchers!.map((stretcher) => {
             if (stretcher.patientId) return null
             return (
               <Select.Option value={stretcher._id} key={stretcher._id}>

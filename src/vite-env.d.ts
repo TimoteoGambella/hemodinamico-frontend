@@ -48,6 +48,7 @@ type FormPropType = {
   message: string | null
   enable: boolean
   setFormProp?: React.Dispatch<React.SetStateAction<FormPropType>>
+  handleUpdate?: React.Dispatch<React.SetStateAction>
 }
 
 interface IconAssetsProps {

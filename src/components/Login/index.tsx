@@ -1,9 +1,9 @@
 import { Button, Col, Form, Input, Row, Typography, message } from 'antd'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import AxiosController from '../../utils/axios.controller'
 import { useNavigate } from 'react-router-dom'
 import { handleSubmit } from './controller'
 import { useEffect, useState } from 'react'
-import AxiosController from '../../utils/axios.controller'
 import './style.css'
 
 const axios = new AxiosController()

@@ -1,30 +1,28 @@
-import { useEffect, useState } from 'react'
+import { UserDataContext } from '../../contexts/UserDataProvider'
+import { useContext, useEffect, useState } from 'react'
 import { Button, Modal, Table, Typography } from 'antd'
-import AxiosController from '../../utils/axios.controller'
 import { PlusOutlined } from '@ant-design/icons'
 import useMsgApi from '../../hooks/useMsgApi'
 import { getColumns } from './controller'
-import { AxiosError } from 'axios'
 import CustomForm from '../Form'
 import './style.css'
 
 interface UsersProps {}
 
-const axios = new AxiosController()
-
 // eslint-disable-next-line no-empty-pattern
 const Users = ({}: UsersProps) => {
   const [open, setOpen] = useState(false)
-  const [data, setData] = useState<UserData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [shouldGetUsers, setShouldGetUsers] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
+  const { users, updateUsers } = useContext(UserDataContext)
+  const [shouldGetUsers, setShouldGetUsers] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [formProp, setFormProp] = useState<FormPropType>({
-    shouldSubmit: false,
+    enable: true,
     message: null,
     status: 'initial',
+    shouldSubmit: false,
     setFormProp: undefined,
-    enable: true,
+    handleUpdate: setShouldGetUsers
   })
   const msgApi = useMsgApi()
   const columns = getColumns()
@@ -36,18 +34,15 @@ const Users = ({}: UsersProps) => {
   useEffect(() => {
     if (!shouldGetUsers) return
 
-    axios.getUsers().then((response) => {
-      if (response instanceof AxiosError) return console.error(response.message)
-      setData(response.data.data as UserData[])
+    setIsLoading(true)
+    updateUsers().then(() => {
       setShouldGetUsers(false)
       setIsLoading(false)
     })
-  }, [shouldGetUsers])
+  }, [shouldGetUsers, updateUsers])
 
   useEffect(() => {
     if (formProp.shouldSubmit) return
-
-    // console.log('formProp', formProp)
 
     if (formProp.status === 'ok') {
       msgApi.success('Usuario creado con éxito.')
@@ -91,7 +86,7 @@ const Users = ({}: UsersProps) => {
         loading={isLoading}
         columns={columns}
         rowKey={(user) => user._id}
-        dataSource={data}
+        dataSource={users}
         className="table-users"
       />
     </>

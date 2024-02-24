@@ -1,7 +1,7 @@
 import { MessageInstance } from 'antd/es/message/interface'
 import { Empty, Flex, Space, Spin, Typography } from 'antd'
+import useStretchers from '../../hooks/useStretchers'
 import { useEffect, useState } from 'react'
-import { loadStretcherData } from './controller'
 import { useParams } from 'react-router-dom'
 import useMsgApi from '../../hooks/useMsgApi'
 import './style.css'
@@ -13,31 +13,15 @@ const Stretcher = ({}: StretcherProps) => {
   const { id } = useParams()
   const msgApi = useMsgApi()
   const [isLoading, setIsLoading] = useState(true)
-  const [shouldRender, setShouldRender] = useState(true)
-  const [stretcherData, setStretcherData] = useState<StretcherData | null>(null)
+  const stretcherData = useStretchers()?.find((stretcher) => stretcher._id === id)
 
   useEffect(() => {
-    if (!id) return
-    loadStretcherData({ id, msgApi })
-      .then((res) => {
-        console.log(res)
-        setStretcherData(res)
-      })
-      .catch((err) => {
-        console.error(err)
-        setShouldRender(false)
-      })
-      .finally(() => setIsLoading(false))
-  }, [msgApi, id])
-
-  useEffect(() => {
-    setIsLoading(true)
-    setShouldRender(true)
-  }, [id])
+    if (stretcherData) setIsLoading(false)
+  }, [stretcherData])
 
   return (
     <Spin spinning={isLoading}>
-      {shouldRender && stretcherData ? (
+      {stretcherData ? (
         <MainContent stretcherData={stretcherData} msgApi={msgApi} />
       ) : (
         <Empty />

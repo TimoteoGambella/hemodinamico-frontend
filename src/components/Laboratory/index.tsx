@@ -1,46 +1,33 @@
 import { MessageInstance } from 'antd/es/message/interface'
 import { Empty, Flex, Spin, Typography, Space, FloatButton } from 'antd'
-import { loadLabData } from './controller'
 import { useParams } from 'react-router-dom'
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import useMsgApi from '../../hooks/useMsgApi'
 import { useEffect, useState } from 'react'
+import useLabs from '../../hooks/useLabs'
 import CustomForm from '../Form'
-import './style.css'
 import Icon from '../Icon'
+import './style.css'
 
 interface LaboratoryProps {
   collapsed: boolean
 }
 
-// eslint-disable-next-line no-empty-pattern
 const Laboratory = ({ collapsed }: LaboratoryProps) => {
   const { id } = useParams()
   const msgApi = useMsgApi()
+  const [shouldRender] = useState(true)
   const [isLoading, setIsLoading] = useState(true)
-  const [shouldRender, setShouldRender] = useState(true)
-  const [labData, setLabData] = useState<LaboratoryData | null>(null)
+  const data = useLabs().find((lab) => lab._id === id)
 
   useEffect(() => {
-    if (!id) return
-    loadLabData({ id, msgApi })
-      .then((res) => setLabData(res))
-      .catch((err) => {
-        console.error(err)
-        setShouldRender(false)
-      })
-      .finally(() => setIsLoading(false))
-  }, [msgApi, id])
-
-  useEffect(() => {
-    setIsLoading(true)
-    setShouldRender(true)
-  }, [id])
+    if (data) setIsLoading(false)
+  }, [data])
 
   return (
     <Spin spinning={isLoading}>
-      {shouldRender && labData ? (
-        <MainContent data={labData} msgApi={msgApi} collapsed={collapsed} />
+      {shouldRender && data ? (
+        <MainContent data={data} msgApi={msgApi} collapsed={collapsed} />
       ) : (
         <Empty />
       )}
@@ -62,9 +49,9 @@ const MainContent = ({ data, msgApi, collapsed }: MainContentProps) => {
     message: null,
     status: 'initial',
     shouldSubmit: false,
-    setFormProp: undefined,
+    setFormProp: undefined
   })
-
+  
   const handleEnableEdit = () => {
     setFormProp({
       ...formProp,
@@ -82,7 +69,7 @@ const MainContent = ({ data, msgApi, collapsed }: MainContentProps) => {
       el.dataset.open = 'false'
     }
   }
-
+  
   useEffect(() => {
     if (labInfo) return
     setLabInfo({

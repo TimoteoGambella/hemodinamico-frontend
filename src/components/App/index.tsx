@@ -8,7 +8,9 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom'
+import useStretchers from '../../hooks/useStretchers'
 import * as Controller from './controller'
+import useLabs from '../../hooks/useLabs'
 import Laboratory from '../Laboratory'
 import Dashboard from '../Dashboard'
 import Stretcher from '../Stretcher'
@@ -31,13 +33,16 @@ const App = () => {
   const { handleLogout, renderMenuItems } = Controller
   const navigateTo = useNavigate()
   const location = useLocation()
+  const stretchers = useStretchers()
+  const labs = useLabs()
 
   useEffect(() => {
     Controller.handleUnAuth(navigateTo, setIsAuthChecked)
   }, [navigateTo])
 
   useEffect(() => {
-    Controller.getItems()
+    if (!stretchers || !labs) return
+    Controller.getItems(stretchers, labs)
       .then((items) => {
         setItems(items)
         setIsLoading(false)
@@ -45,7 +50,7 @@ const App = () => {
       .catch(() => {
         msgApi!.error('Error al cargar el menú. Inténtelo de nuevo más tarde.')
       })
-  }, [msgApi])
+  }, [msgApi, stretchers, labs])
 
   useEffect(() => {
     const handleResize = () => {

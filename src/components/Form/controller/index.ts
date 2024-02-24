@@ -10,15 +10,6 @@ export function validateInputNumber(e: React.ChangeEvent<HTMLInputElement>) {
   }
 }
 
-export async function getStretchers(): Promise<StretcherData[] | null> {
-  const res = await axios.getStretchers()
-  if (res instanceof AxiosError) {
-    console.error(res.message)
-    return null
-  }
-  return res.data.data
-}
-
 interface FormControllerProps {
   formProp: FormPropType
   execSetFormProp?: boolean

@@ -1,30 +1,28 @@
-import { AxiosError } from 'axios'
 import { getColumns } from './controller'
 import { PlusOutlined } from '@ant-design/icons'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Button, Modal, Table, Typography } from 'antd'
-import AxiosController from '../../utils/axios.controller'
+import { PatientDataContext } from '../../contexts/PatientDataProvider'
 import useMsgApi from '../../hooks/useMsgApi'
 import CustomForm from '../Form'
 import './style.css'
 
 interface PateintsProps {}
 
-const axios = new AxiosController()
-
 // eslint-disable-next-line no-empty-pattern
 const Patients = ({}: PateintsProps) => {
   const [open, setOpen] = useState(false)
-  const [data, setData] = useState<PatientData[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [shouldGetUsers, setShouldGetUsers] = useState(true)
+  const { patients: data, updatePatients } = useContext(PatientDataContext)
+  const [isLoading, setIsLoading] = useState(false)
+  const [shouldGetUsers, setShouldGetUsers] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [formProp, setFormProp] = useState<FormPropType>({
-    shouldSubmit: false,
+    enable: true,
     message: null,
     status: 'initial',
+    shouldSubmit: false,
     setFormProp: undefined,
-    enable: true,
+    handleUpdate: setShouldGetUsers
   })
   const msgApi = useMsgApi()
   const columns = getColumns()
@@ -36,18 +34,15 @@ const Patients = ({}: PateintsProps) => {
   useEffect(() => {
     if (!shouldGetUsers) return
 
-    axios.getPatients().then((response) => {
-      if (response instanceof AxiosError) return console.error(response.message)
-      setData(response.data.data as PatientData[])
-      setShouldGetUsers(false)
+    setIsLoading(true)
+    updatePatients().then(() => {
       setIsLoading(false)
+      setShouldGetUsers(false)
     })
-  }, [shouldGetUsers])
+  }, [shouldGetUsers, updatePatients])
 
   useEffect(() => {
     if (formProp.shouldSubmit) return
-
-    // console.log('formProp', formProp)
 
     if (formProp.status === 'ok') {
       msgApi.success('Paciente creado con éxito.')
@@ -92,7 +87,7 @@ const Patients = ({}: PateintsProps) => {
         columns={columns}
         rowKey={(user) => user._id}
         dataSource={data}
-        className='table-patients'
+        className="table-patients"
       />
     </>
   )
