@@ -1,10 +1,33 @@
-import { Typography, Input, Select, InputNumber, Form } from 'antd'
+import {
+  Typography,
+  Input,
+  Select,
+  InputNumber,
+  Form,
+  FormInstance,
+} from 'antd'
 import { validateInputNumber } from '../controller'
 
-const LabPatientForm = () => {
+interface LabPatientFormProps {
+  showTitle?: boolean
+  freeStretchers?: StretcherData[]
+  form?: FormInstance
+}
+
+const LabPatientForm = ({ freeStretchers, showTitle = true, form }: LabPatientFormProps) => {
+  if (freeStretchers && !form)
+    throw new Error('form prop is required when stretchers prop is present')
+  const itemProps = {
+    tooltip:
+      form?.getFieldValue(['patientId', 'stretcherId']) === 'auto'
+        ? 'Seleccione una camilla'
+        : null,
+  }
   return (
     <>
-      <Typography.Title level={4}>INFORMACIÓN DEL PACIENTE</Typography.Title>
+      {showTitle && (
+        <Typography.Title level={4}>INFORMACIÓN DEL PACIENTE</Typography.Title>
+      )}
       <Form.Item
         name={['patientId', 'fullname']}
         label="Nombre completo"
@@ -119,6 +142,27 @@ const LabPatientForm = () => {
           <Select.Option value="O-">O-</Select.Option>
         </Select>
       </Form.Item>
+
+      {freeStretchers && (
+        <Form.Item
+          name={['patientId', 'stretcherId']}
+          label="Camilla"
+          {...itemProps}
+        >
+          <Select>
+            <Select.Option value="">Ninguno</Select.Option>
+            <Select.Option value="auto">Automático</Select.Option>
+            {freeStretchers.map((stretcher) => {
+              if (stretcher.patientId) return null
+              return (
+                <Select.Option value={stretcher._id} key={stretcher._id}>
+                  {stretcher.label ?? stretcher._id}
+                </Select.Option>
+              )
+            })}
+          </Select>
+        </Form.Item>
+      )}
     </>
   )
 }

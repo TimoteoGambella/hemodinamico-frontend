@@ -25,7 +25,7 @@ const Patients = ({}: PateintsProps) => {
     handleUpdate: setShouldGetUsers
   })
   const msgApi = useMsgApi()
-  const columns = getColumns()
+  const columns = getColumns({ setShouldGetUsers })
 
   const handleOk = () => {
     setFormProp({ ...formProp, shouldSubmit: true, setFormProp })

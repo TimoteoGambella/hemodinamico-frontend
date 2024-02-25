@@ -1,7 +1,11 @@
-import { Space, TableProps } from 'antd'
-import { Link } from 'react-router-dom'
+import { TableProps } from 'antd'
+import ActionRender from './ActionRender'
 
-export function getColumns(): TableProps<PatientData>['columns'] {
+interface GetColumnsProps {
+  setShouldGetUsers: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+export function getColumns({ setShouldGetUsers }: GetColumnsProps): TableProps<PatientData>['columns'] {
   return [
     {
       title: 'DNI',
@@ -40,23 +44,10 @@ export function getColumns(): TableProps<PatientData>['columns'] {
     {
       title: 'Acciones',
       key: 'action',
-      width: 250,
+      width: 265,
       render: (_, data) => {
         return (
-          <Space size="middle">
-            {data.stretcherId ? (
-              <Link to={`/camilla/${data.stretcherId}`}>Ver camilla</Link>
-            ) : (
-              <a onClick={() => console.log('click')}>Asignar camilla</a>
-            )}
-            {data.laboratoryId ? (
-              <Link to={`/laboratorio/${data.laboratoryId}`}>
-                Ver laboratorio
-              </Link>
-            ) : (
-              <a onClick={() => console.log('click')}>Asignar a laboratorio</a>
-            )}
-          </Space>
+          <ActionRender data={data._id} setShouldGetUsers={setShouldGetUsers} />
         )
       },
     },

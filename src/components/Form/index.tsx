@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { FormController, validateInputNumber } from './controller'
-import { Button, Divider, Empty, Form, Input, InputNumber, Select } from 'antd'
+import { FormController } from './controller'
+import { Button, Divider, Empty, Form, Input } from 'antd'
 import LabPatientForm from './items/LabPatientForm'
 import HemotologyForm from './items/HematologyForm'
 import LiverProfileForm from './items/LiverProfileForm'
@@ -16,7 +16,7 @@ import './style.css'
 
 interface FormProps {
   formProp: FormPropType
-  data?: LaboratoryData
+  data?: LaboratoryData | PatientData
 }
 
 export default function CustomForm(children: React.ReactNode) {
@@ -136,10 +136,8 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
 
 CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
   const [form] = Form.useForm<PatientData>()
-  const [selectedStretcher, setSelectedStretcher] = useState('1')
-  const stretchers = useStretchers()
-  const { onFinish, onFinishFailed } = FormController(
-    {
+  const freeStretchers = useStretchers()?.filter((stretcher) => !stretcher.patientId)
+  const { onFinish, onFinishFailed } = FormController({
       formType: 'patient',
       formProp,
     },
@@ -148,13 +146,12 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
       formProp.handleUpdate?.(true)
     }
   )
-  const tooltipProp =
-    selectedStretcher === '1'
-      ? {
-          tooltip:
-            'El valor automático le asigna una camilla disponible al paciente o creará una.',
-        }
-      : {}
+
+  const handleSubmit = (values: unknown) => {
+    const patient = (values as { patientId: PatientData }).patientId
+    patient.stretcherId = patient.stretcherId || null
+    onFinish(patient)
+  }
 
   useEffect(() => {
     if (formProp.shouldSubmit && formProp.status === 'initial') {
@@ -168,129 +165,88 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
       {...formItemLayout}
       form={form}
       name="patientForm"
-      onFinish={onFinish}
+      onFinish={handleSubmit}
       onFinishFailed={onFinishFailed}
       className="form-component"
       initialValues={{
-        stretcherId: 'auto',
+        patientId: {
+          stretcherId: '',
+        }
       }}
       scrollToFirstError
     >
-      <Form.Item
-        name="fullname"
-        label="Nombre completo"
-        rules={[
-          {
-            required: true,
-            message: 'Por favor ingrese el nombre del paciente',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item
-        name="dni"
-        label="DNI"
-        rules={[
-          {
-            required: true,
-            message: 'Por favor ingrese el DNI del paciente',
-          },
-          () => ({
-            validator(_rule, value) {
-              if (!value) return Promise.reject()
-              if (value && value.toString().length === 8) {
-                return Promise.resolve()
-              } else {
-                return Promise.reject('El DNI debe tener 8 dígitos')
-              }
-            },
-          }),
-        ]}
-      >
-        <Input maxLength={8} onInput={validateInputNumber} />
-      </Form.Item>
+      <LabPatientForm
+        showTitle={false}
+        freeStretchers={freeStretchers}
+        form={form}
+      />
+    </Form>
+  )
+}
 
-      <Form.Item
-        name="gender"
-        label="Sexo"
-        rules={[
-          {
-            required: true,
-            message: 'Por favor seleccione el sexo del paciente',
-          },
-        ]}
-      >
-        <Select placeholder="Seleccionar">
-          <Select.Option value="M">Masculino</Select.Option>
-          <Select.Option value="F">Femenino</Select.Option>
-        </Select>
-      </Form.Item>
+CustomForm.EditPatient = function PatientForm({ formProp, data }: FormProps) {
+  const msgApi = useMsgApi()
+  const [form] = Form.useForm<PatientData>()
+  const patientData = { ...data as PatientData }
+  const stretchers = useStretchers()
+  const freeStretchers = stretchers?.filter((stretcher) => !stretcher.patientId) ?? []
+  const { onFinish, onFinishFailed } = FormController(
+    {
+      formType: 'update-patient',
+      formProp,
+    },
+    () => formProp.handleUpdate?.(true)
+  )
+  if (!patientData.stretcherId) {
+    patientData.stretcherId = ''
+  } else {
+    const label = stretchers?.find((stretcher) => stretcher._id === patientData.stretcherId)?.label
+    if (label) patientData.stretcherId = label
+  }
 
-      <Form.Item
-        name="age"
-        label="Edad"
-        rules={[
-          {
-            required: true,
-            message: 'Por favor ingrese la edad del paciente',
-          },
-        ]}
-      >
-        <Input maxLength={3} onInput={validateInputNumber} />
-      </Form.Item>
+  const handleSubmit = (values: unknown) => {
+    const patient = (values as { patientId: PatientData }).patientId
+    patient.stretcherId = patient.stretcherId || null
+    patient._id = data!._id
+    onFinish(patient)
+  }
 
-      <Form.Item
-        name="height"
-        label="Talla (cm)"
-        rules={[
-          {
-            required: true,
-            type: 'number',
-            message: 'Por favor ingrese la talla del paciente',
-          },
-        ]}
-      >
-        <InputNumber step={0.1} />
-      </Form.Item>
+  useEffect(() => {
+    if (formProp.shouldSubmit && formProp.status === 'initial') {
+      console.log('submitting form')
+      form.submit()
+    }
+  }, [formProp, form])
 
-      <Form.Item
-        name="weight"
-        label="Peso (kg)"
-        rules={[
-          {
-            required: true,
-            type: 'number',
-            message: 'Por favor ingrese el peso del paciente',
-          },
-        ]}
-      >
-        <InputNumber step={0.1} />
-      </Form.Item>
+  useEffect(() => {
+    if (formProp.shouldSubmit) return
 
-      <Form.Item
-        name="stretcherId"
-        label="Camilla"
-        {...tooltipProp}
-        rules={[
-          {
-            required: true,
-            message: 'Por favor selecione una camilla para el paciente',
-          },
-        ]}
-      >
-        <Select onChange={(e) => setSelectedStretcher(e)}>
-          <Select.Option value="auto">Automático</Select.Option>
-          {stretchers!.map((stretcher) => {
-            if (stretcher.patientId) return null
-            return (
-              <Select.Option value={stretcher._id} key={stretcher._id}>
-                {stretcher.label ?? stretcher._id}
-              </Select.Option>
-            )
-          })}
-        </Select>
-      </Form.Item>
+    if (formProp.status === 'ok') {
+      msgApi.success('Paciente editado con éxito.')
+      formProp.setFormProp!({ ...formProp, status: 'initial', message: null })
+    } else if (formProp.status === 'form-error') {
+      msgApi.warning(formProp.message)
+      formProp.setFormProp!({ ...formProp, status: 'initial', message: null })
+    } else if (formProp.status === 'server-error') {
+      msgApi.error(formProp.message)
+      formProp.setFormProp!({ ...formProp, status: 'initial', message: null })
+    }
+  }, [formProp, msgApi])
+
+  return (
+    <Form
+      {...formItemLayout}
+      form={form}
+      name={data?._id}
+      onFinish={handleSubmit}
+      onFinishFailed={onFinishFailed}
+      className="form-component"
+      initialValues={{
+        patientId: patientData,
+      }}
+      scrollToFirstError
+    >
+      <LabPatientForm showTitle={false} freeStretchers={freeStretchers} form={form} />
     </Form>
   )
 }
@@ -327,7 +283,7 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
     lab._id = data!._id
 
     const patient = values.patientId as PatientData
-    patient._id = (data!.patientId as PatientData)._id
+    patient._id = ((data as { patientId: PatientData }).patientId)._id
 
     setIsLoading(true)
     onFinishLab(lab as LaboratoryData)
