@@ -1,8 +1,9 @@
-import { Space, Modal } from 'antd'
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import useMsgApi from '../../../hooks/useMsgApi'
+import { StretcherDataContext } from '../../../contexts/StretcherDataProvider'
+import { useState, useEffect, useContext } from 'react'
 import usePatients from '../../../hooks/usePatients'
+import useMsgApi from '../../../hooks/useMsgApi'
+import { Link } from 'react-router-dom'
+import { Space, Modal } from 'antd'
 import CustomForm from '../../Form'
 
 interface ActionRenderProps {
@@ -15,13 +16,16 @@ const ActionRender = ({ data, setShouldGetUsers }: ActionRenderProps) => {
   const [isCancel, setIsCancel] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isDisabled, setIsDisabled] = useState(true)
+  const [shouldUpdate, setShouldUpdate] = useState(false)
+  const { updateStretchers } = useContext(StretcherDataContext)
   const patient = usePatients().find((p) => p._id === data)
   const [formProp, setFormProp] = useState<FormPropType>({
-    shouldSubmit: false,
+    enable: true,
     message: null,
     status: 'initial',
+    shouldSubmit: false,
     setFormProp: undefined,
-    enable: true,
+    handleUpdate: setShouldUpdate
   })
   const msgApi = useMsgApi()
 
@@ -41,6 +45,11 @@ const ActionRender = ({ data, setShouldGetUsers }: ActionRenderProps) => {
       setIsLoading(true)
     }
   }, [formProp, msgApi, setShouldGetUsers])
+
+  useEffect(() => {
+    if (!shouldUpdate) return
+    updateStretchers()
+  }, [shouldUpdate, updateStretchers])
 
   if (!patient) return null
 
