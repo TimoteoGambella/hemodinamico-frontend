@@ -1,18 +1,20 @@
-import { Space, Modal } from "antd"
-import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
-import useMsgApi from "../../../hooks/useMsgApi"
-import usePatients from "../../../hooks/usePatients"
-import CustomForm from "../../Form"
+import { Space, Modal } from 'antd'
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import useMsgApi from '../../../hooks/useMsgApi'
+import usePatients from '../../../hooks/usePatients'
+import CustomForm from '../../Form'
 
 interface ActionRenderProps {
-  data: PatientData["_id"]
+  data: PatientData['_id']
   setShouldGetUsers: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ActionRender = ({ data, setShouldGetUsers }: ActionRenderProps) => {
-  const [open, setOpen] = useState(false)
+  const [IsOpen, setIsOpen] = useState(false)
+  const [isCancel, setIsCancel] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(true)
   const patient = usePatients().find((p) => p._id === data)
   const [formProp, setFormProp] = useState<FormPropType>({
     shouldSubmit: false,
@@ -33,34 +35,49 @@ const ActionRender = ({ data, setShouldGetUsers }: ActionRenderProps) => {
     if (formProp.status === 'ok') {
       setIsLoading(false)
       setShouldGetUsers(true)
-      setOpen(false)
+      setIsOpen(false)
       setFormProp({ ...formProp, status: 'initial', message: null })
     } else if (formProp.status === 'loading') {
       setIsLoading(true)
     }
   }, [formProp, msgApi, setShouldGetUsers])
- 
 
   if (!patient) return null
 
   return (
     <Space size="middle">
-      <a onClick={() => setOpen(true)}>Editar</a>
+      <a onClick={() => setIsOpen(true)}>Editar</a>
       {patient.laboratoryId ? (
-        <Link to={`/laboratorio/${patient.laboratoryId}`}>
-          Ver laboratorio
-        </Link>
+        <Link to={`/laboratorio/${patient.laboratoryId}`}>Ver laboratorio</Link>
       ) : (
         <a onClick={() => console.log('click')}>Asignar laboratorio</a>
       )}
       <Modal
         title="Editar paciente"
-        open={open}
+        open={IsOpen}
         onOk={handleOk}
         confirmLoading={isLoading}
-        onCancel={() => setOpen(false)}
+        onCancel={() => {
+          setIsCancel(true)
+          setIsOpen(false)
+        }}
+        okButtonProps={{ disabled: isDisabled }}
       >
-        {patient && <CustomForm.EditPatient formProp={formProp} data={patient} />}
+        {patient && (
+          <CustomForm.EditPatient
+            formProp={formProp}
+            data={patient}
+            onFieldsChange={() => setIsDisabled(false)}
+            onCancel={
+              isCancel
+                ? () => {
+                    setIsCancel(false)
+                    setIsDisabled(true)
+                  }
+                : undefined
+            }
+          />
+        )}
       </Modal>
     </Space>
   )

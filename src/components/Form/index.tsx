@@ -17,6 +17,8 @@ import './style.css'
 interface FormProps {
   formProp: FormPropType
   data?: LaboratoryData | PatientData
+  onFieldsChange?: () => void
+  onCancel?: () => void
 }
 
 export default function CustomForm(children: React.ReactNode) {
@@ -184,7 +186,8 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
   )
 }
 
-CustomForm.EditPatient = function PatientForm({ formProp, data }: FormProps) {
+CustomForm.EditPatient = function PatientForm(props: FormProps) {
+  const { formProp, data, onFieldsChange, onCancel } = props
   const msgApi = useMsgApi()
   const [form] = Form.useForm<PatientData>()
   const patientData = { ...data as PatientData }
@@ -197,16 +200,19 @@ CustomForm.EditPatient = function PatientForm({ formProp, data }: FormProps) {
     },
     () => formProp.handleUpdate?.(true)
   )
+  let label: string | undefined | null
   if (!patientData.stretcherId) {
     patientData.stretcherId = ''
   } else {
-    const label = stretchers?.find((stretcher) => stretcher._id === patientData.stretcherId)?.label
+    label = stretchers?.find((stretcher) => stretcher._id === patientData.stretcherId)?.label
     if (label) patientData.stretcherId = label
   }
 
   const handleSubmit = (values: unknown) => {
     const patient = (values as { patientId: PatientData }).patientId
     patient.stretcherId = patient.stretcherId || null
+    if (patient.stretcherId === label)
+      patient.stretcherId = (data as PatientData).stretcherId
     patient._id = data!._id
     onFinish(patient)
   }
@@ -233,6 +239,13 @@ CustomForm.EditPatient = function PatientForm({ formProp, data }: FormProps) {
     }
   }, [formProp, msgApi])
 
+  useEffect(() => {
+    if(onCancel) {
+      form.resetFields()
+      onCancel()
+    }
+  }, [onCancel, form])
+
   return (
     <Form
       {...formItemLayout}
@@ -243,6 +256,9 @@ CustomForm.EditPatient = function PatientForm({ formProp, data }: FormProps) {
       className="form-component"
       initialValues={{
         patientId: patientData,
+      }}
+      onFieldsChange={() => {
+        if (onFieldsChange) onFieldsChange()
       }}
       scrollToFirstError
     >

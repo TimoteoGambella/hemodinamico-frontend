@@ -71,7 +71,6 @@ export default class AxiosController {
   }
 
   async createPatient(body: PatientData): Promise<AxiosError | AxiosResponse> {
-    if (body.stretcherId === 'auto') delete body.stretcherId
     return await this.request({
       url: '/patient/create',
       method: 'POST',
