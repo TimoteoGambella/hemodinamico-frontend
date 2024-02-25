@@ -23,13 +23,18 @@ const LaboratoryDataProvider = ({ children }: { children: React.ReactNode }) => 
     if (res instanceof AxiosError) {
       console.error(res)
       msgApi.error('No se pudo obtener la información de los laboratorios.')
+      throw res
     } else {
       setLabs(res.data.data)
     }
   }, [msgApi])
 
   const updateLabs = useCallback(async () => {
-    await fetchData()
+    try {
+      await fetchData()
+    } catch (error) {
+      return Promise.reject(error)
+    }
   }, [fetchData])
 
   useEffect(() => {

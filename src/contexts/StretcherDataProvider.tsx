@@ -23,13 +23,18 @@ const StretcherDataProvider = ({ children }: { children: React.ReactNode }) => {
     if (res instanceof AxiosError) {
       console.error(res)
       msgApi.error('No se pudo obtener la información de las camas.')
+      throw res
     } else {
       setStretchers(res.data.data)
     }
   }, [msgApi])
 
   const updateStretchers = useCallback(async () => {
-    await fetchData()
+    try {
+      await fetchData()
+    } catch (error) {
+      return Promise.reject(error)
+    }
   }, [fetchData])
 
   useEffect(() => {

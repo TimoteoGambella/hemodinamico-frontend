@@ -23,13 +23,18 @@ const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
     if (res instanceof AxiosError) {
       console.error(res)
       msgApi.error('No se pudo obtener la información de los usuarios.')
+      throw res
     } else {
       setUser(res.data.data)
     }
   }, [msgApi])
 
   const updateUsers = useCallback(async () => {
-    await fetchData()
+    try {
+      await fetchData()
+    } catch (error) {
+      return Promise.reject(error)
+    }
   }, [fetchData])
 
   useEffect(() => {

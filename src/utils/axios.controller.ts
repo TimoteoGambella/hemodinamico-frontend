@@ -114,6 +114,14 @@ export default class AxiosController {
     })
   }
 
+  async createLab(body: { patientId: string }): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: '/laboratory/create',
+      method: 'POST',
+      data: body
+    })
+  }
+
   async updateLab(id: string, body: LaboratoryData): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: `/laboratory/update/${id}`,
