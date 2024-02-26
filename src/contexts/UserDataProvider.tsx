@@ -10,12 +10,12 @@ interface IUserDataContext {
   updateUsers: () => Promise<void>
 }
 
-const UserDataContext = createContext<IUserDataContext>({
+export const UserDataContext = createContext<IUserDataContext>({
   users: [],
   updateUsers: async () => {},
 })
 
-const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
+export const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
   const msgApi = useMsgApi()
   const [users, setUser] = useState<UserData[]>([])
   const fetchData = useCallback(async () => {
@@ -47,6 +47,3 @@ const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
     </UserDataContext.Provider>
   )
 }
-
-export { UserDataContext }
-export default UserDataProvider

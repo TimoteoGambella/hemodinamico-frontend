@@ -10,12 +10,12 @@ interface IStretcherDataContext {
   updateStretchers: () => Promise<void>
 }
 
-const StretcherDataContext = createContext<IStretcherDataContext>({
+export const StretcherDataContext = createContext<IStretcherDataContext>({
   stretchers: null,
   updateStretchers: async () => {},
 })
 
-const StretcherDataProvider = ({ children }: { children: React.ReactNode }) => {
+export const StretcherDataProvider = ({ children }: { children: React.ReactNode }) => {
   const msgApi = useMsgApi()
   const [stretchers, setStretchers] = useState<StretcherData[] | null>(null)
   const fetchData = useCallback(async () => {
@@ -47,6 +47,3 @@ const StretcherDataProvider = ({ children }: { children: React.ReactNode }) => {
     </StretcherDataContext.Provider>
   )
 }
-
-export { StretcherDataContext }
-export default StretcherDataProvider

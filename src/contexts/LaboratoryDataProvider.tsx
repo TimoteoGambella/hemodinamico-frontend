@@ -10,12 +10,12 @@ interface ILaboratoryDataContext {
   updateLabs: () => Promise<void>
 }
 
-const LaboratoryDataContext = createContext<ILaboratoryDataContext>({
+export const LaboratoryDataContext = createContext<ILaboratoryDataContext>({
   labs: [],
   updateLabs: async () => {},
 })
 
-const LaboratoryDataProvider = ({ children }: { children: React.ReactNode }) => {
+export const LaboratoryDataProvider = ({ children }: { children: React.ReactNode }) => {
   const msgApi = useMsgApi()
   const [labs, setLabs] = useState<LaboratoryData[]>([])
   const fetchData = useCallback(async () => {
@@ -47,6 +47,3 @@ const LaboratoryDataProvider = ({ children }: { children: React.ReactNode }) => 
     </LaboratoryDataContext.Provider>
   )
 }
-
-export { LaboratoryDataContext }
-export default LaboratoryDataProvider

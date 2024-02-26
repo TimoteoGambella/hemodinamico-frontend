@@ -10,12 +10,12 @@ interface IPatientDataContext {
   updatePatients: () => Promise<void>
 }
 
-const PatientDataContext = createContext<IPatientDataContext>({
+export const PatientDataContext = createContext<IPatientDataContext>({
   patients: [],
   updatePatients: async () => {},
 })
 
-const PatientDataProvider = ({ children }: { children: React.ReactNode }) => {
+export const PatientDataProvider = ({ children }: { children: React.ReactNode }) => {
   const msgApi = useMsgApi()
   const [patients, setStretchers] = useState<PatientData[]>([])
   const fetchData = useCallback(async () => {
@@ -47,6 +47,3 @@ const PatientDataProvider = ({ children }: { children: React.ReactNode }) => {
     </PatientDataContext.Provider>
   )
 }
-
-export { PatientDataContext }
-export default PatientDataProvider
