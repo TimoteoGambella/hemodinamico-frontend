@@ -1,17 +1,19 @@
+import { ILoginStatusContext } from '../../../contexts/LoginStatusProvider'
 import { MessageInstance } from 'antd/es/message/interface'
 import AxiosController from '../../../utils/axios.controller'
 import { AxiosError } from 'axios'
 
 interface handleSubmitProps {
   setIsLoading: (value: boolean) => void
-  msgApi: MessageInstance
   navigateTo: (path: string) => void
+  loginProvider: ILoginStatusContext
+  msgApi: MessageInstance
 }
 
 const axios = new AxiosController()
 
 export const handleSubmit =
-  ({ setIsLoading, msgApi, navigateTo }: handleSubmitProps) =>
+  ({ setIsLoading, msgApi, navigateTo, loginProvider }: handleSubmitProps) =>
   async (values: FormLogin) => {
     setIsLoading(true)
     const res = await axios.login(values)
@@ -40,6 +42,8 @@ export const handleSubmit =
         content: 'Inicio de sesión exitoso',
       })
       console.log(res)
-      setTimeout(() => navigateTo('/dashboard'), 1200)
+      setTimeout(() => {
+        loginProvider.updateIsLogged().then(() => navigateTo('/dashboard'))
+      }, 1200)
     }
   }

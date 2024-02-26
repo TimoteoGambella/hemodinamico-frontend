@@ -8,6 +8,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom'
+import useLoginStatus from '../../hooks/useLoginStatus'
 import useStretchers from '../../hooks/useStretchers'
 import * as Controller from './controller'
 import useLabs from '../../hooks/useLabs'
@@ -25,20 +26,16 @@ const App = () => {
   const [collapsed, setCollapsed] = useState(
     window.document.body.clientWidth <= 768
   )
-  const [isAuthChecked, setIsAuthChecked] = useState(false)
   const { msgApi, contextHolder } = useContext(MsgApiContext)
   const [defaultSelectedKey, setDefaultSelectedKey] = useState(['dashboard'])
+  const { handleLogout, renderMenuItems } = Controller
   const [items, setItems] = useState<MenuItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const { handleLogout, renderMenuItems } = Controller
+  const stretchers = useStretchers()
+  const isLogged = useLoginStatus()
   const navigateTo = useNavigate()
   const location = useLocation()
-  const stretchers = useStretchers()
   const labs = useLabs()
-
-  useEffect(() => {
-    Controller.handleUnAuth(navigateTo, setIsAuthChecked)
-  }, [navigateTo])
 
   useEffect(() => {
     if (!stretchers || !labs) return
@@ -69,9 +66,7 @@ const App = () => {
     Controller.selectDefaultController(location.pathname, setDefaultSelectedKey)
   }, [location])
 
-  if (!isAuthChecked) {
-    return null
-  }
+  if(!isLogged) return null
 
   return (
     <>

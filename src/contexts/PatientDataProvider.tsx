@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios'
 import { createContext, useCallback, useEffect, useState } from 'react'
 import AxiosController from '../utils/axios.controller'
+import useLoginStatus from '../hooks/useLoginStatus'
 import useMsgApi from '../hooks/useMsgApi'
 
 const axios = new AxiosController()
@@ -17,8 +18,10 @@ export const PatientDataContext = createContext<IPatientDataContext>({
 
 export const PatientDataProvider = ({ children }: { children: React.ReactNode }) => {
   const msgApi = useMsgApi()
+  const isLogged = useLoginStatus()
   const [patients, setStretchers] = useState<PatientData[]>([])
   const fetchData = useCallback(async () => {
+    if (!isLogged) return
     const res = await axios.getPatients()
     if (res instanceof AxiosError) {
       console.error(res)
@@ -27,7 +30,7 @@ export const PatientDataProvider = ({ children }: { children: React.ReactNode })
     } else {
       setStretchers(res.data.data)
     }
-  }, [msgApi])
+  }, [msgApi, isLogged])
 
   const updatePatients = useCallback(async () => {
     try {

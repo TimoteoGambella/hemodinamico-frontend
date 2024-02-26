@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios'
 import { createContext, useCallback, useEffect, useState } from 'react'
 import AxiosController from '../utils/axios.controller'
+import useLoginStatus from '../hooks/useLoginStatus'
 import useMsgApi from '../hooks/useMsgApi'
 
 const axios = new AxiosController()
@@ -17,8 +18,10 @@ export const UserDataContext = createContext<IUserDataContext>({
 
 export const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
   const msgApi = useMsgApi()
+  const isLogged = useLoginStatus()
   const [users, setUser] = useState<UserData[]>([])
   const fetchData = useCallback(async () => {
+    if (!isLogged) return
     const res = await axios.getUsers()
     if (res instanceof AxiosError) {
       console.error(res)
@@ -27,7 +30,7 @@ export const UserDataProvider = ({ children }: { children: React.ReactNode }) =>
     } else {
       setUser(res.data.data)
     }
-  }, [msgApi])
+  }, [msgApi, isLogged])
 
   const updateUsers = useCallback(async () => {
     try {

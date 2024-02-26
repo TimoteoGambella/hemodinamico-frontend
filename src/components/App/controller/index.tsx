@@ -54,13 +54,6 @@ export function renderMenuItems(item: MenuItem, previousKey?: string): MenuItem 
   }
 }
 
-export async function handleUnAuth(navigateTo: NavigateFunction, setIsAuthChecked: (value: boolean) => void) {
-  axios.checkAuth().then((isAuth) => {
-    if (!isAuth) navigateTo('/login')
-    setIsAuthChecked(true)
-  })
-}
-
 export async function handleLogout(msgApi: MessageInstance, navigateTo: NavigateFunction) {
   const res = await axios.logout()
   if (res instanceof AxiosError) {

@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios'
 import { createContext, useCallback, useEffect, useState } from 'react'
 import AxiosController from '../utils/axios.controller'
+import useLoginStatus from '../hooks/useLoginStatus'
 import useMsgApi from '../hooks/useMsgApi'
 
 const axios = new AxiosController()
@@ -17,8 +18,10 @@ export const StretcherDataContext = createContext<IStretcherDataContext>({
 
 export const StretcherDataProvider = ({ children }: { children: React.ReactNode }) => {
   const msgApi = useMsgApi()
+  const isLogged = useLoginStatus()
   const [stretchers, setStretchers] = useState<StretcherData[] | null>(null)
   const fetchData = useCallback(async () => {
+    if (!isLogged) return
     const res = await axios.getStretchers(true)
     if (res instanceof AxiosError) {
       console.error(res)
@@ -27,7 +30,7 @@ export const StretcherDataProvider = ({ children }: { children: React.ReactNode 
     } else {
       setStretchers(res.data.data)
     }
-  }, [msgApi])
+  }, [msgApi, isLogged])
 
   const updateStretchers = useCallback(async () => {
     try {

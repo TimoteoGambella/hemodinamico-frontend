@@ -1,23 +1,20 @@
 import { Button, Col, Form, Input, Row, Typography, message } from 'antd'
+import { LoginStatusContext } from '../../contexts/LoginStatusProvider'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
-import AxiosController from '../../utils/axios.controller'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { handleSubmit } from './controller'
-import { useEffect, useState } from 'react'
 import './style.css'
 
-const axios = new AxiosController()
-
 const Login = (): React.ReactElement => {
-  const [msgApi, contextHolder] = message.useMessage()
   const [isLoading, setIsLoading] = useState(false)
+  const [msgApi, contextHolder] = message.useMessage()
+  const loginProvider = useContext(LoginStatusContext)
   const navigateTo = useNavigate()
 
   useEffect(() => {
-    axios.checkAuth().then((isAuth) => {
-      if (isAuth) navigateTo('/dashboard')
-    })
-  }, [navigateTo])
+    if (loginProvider.isLogged) navigateTo('/dashboard')
+  }, [navigateTo, loginProvider])
 
   return (
     <>
@@ -29,7 +26,12 @@ const Login = (): React.ReactElement => {
             name="normal_login"
             className="login-form"
             initialValues={{ remember: true }}
-            onFinish={handleSubmit({ setIsLoading, msgApi, navigateTo })}
+            onFinish={handleSubmit({
+              setIsLoading,
+              msgApi,
+              navigateTo,
+              loginProvider,
+            })}
           >
             <Typography.Title level={2}>Iniciar Sesión</Typography.Title>
             <Form.Item
