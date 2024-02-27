@@ -70,6 +70,7 @@ const Patients = ({}: PateintsProps) => {
         shape="round"
         icon={<PlusOutlined />}
         size="large"
+        className='add-user-button'
         onClick={() => setOpen(true)}
       />
       <Modal

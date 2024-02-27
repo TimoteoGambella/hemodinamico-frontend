@@ -1,4 +1,4 @@
-.ant-space.patient-container {
+.ant-space.form-space-content {
   width: 100%;
   max-width: 1000px;
   flex-direction: column;
@@ -7,7 +7,7 @@
   padding: 10px;
   box-shadow: 3px 4px 20px 0px #00000059;
 }
-.ant-space.patient-container .ant-space-item {
+.ant-space.form-space-content .ant-space-item {
   width: inherit;
   & .ant-row {
     justify-content: space-evenly;

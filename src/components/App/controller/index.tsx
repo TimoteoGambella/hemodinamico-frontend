@@ -85,7 +85,7 @@ export async function getItems(reqStretchers: StretcherData[], reqLabs: Laborato
       getItem('Dashboard', 'dashboard', <PieChartOutlined />),
       getItem('Usuarios', 'usuarios', <TeamOutlined />),
       getItem('Pacientes', 'pacientes', <TeamOutlined />),
-      getItem('Laboratorio', 'laboratorio', <Icon.FlaskIcon />, laboratories),
+      getItem('Laboratorio', 'laboratorio', <Icon.Flask />, laboratories),
       getItem('Camas', 'cama', <AppstoreOutlined />, stretchers),
     ])
   })

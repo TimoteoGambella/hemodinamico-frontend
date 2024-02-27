@@ -1,0 +1,9 @@
+.header-content {
+  justify-content: center;
+  align-items: center;
+  margin-bottom: .7rem;
+  gap: 8px;
+  & .header-title {
+    margin-bottom: 0;
+  }
+}

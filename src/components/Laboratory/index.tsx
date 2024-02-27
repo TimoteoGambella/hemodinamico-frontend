@@ -112,14 +112,14 @@ const MainContent = ({ data, msgApi, collapsed }: MainContentProps) => {
         trigger="click"
         className="float-btn-lab-form"
         onOpenChange={handleOpen}
-        icon={<Icon.SyncIcon />}
+        icon={<Icon.Sync />}
         style={!collapsed ? { left: 220 } : { left: 100 }}
       >
         <FloatButton onClick={handleEnableEdit} icon={<EditOutlined />} />
         <FloatButton icon={<DeleteOutlined />} />
       </FloatButton.Group>
       <Flex justify="center" gap={10} wrap="wrap">
-        <Space className="patient-container">
+        <Space className="form-space-content">
           <CustomForm.Laboratory
             formProp={formProp}
             data={labInfo!}

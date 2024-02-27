@@ -24,8 +24,7 @@
   min-width: 200px;
   transition: all 0.5s;
 }
-.ant-typography {
-  text-align: center;
+.ant-form.login-form .ant-typography {
   margin-bottom: 2rem !important;
 }
 .ant-form.login-form {

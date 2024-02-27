@@ -2,7 +2,8 @@
   padding-right: 2rem;
   padding-top: .5rem;
 }
-#labForm.ant-form.form-component {
+#labForm.ant-form.form-component,
+#stretcherForm.ant-form.form-component {
   min-width: 410px;
   padding-right: 0;
   & .submit-container {
@@ -34,7 +35,7 @@
     min-width: unset;
     padding-right: 0;
   }
-  .ant-space.patient-container {
+  .ant-space.form-space-content {
     width: 100%;
     & .ant-space-item {
       width: inherit;

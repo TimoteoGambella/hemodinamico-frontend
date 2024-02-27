@@ -20,7 +20,7 @@ const LabPatientForm = ({ freeStretchers, showTitle = true, form }: LabPatientFo
   const itemProps = {
     tooltip:
       form?.getFieldValue(['patientId', 'stretcherId']) === 'auto'
-        ? 'Seleccione una camilla'
+        ? 'El valor automático le asigna una camilla disponible al paciente o creará una.'
         : null,
   }
   return (

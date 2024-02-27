@@ -6,7 +6,7 @@ import Sync from './assets/Sync'
 
 type CustomIconComponentProps = GetProps<typeof AntIcon>
 
-Icon.CloseSessionIcon = (props: CustomIconComponentProps) => (
+Icon.CloseSession = (props: CustomIconComponentProps) => (
   <AntIcon
     component={() => (
       <CloseSession
@@ -19,7 +19,7 @@ Icon.CloseSessionIcon = (props: CustomIconComponentProps) => (
   />
 )
 
-Icon.FlaskIcon = (props: CustomIconComponentProps) => (
+Icon.Flask = (props: CustomIconComponentProps) => (
   <AntIcon
     component={() => (
       <Flask
@@ -32,7 +32,7 @@ Icon.FlaskIcon = (props: CustomIconComponentProps) => (
   />
 )
 
-Icon.SyncIcon = (props: CustomIconComponentProps) => (
+Icon.Sync = (props: CustomIconComponentProps) => (
   <AntIcon
     component={() => (
       <Sync

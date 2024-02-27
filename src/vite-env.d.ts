@@ -44,7 +44,6 @@ interface GasometricSamples {
     sat: number | null
     pC02: number | null
     lactato: number | null
-    delta: number | null
   }
 }
 
@@ -61,12 +60,51 @@ interface IndirectFick {
   indice: number | null
 }
 
+interface ArteryCatheter {
+  presion: {
+    AD: number | null
+    capilar: number | null
+    mediaSistemica: number | null
+  }
+  PAP: {
+    sistolica: number | null
+    diastolica: number | null
+  }
+  gasto: number | null
+}
+
+interface AID {
+  types: ('ecmo' | 'balon')[] | null
+  selected: 'ecmo' | 'balon' | null
+}
+
+type DrugNames =
+  | 'noradrenalina'
+  | 'vasopresina'
+  | 'adrenalina'
+  | 'dobutamina'
+  | 'dopamina'
+  | 'levosimendan'
+  | 'nitroglicerina'
+  | 'nitroprusiato'
+
+interface Supplied {
+  drogas: {
+    name: DrugNames
+    dose: number | null
+  }[]
+}
+
 type StretcherData = {
   _id: string
   label: string | null
   patientId: string | PatientData | null
+  patientHeartRate: number | null
   muestra: GasometricSamples
+  cateter: ArteryCatheter
   fick: IndirectFick
+  suministros: Supplied
+  aid: AID
   timestamp: number
 }
 

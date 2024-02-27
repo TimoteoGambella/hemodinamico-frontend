@@ -1,22 +1,27 @@
 import { useEffect, useState } from 'react'
 import { FormController } from './controller'
-import { Button, Divider, Empty, Form, Input } from 'antd'
+import { Button, Divider, Empty, Form, Input, InputNumber } from 'antd'
 import LabPatientForm from './items/LabPatientForm'
 import HemotologyForm from './items/HematologyForm'
 import LiverProfileForm from './items/LiverProfileForm'
 import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
+import * as refactors from './EditableTable/utils/refactors'
+import CatheterForm from './items/CatheterProfileForm'
 import useStretchers from '../../hooks/useStretchers'
 import DiagnosticForm from './items/DiagnosticForm'
 import formItemLayout from './constants/formLayout'
+import GasometricForm from './items/GasometricForm'
+import EditableTable from './EditableTable'
+import FickForm from './items/FickProfileForm'
 import useMsgApi from '../../hooks/useMsgApi'
 import { AxiosError } from 'axios'
 import './style.css'
 
 interface FormProps {
   formProp: FormPropType
-  data?: LaboratoryData | PatientData
+  data?: LaboratoryData | PatientData | StretcherData
   onFieldsChange?: () => void
   onCancel?: () => void
 }
@@ -138,8 +143,11 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
 
 CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
   const [form] = Form.useForm<PatientData>()
-  const freeStretchers = useStretchers()?.filter((stretcher) => !stretcher.patientId)
-  const { onFinish, onFinishFailed } = FormController({
+  const freeStretchers = useStretchers()?.filter(
+    (stretcher) => !stretcher.patientId
+  )
+  const { onFinish, onFinishFailed } = FormController(
+    {
       formType: 'patient',
       formProp,
     },
@@ -173,7 +181,7 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
       initialValues={{
         patientId: {
           stretcherId: '',
-        }
+        },
       }}
       scrollToFirstError
     >
@@ -190,9 +198,10 @@ CustomForm.EditPatient = function PatientForm(props: FormProps) {
   const { formProp, data, onFieldsChange, onCancel } = props
   const msgApi = useMsgApi()
   const [form] = Form.useForm<PatientData>()
-  const patientData = { ...data as PatientData }
+  const patientData = { ...(data as PatientData) }
   const stretchers = useStretchers()
-  const freeStretchers = stretchers?.filter((stretcher) => !stretcher.patientId) ?? []
+  const freeStretchers =
+    stretchers?.filter((stretcher) => !stretcher.patientId) ?? []
   const { onFinish, onFinishFailed } = FormController(
     {
       formType: 'update-patient',
@@ -204,7 +213,9 @@ CustomForm.EditPatient = function PatientForm(props: FormProps) {
   if (!patientData.stretcherId) {
     patientData.stretcherId = ''
   } else {
-    label = stretchers?.find((stretcher) => stretcher._id === patientData.stretcherId)?.label
+    label = stretchers?.find(
+      (stretcher) => stretcher._id === patientData.stretcherId
+    )?.label
     if (label) patientData.stretcherId = label
   }
 
@@ -240,7 +251,7 @@ CustomForm.EditPatient = function PatientForm(props: FormProps) {
   }, [formProp, msgApi])
 
   useEffect(() => {
-    if(onCancel) {
+    if (onCancel) {
       form.resetFields()
       onCancel()
     }
@@ -262,7 +273,11 @@ CustomForm.EditPatient = function PatientForm(props: FormProps) {
       }}
       scrollToFirstError
     >
-      <LabPatientForm showTitle={false} freeStretchers={freeStretchers} form={form} />
+      <LabPatientForm
+        showTitle={false}
+        freeStretchers={freeStretchers}
+        form={form}
+      />
     </Form>
   )
 }
@@ -299,7 +314,7 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
     lab._id = data!._id
 
     const patient = values.patientId as PatientData
-    patient._id = ((data as { patientId: PatientData }).patientId)._id
+    patient._id = (data as { patientId: PatientData }).patientId._id
 
     setIsLoading(true)
     onFinishLab(lab as LaboratoryData)
@@ -342,6 +357,80 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
       <DiagnosticForm form={form} isEnabled={formProp.enable} />
       <div className="submit-container">
         <Button type="primary" htmlType="submit" loading={isLoading}>
+          Guardar registro
+        </Button>
+      </div>
+    </Form>
+  )
+}
+
+CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
+  const msgApi = useMsgApi()
+  const stretcherInfo = data as StretcherData
+  const patientInfo = stretcherInfo.patientId as PatientData
+  const [form] = Form.useForm<StretcherData>()
+  const [tableValues, setTableValues] = useState(
+    refactors.suppliedToTableValuesType()
+  )
+  const { onFinish, onFinishFailed } = FormController({
+    formType: 'stretcher',
+    formProp,
+  })
+  const ascValue = ((patientInfo.weight * patientInfo.height) / 3600).toFixed(2)
+
+  const handleSubmit = (values: Partial<StretcherData>) => {
+    delete values.patientId
+    const suppliedData = refactors.tableValuesAsSupplied(tableValues)
+    if (suppliedData instanceof Promise) {
+      suppliedData.catch((err) => msgApi.warning(err))
+      return
+    }
+    values.suministros = { drogas: suppliedData }
+    console.log(values)
+    return
+    onFinish(stretcher)
+  }
+
+  return (
+    <Form
+      {...formItemLayout}
+      form={form}
+      name="stretcherForm"
+      onFinish={handleSubmit}
+      onFinishFailed={onFinishFailed}
+      className="form-component"
+      scrollToFirstError
+      initialValues={{ ...stretcherInfo, patientId: stretcherInfo!.patientId }}
+    >
+      <Form.Item
+        name="label"
+        label="Etiqueta"
+        rules={[
+          {
+            required: true,
+            message: 'Por favor ingrese una etiqueta',
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+      <LabPatientForm form={form} />
+      <Form.Item label="ASC">
+        <InputNumber value={ascValue} disabled />
+      </Form.Item>
+      <Form.Item name="patientHeartRate" label="Frecuencia Cardíaca">
+        <InputNumber />
+      </Form.Item>
+      <Divider />
+      <GasometricForm form={form} />
+      <Divider />
+      <FickForm form={form} />
+      <Divider />
+      <CatheterForm />
+      <Divider />
+      <EditableTable dataSource={tableValues} setDataSource={setTableValues} />
+      <div className="submit-container">
+        <Button type="primary" htmlType="submit" loading={false}>
           Guardar registro
         </Button>
       </div>

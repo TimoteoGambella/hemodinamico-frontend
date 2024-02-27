@@ -79,7 +79,7 @@ const App = () => {
           onCollapse={(value) => setCollapsed(value)}
         >
           <Button
-            icon={<Icon.CloseSessionIcon />}
+            icon={<Icon.CloseSession />}
             className="logo-vertical"
             type="primary"
             onClick={() => handleLogout(msgApi!, navigateTo)}

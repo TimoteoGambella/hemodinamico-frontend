@@ -1,9 +1,10 @@
 import { MessageInstance } from 'antd/es/message/interface'
-import { Empty, Flex, Space, Spin, Typography } from 'antd'
+import { Empty, Flex, Space, Spin, Tag, Typography } from 'antd'
 import useStretchers from '../../hooks/useStretchers'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import useMsgApi from '../../hooks/useMsgApi'
+import CustomForm from '../Form'
 import './style.css'
 
 interface StretcherProps {}
@@ -13,7 +14,9 @@ const Stretcher = ({}: StretcherProps) => {
   const { id } = useParams()
   const msgApi = useMsgApi()
   const [isLoading, setIsLoading] = useState(true)
-  const stretcherData = useStretchers()?.find((stretcher) => stretcher._id === id)
+  const stretcherData = useStretchers()?.find(
+    (stretcher) => stretcher._id === id
+  )
 
   useEffect(() => {
     if (stretcherData) setIsLoading(false)
@@ -36,21 +39,32 @@ interface MainContentProps {
 }
 
 const MainContent = ({ stretcherData }: MainContentProps) => {
-  const { patientId: patientInfo } = stretcherData
-  if (typeof patientInfo === 'string') return <Empty />
+  const [formProp] = useState<FormPropType>({
+    shouldSubmit: false,
+    status: 'ok',
+    message: '',
+    enable: true,
+  })
+
+  useEffect(() => {}, [formProp])
+
   return (
     <>
-      <Typography.Title level={2}>
-        {stretcherData.label ?? stretcherData._id}
-      </Typography.Title>
-      <Flex>
-        <Space style={{ flexDirection: 'column', backgroundColor: 'yellow', border: '1px solid black', padding: '5px' }}>
-          <Typography.Text strong>NOMBRES Y APELLIDOS</Typography.Text>
-          <Typography.Text strong>DNI</Typography.Text>
-        </Space>
-        <Space style={{ flexDirection: 'column', border: '1px solid black', padding: '5px' }}>
-          <Typography.Text strong>{patientInfo?.fullname}</Typography.Text>
-          <Typography.Text strong>{patientInfo?.dni}</Typography.Text>
+      <Flex className="header-content">
+        <Typography.Title level={2} className="header-title">
+          {stretcherData.label ?? stretcherData._id}
+        </Typography.Title>
+        <Flex>
+          {stretcherData.aid.types?.map((type) => (
+            <Tag color={type === 'ecmo' ? 'blue' : 'red'} key={type}>
+              {type.toUpperCase()}
+            </Tag>
+          ))}
+        </Flex>
+      </Flex>
+      <Flex justify="center" gap={10} wrap="wrap">
+        <Space className="form-space-content">
+          <CustomForm.Stretchers formProp={formProp} data={stretcherData} />
         </Space>
       </Flex>
     </>
