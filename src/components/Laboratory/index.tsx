@@ -71,7 +71,7 @@ const MainContent = ({ data, msgApi, collapsed }: MainContentProps) => {
   }
   
   useEffect(() => {
-    if (labInfo) return
+    if (labInfo?._id === data._id) return
     setLabInfo({
       ...data,
       infective: {

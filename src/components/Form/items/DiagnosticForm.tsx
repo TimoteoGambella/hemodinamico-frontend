@@ -13,10 +13,10 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
   return (
     <>
       <Typography.Title level={4}>DIAGNÓSTICO</Typography.Title>
-      <Form.Item name={['diagnostic', 'tipo']} label="Tipo">
+      <Form.Item name={['diagnostic', 'type']} label="Tipo">
         <Select
           onChange={(e) => {
-            form.setFieldValue(['diagnostic', 'subTipo'], null)
+            form.setFieldValue(['diagnostic', 'subtype'], null)
             form.setFieldValue(['diagnostic', 'child'], null)
             setTypeValue(e)
           }}
@@ -40,11 +40,11 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
         ]}
       >
         {() => {
-          const selected = form.getFieldValue(['diagnostic', 'tipo'])
+          const selected = form.getFieldValue(['diagnostic', 'type'])
           const enabled = selected ? true : false
           const obj = schemeValues.find((value) => value.name === selected)
           return (
-            <Form.Item name={['diagnostic', 'subTipo']} noStyle>
+            <Form.Item name={['diagnostic', 'subtype']} noStyle>
               <Select disabled={!isEnabled || !enabled}>
                 {obj?.subType.map((value, index) => (
                   <Select.Option key={index} value={value.name}>
@@ -73,7 +73,7 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
         ]}
       >
         {() => {
-          const selected = form.getFieldValue(['diagnostic', 'tipo'])
+          const selected = form.getFieldValue(['diagnostic', 'type'])
           const obj = schemeValues.find((value) => value.name === selected)
           const enabled = selected ? true : false
           return (

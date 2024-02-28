@@ -325,10 +325,15 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
 
   useEffect(() => {
     if (formProp.shouldSubmit && formProp.status === 'initial') {
-      console.log('submitting form')
       form.submit()
     }
   }, [formProp, form])
+
+  useEffect(() => {
+    setTimeout(() => {
+      form.setFieldsValue(data as LaboratoryData)
+    }, 0)
+  }, [data, form])
 
   if (!data) return <Empty />
 
@@ -400,10 +405,15 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
     }
     values.suministros = { drogas: suppliedData }
     values._id = stretcherInfo._id
-    console.log(values)
     setIsLoading(true)
     onFinish(values as StretcherData)
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      form.setFieldsValue(data as LaboratoryData)
+    }, 0)
+  }, [data, form])
 
   return (
     <Form
