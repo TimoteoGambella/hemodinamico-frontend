@@ -72,10 +72,11 @@ export async function handleAssignLab({ patient, updateLabs, updatePatients, msg
   msgApi.open({
     type: 'loading',
     content: 'Asignando laboratorio...',
-    duration: 0
+    duration: 0,
+    key: 'assign-lab'
   })
   const res = await axios.createLab(body)
-  msgApi.destroy()
+  msgApi.destroy('assign-lab')
   if (res instanceof AxiosError) {
     msgApi.error('Error al asignar laboratorio. Inténtelo de nuevo más tarde.')
     return
@@ -83,8 +84,12 @@ export async function handleAssignLab({ patient, updateLabs, updatePatients, msg
   msgApi.success('Laboratorio asignado con éxito.')
   msgApi.open({
     type: 'loading',
-    content: 'Actualizando repositorio...',
-    duration: 0
+    content: 'Actualizando repositorios...',
+    duration: 0,
+    key: 'update-all'
   })
-  await Promise.all([updateLabs(), updatePatients()]).finally(() => msgApi.destroy())
+  await Promise.all([updateLabs(), updatePatients()]).then(() => {
+    msgApi.destroy('update-all')
+    msgApi.success('Repositorios actualizados con éxito.')
+  }).catch(() => msgApi.destroy('update-all'))
 }

@@ -25,7 +25,7 @@ export const LaboratoryDataProvider = ({ children }: { children: React.ReactNode
     const res = await axios.getLabs(true)
     if (res instanceof AxiosError) {
       console.error(res)
-      msgApi.error('No se pudo obtener la información de los laboratorios.')
+      msgApi.error('No se pudo obtener la información de los laboratorios.', 5)
       throw res
     } else {
       setLabs(res.data.data)

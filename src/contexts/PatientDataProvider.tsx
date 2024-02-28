@@ -25,7 +25,7 @@ export const PatientDataProvider = ({ children }: { children: React.ReactNode })
     const res = await axios.getPatients()
     if (res instanceof AxiosError) {
       console.error(res)
-      msgApi.error('No se pudo obtener la información de los pacientes.')
+      msgApi.error('No se pudo obtener la información de los pacientes.', 5)
       throw res
     } else {
       setStretchers(res.data.data)

@@ -25,7 +25,7 @@ export const StretcherDataProvider = ({ children }: { children: React.ReactNode 
     const res = await axios.getStretchers(true)
     if (res instanceof AxiosError) {
       console.error(res)
-      msgApi.error('No se pudo obtener la información de las camas.')
+      msgApi.error('No se pudo obtener la información de las camas.', 5)
       throw res
     } else {
       setStretchers(res.data.data)

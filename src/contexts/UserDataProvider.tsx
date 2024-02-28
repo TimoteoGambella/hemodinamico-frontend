@@ -25,7 +25,7 @@ export const UserDataProvider = ({ children }: { children: React.ReactNode }) =>
     const res = await axios.getUsers()
     if (res instanceof AxiosError) {
       console.error(res)
-      msgApi.error('No se pudo obtener la información de los usuarios.')
+      msgApi.error('No se pudo obtener la información de los usuarios.', 5)
       throw res
     } else {
       setUser(res.data.data)
