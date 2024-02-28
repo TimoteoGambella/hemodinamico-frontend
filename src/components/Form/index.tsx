@@ -20,6 +20,7 @@ import { AxiosError } from 'axios'
 import './style.css'
 import StretcherConfing from './items/StretcherProfileForm'
 import { StretcherDataContext } from '../../contexts/StretcherDataProvider'
+import { calcASCValue } from './utils'
 
 interface FormProps {
   formProp: FormPropType
@@ -394,7 +395,7 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
     })
     updateStretchers().finally(() => msgApi.destroy('update-stretcher'))
   })
-  const ascValue = ((patientInfo.weight * patientInfo.height) / 3600).toFixed(2)
+  const ascValue = calcASCValue(patientInfo.weight, patientInfo.height)
 
   const handleSubmit = (values: Partial<StretcherData>) => {
     delete values.patientId
