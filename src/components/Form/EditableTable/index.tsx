@@ -7,17 +7,17 @@ import EditableRow from './items/EditableRow'
 
 type EditableTableProps = Parameters<typeof Table>[0]
 
-export interface DataEditableType {
+export interface DataSourceType {
   key: React.Key
-  name: Supplied["drogas"][number]["name"] | 'SELECCIONAR'
-  dose: Supplied["drogas"][number]["dose"]
+  name: SuppliedDrugs["name"] | 'SELECCIONAR'
+  dose: SuppliedDrugs["dose"]
 }
 
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>
 
 interface IProps {
-  dataSource: DataEditableType[]
-  setDataSource: (value: DataEditableType[]) => void
+  dataSource: DataSourceType[]
+  setDataSource: (value: DataSourceType[]) => void
 }
 
 const EditableTable = ({ dataSource, setDataSource }: IProps) => {
@@ -72,17 +72,12 @@ const EditableTable = ({ dataSource, setDataSource }: IProps) => {
     },
   ]
 
-  /*
-   * TODO: Usar el msgApi cuando se quiere obtener los datos de la tabla si hay valores no seleccionados.
-   * TODO: Conectar el componente con el formulario principal
-   */
-
   const handleAdd = () => {
     if (dataSource.length >= 4) {
       msgApi.warning('Alcanzó el límite de drogas aplicables por paciente.')
       return
     }
-    const newData: DataEditableType = {
+    const newData: DataSourceType = {
       name: 'SELECCIONAR',
       dose: 1,
       key: dataSource.length,
@@ -90,7 +85,7 @@ const EditableTable = ({ dataSource, setDataSource }: IProps) => {
     setDataSource([...dataSource, newData])
   }
 
-  const handleSave = (row: DataEditableType) => {
+  const handleSave = (row: DataSourceType) => {
     const newData = [...dataSource]
     const index = newData.findIndex((item) => row.key === item.key)
     const item = newData[index]

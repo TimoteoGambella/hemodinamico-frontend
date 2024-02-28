@@ -55,7 +55,7 @@ const MainContent = ({ stretcherData }: MainContentProps) => {
           {stretcherData.label ?? stretcherData._id}
         </Typography.Title>
         <Flex>
-          {stretcherData.aid.types?.map((type) => (
+          {stretcherData.aid?.map((type) => (
             <Tag color={type === 'ecmo' ? 'blue' : 'red'} key={type}>
               {type.toUpperCase()}
             </Tag>

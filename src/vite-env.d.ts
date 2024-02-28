@@ -73,11 +73,6 @@ interface ArteryCatheter {
   gasto: number | null
 }
 
-interface AID {
-  types: ('ecmo' | 'balon')[] | null
-  selected: 'ecmo' | 'balon' | null
-}
-
 type DrugNames =
   | 'noradrenalina'
   | 'vasopresina'
@@ -88,11 +83,13 @@ type DrugNames =
   | 'nitroglicerina'
   | 'nitroprusiato'
 
+interface SuppliedDrugs {
+  name: DrugNames
+  dose: number
+}
+
 interface Supplied {
-  drogas: {
-    name: DrugNames
-    dose: number | null
-  }[]
+  drogas: SuppliedDrugs[]
 }
 
 type StretcherData = {
@@ -102,9 +99,9 @@ type StretcherData = {
   patientHeartRate: number | null
   muestra: GasometricSamples
   cateter: ArteryCatheter
-  fick: IndirectFick
   suministros: Supplied
-  aid: AID
+  fick: IndirectFick
+  aid: ('ecmo' | 'balon')[] | null
   timestamp: number
 }
 

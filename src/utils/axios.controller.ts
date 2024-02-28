@@ -100,6 +100,14 @@ export default class AxiosController {
     })
   }
 
+  async updateStretcher(id: string, body: StretcherData): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/stretcher/update/${id}`,
+      method: 'PUT',
+      data: body
+    })
+  }
+
   async getLabs(populate = false): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: `/laboratory/list?populate=${populate}`,

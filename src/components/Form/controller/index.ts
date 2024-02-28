@@ -12,8 +12,16 @@ export function validateInputNumber(e: React.ChangeEvent<HTMLInputElement>) {
 
 interface FormControllerProps {
   formProp: FormPropType
+  /**
+   * By default is true, if is false, the formProp 
+   * will not be updated when the request is successful.
+   */
   execSetFormProp?: boolean
-  formType: 'user' | 'patient' | 'update-patient' | 'lab' | 'stretcher'
+  /**
+   * Indicates the type of form that will be used and
+   * the request that will be made.
+   */
+  formType: 'user' | 'patient' | 'update-patient' | 'lab' | 'update-stretcher'
 }
 interface FormFinishProp {
   values: UserData | PatientData | LaboratoryData | StretcherData
@@ -41,8 +49,7 @@ export function FormController(
       else if (formType === 'lab')
         res = await axios.updateLab(values._id, values as LaboratoryData)
       else {
-        console.log('enviando stretcher')
-        return
+        res = await axios.updateStretcher(values._id, values as StretcherData)
       }
 
       if (res instanceof AxiosError) {

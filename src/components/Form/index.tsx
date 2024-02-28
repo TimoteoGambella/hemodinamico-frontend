@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { FormController } from './controller'
 import { Button, Divider, Empty, Form, Input, InputNumber } from 'antd'
 import LabPatientForm from './items/LabPatientForm'
@@ -18,6 +18,8 @@ import FickForm from './items/FickProfileForm'
 import useMsgApi from '../../hooks/useMsgApi'
 import { AxiosError } from 'axios'
 import './style.css'
+import StretcherConfing from './items/StretcherProfileForm'
+import { StretcherDataContext } from '../../contexts/StretcherDataProvider'
 
 interface FormProps {
   formProp: FormPropType
@@ -369,12 +371,23 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
   const stretcherInfo = data as StretcherData
   const patientInfo = stretcherInfo.patientId as PatientData
   const [form] = Form.useForm<StretcherData>()
+  const [isLoading, setIsLoading] = useState(false)
+  const { updateStretchers } = useContext(StretcherDataContext)
   const [tableValues, setTableValues] = useState(
-    refactors.suppliedToTableValuesType()
+    refactors.suppliedToTableValuesType(stretcherInfo.suministros.drogas)
   )
   const { onFinish, onFinishFailed } = FormController({
-    formType: 'stretcher',
+    formType: 'update-stretcher',
     formProp,
+  }, () => {
+    setIsLoading(false)
+    msgApi.open({
+      type: 'loading',
+      content: 'Actualizando repositorio...',
+      key: 'update-stretcher',
+      duration: 0
+    })
+    updateStretchers().finally(() => msgApi.destroy('update-stretcher'))
   })
   const ascValue = ((patientInfo.weight * patientInfo.height) / 3600).toFixed(2)
 
@@ -386,9 +399,10 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
       return
     }
     values.suministros = { drogas: suppliedData }
+    values._id = stretcherInfo._id
     console.log(values)
-    return
-    onFinish(stretcher)
+    setIsLoading(true)
+    onFinish(values as StretcherData)
   }
 
   return (
@@ -402,25 +416,17 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
       scrollToFirstError
       initialValues={{ ...stretcherInfo, patientId: stretcherInfo!.patientId }}
     >
-      <Form.Item
-        name="label"
-        label="Etiqueta"
-        rules={[
-          {
-            required: true,
-            message: 'Por favor ingrese una etiqueta',
-          },
-        ]}
-      >
-        <Input />
-      </Form.Item>
+      <StretcherConfing />
+      <Divider />
       <LabPatientForm form={form} />
-      <Form.Item label="ASC">
-        <InputNumber value={ascValue} disabled />
-      </Form.Item>
-      <Form.Item name="patientHeartRate" label="Frecuencia Cardíaca">
-        <InputNumber />
-      </Form.Item>
+      <>
+        <Form.Item label="ASC">
+          <InputNumber value={ascValue} disabled />
+        </Form.Item>
+        <Form.Item name="patientHeartRate" label="Frecuencia Cardíaca">
+          <InputNumber />
+        </Form.Item>
+      </>
       <Divider />
       <GasometricForm form={form} />
       <Divider />
@@ -430,7 +436,11 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
       <Divider />
       <EditableTable dataSource={tableValues} setDataSource={setTableValues} />
       <div className="submit-container">
-        <Button type="primary" htmlType="submit" loading={false}>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={isLoading}
+        >
           Guardar registro
         </Button>
       </div>
