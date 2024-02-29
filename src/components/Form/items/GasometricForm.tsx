@@ -5,9 +5,14 @@ interface GasometricFormProps {
 }
 
 const GasometricForm = ({ form }: GasometricFormProps) => {
-  const deltaValue =
-    Number(form.getFieldValue(['muestra', 'vena', 'pC02'])) -
-      Number(form.getFieldValue(['muestra', 'arteria', 'pC02'])) || '-'
+  const getCurrentFormValues = () => {
+    const vena = form.getFieldValue(['muestra', 'vena'])
+    const arteria = form.getFieldValue(['muestra', 'arteria'])
+    return {
+      vena,
+      arteria,
+    }
+  }
 
   return (
     <>
@@ -35,8 +40,12 @@ const GasometricForm = ({ form }: GasometricFormProps) => {
           <InputNumber />
         </Form.Item>
       </Flex>
-      <Form.Item label="Delta CO2">
-        <InputNumber value={deltaValue} disabled />
+      <Form.Item label="Delta CO2" shouldUpdate>
+        {() => {
+          const { vena, arteria } = getCurrentFormValues()
+          const value = Number(vena.pC02) - Number(arteria.pC02)
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
+        }}
       </Form.Item>
     </>
   )

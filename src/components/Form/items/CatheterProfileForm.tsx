@@ -1,11 +1,36 @@
 import { Form, FormInstance, InputNumber, Typography } from 'antd'
+import * as ctrl from '../controller/catheterProfile.controller'
+import * as util from '../utils'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface CatheterFormProps {
   form: FormInstance
 }
 
-const CatheterForm = () => {
+const CatheterForm = ({ form }: CatheterFormProps) => {
+  const getCurrentFormValues = () => {
+    const mediaSis = form.getFieldValue([
+      'cateter',
+      'presion',
+      'mediaSistemica',
+    ])
+    const diastolica = form.getFieldValue(['cateter', 'PAP', 'diastolica'])
+    const sistolica = form.getFieldValue(['cateter', 'PAP', 'sistolica'])
+    const capilar = form.getFieldValue(['cateter', 'presion', 'capilar'])
+    const AD = form.getFieldValue(['cateter', 'presion', 'AD'])
+    const weight = form.getFieldValue(['patientId', 'weight'])
+    const height = form.getFieldValue(['patientId', 'height'])
+    const gasto = form.getFieldValue(['cateter', 'gasto'])
+    return {
+      sistolica,
+      diastolica,
+      mediaSis,
+      capilar,
+      height,
+      weight,
+      gasto,
+      AD,
+    }
+  }
 
   return (
     <>
@@ -15,7 +40,10 @@ const CatheterForm = () => {
         <InputNumber />
       </Form.Item>
 
-      <Form.Item name={['cateter', 'presion', 'capilar']} label="Presión Capilar">
+      <Form.Item
+        name={['cateter', 'presion', 'capilar']}
+        label="Presión Capilar"
+      >
         <InputNumber />
       </Form.Item>
 
@@ -27,7 +55,10 @@ const CatheterForm = () => {
         <InputNumber />
       </Form.Item>
 
-      <Form.Item name={['cateter', 'presion', 'mediaSistemica']} label="Presión media sistemática">
+      <Form.Item
+        name={['cateter', 'presion', 'mediaSistemica']}
+        label="Presión media sistemática"
+      >
         <InputNumber />
       </Form.Item>
 
@@ -37,24 +68,65 @@ const CatheterForm = () => {
 
       {/* DISABLED FIELDS */}
 
-      <Form.Item label="PAP media">
-        <InputNumber disabled />
+      <Form.Item label="PAP media" shouldUpdate={ctrl.shouldUpdatePAP}>
+        {() => {
+          const { diastolica, sistolica } = getCurrentFormValues()
+          const value = util.calcAvgPAP(sistolica, diastolica, 'up')
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
+        }}
       </Form.Item>
 
-      <Form.Item label="Gradiente TP">
-        <InputNumber disabled />
+      <Form.Item label="Gradiente TP" shouldUpdate={ctrl.shouldUpdateTP}>
+        {() => {
+          const { capilar, sistolica, diastolica } = getCurrentFormValues()
+          const value = util.calcTPGradient(
+            sistolica,
+            diastolica,
+            capilar,
+            'down'
+          )
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
+        }}
       </Form.Item>
 
-      <Form.Item label="Resistencia sistémica (dynas)">
-        <InputNumber disabled />
+      <Form.Item
+        label="Resistencia sistémica (dynas)"
+        shouldUpdate={ctrl.shouldUpdateSys}
+      >
+        {() => {
+          const { mediaSis, AD, gasto } = getCurrentFormValues()
+          const value = util.calcSysEndurance(mediaSis, AD, gasto, 'up')
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
+        }}
       </Form.Item>
 
-      <Form.Item label="Resistencia pulmonar (uW)">
-        <InputNumber disabled />
+      <Form.Item
+        label="Resistencia pulmonar (uW)"
+        shouldUpdate={ctrl.shouldUpdatePulmonary}
+      >
+        {() => {
+          const { sistolica, diastolica, capilar, gasto } =
+            getCurrentFormValues()
+          const value = util.calcPulmonaryResistance(
+            sistolica,
+            diastolica,
+            capilar,
+            gasto,
+            'down'
+          )
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
+        }}
       </Form.Item>
 
-      <Form.Item label="Índice Cardíaco (TD)">
-        <InputNumber disabled />
+      <Form.Item
+        label="Índice Cardíaco (TD)"
+        shouldUpdate={ctrl.shouldUpdateIndex}
+      >
+        {() => {
+          const { gasto, weight, height } = getCurrentFormValues()
+          const value = util.calcCardiacIndexTD(gasto, weight, height)
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
+        }}
       </Form.Item>
     </>
   )

@@ -6,8 +6,11 @@ import HemotologyForm from './items/HematologyForm'
 import LiverProfileForm from './items/LiverProfileForm'
 import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
+import { StretcherDataContext } from '../../contexts/StretcherDataProvider'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
 import * as refactors from './EditableTable/utils/refactors'
+import StretcherConfing from './items/StretcherConfigForm'
+import CalculedVariables from './items/CalculedVariables'
 import CatheterForm from './items/CatheterProfileForm'
 import useStretchers from '../../hooks/useStretchers'
 import DiagnosticForm from './items/DiagnosticForm'
@@ -16,11 +19,9 @@ import GasometricForm from './items/GasometricForm'
 import EditableTable from './EditableTable'
 import FickForm from './items/FickProfileForm'
 import useMsgApi from '../../hooks/useMsgApi'
+import { calcASCValue } from './utils'
 import { AxiosError } from 'axios'
 import './style.css'
-import StretcherConfing from './items/StretcherProfileForm'
-import { StretcherDataContext } from '../../contexts/StretcherDataProvider'
-import { calcASCValue } from './utils'
 
 interface FormProps {
   formProp: FormPropType
@@ -375,27 +376,40 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
 CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
   const msgApi = useMsgApi()
   const stretcherInfo = data as StretcherData
-  const patientInfo = stretcherInfo.patientId as PatientData
   const [form] = Form.useForm<StretcherData>()
   const [isLoading, setIsLoading] = useState(false)
   const { updateStretchers } = useContext(StretcherDataContext)
   const [tableValues, setTableValues] = useState(
     refactors.suppliedToTableValuesType(stretcherInfo.suministros.drogas)
   )
-  const { onFinish, onFinishFailed } = FormController({
-    formType: 'update-stretcher',
-    formProp,
-  }, () => {
-    setIsLoading(false)
-    msgApi.open({
-      type: 'loading',
-      content: 'Actualizando repositorio...',
-      key: 'update-stretcher',
-      duration: 0
-    })
-    updateStretchers().finally(() => msgApi.destroy('update-stretcher'))
-  })
-  const ascValue = calcASCValue(patientInfo.weight, patientInfo.height)
+  const { onFinish, onFinishFailed } = FormController(
+    {
+      formType: 'update-stretcher',
+      formProp,
+    },
+    () => {
+      setIsLoading(false)
+      msgApi.open({
+        type: 'loading',
+        content: 'Actualizando repositorio...',
+        key: 'update-stretcher',
+        duration: 0,
+      })
+      updateStretchers().finally(() => msgApi.destroy('update-stretcher'))
+    }
+  )
+
+  const shouldUpdateASC = (
+    curValues: IStretcherFormType,
+    prevValues: IStretcherFormType
+  ) => {
+    const weight = curValues.patientId?.weight
+    const height = curValues.patientId?.height
+    return (
+      weight !== prevValues.patientId?.weight ||
+      height !== prevValues.patientId?.height
+    )
+  }
 
   const handleSubmit = (values: Partial<StretcherData>) => {
     delete values.patientId
@@ -431,8 +445,13 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
       <Divider />
       <LabPatientForm form={form} />
       <>
-        <Form.Item label="ASC">
-          <InputNumber value={ascValue} disabled />
+        <Form.Item label="ASC" shouldUpdate={shouldUpdateASC}>
+          {() => {
+            const height = form.getFieldValue(['patientId', 'height'])
+            const weight = form.getFieldValue(['patientId', 'weight'])
+            const value = calcASCValue(weight, height)
+            return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
+          }}
         </Form.Item>
         <Form.Item name="patientHeartRate" label="Frecuencia Cardíaca">
           <InputNumber />
@@ -443,15 +462,13 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
       <Divider />
       <FickForm form={form} />
       <Divider />
-      <CatheterForm />
+      <CatheterForm form={form} />
+      <Divider />
+      <CalculedVariables form={form} />
       <Divider />
       <EditableTable dataSource={tableValues} setDataSource={setTableValues} />
       <div className="submit-container">
-        <Button
-          type="primary"
-          htmlType="submit"
-          loading={isLoading}
-        >
+        <Button type="primary" htmlType="submit" loading={isLoading}>
           Guardar registro
         </Button>
       </div>

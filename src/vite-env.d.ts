@@ -202,3 +202,8 @@ interface LaboratoryData {
   kidney: Kidney
   timestamp: number
 }
+
+interface IStretcherFormType extends StretcherData {
+  patientId: PatientData
+  patientHeartRate: number
+}

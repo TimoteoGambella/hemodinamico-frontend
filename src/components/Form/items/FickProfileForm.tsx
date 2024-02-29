@@ -37,27 +37,32 @@ const FickForm = ({ form }: FickFormProps) => {
         <InputNumber />
       </Form.Item>
 
+      {/* DISABLED FIELDS */}
+
       <Form.Item
         label="Consumo de O2 (VO2)"
         shouldUpdate={controller.shouldUpdateConsumption}
       >
         {() => {
           const { weight, height, heartRate, age } = getCurrentFormValues()
-          const value =
-            util.calcO2Consumption(weight, height, age, heartRate) || '-'
-          return <InputNumber value={value} disabled />
+          const value = util.calcO2Consumption(weight, height, age, heartRate)
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
       </Form.Item>
+
       <Form.Item
         label="Diferencia A-V sistémica"
         shouldUpdate={controller.shouldUpdateDiff}
       >
         {() => {
           const { arteria, vena, hemoglobin } = getCurrentFormValues()
-          const AP = util.calcO2Content(hemoglobin, vena.sat)
-          const Ao = util.calcO2Content(hemoglobin, arteria.sat)
-          const value = (Ao - AP).toFixed(2) || '-'
-          return <InputNumber value={value} disabled />
+          const value = util.calcDiffSys(
+            hemoglobin,
+            vena.sat,
+            arteria.sat,
+            'down'
+          )
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
       </Form.Item>
 
@@ -67,8 +72,8 @@ const FickForm = ({ form }: FickFormProps) => {
       >
         {() => {
           const { hemoglobin, vena } = getCurrentFormValues()
-          const value = util.calcO2Content(hemoglobin, vena.sat) || '-'
-          return <InputNumber value={value} disabled />
+          const value = util.calcO2Content(hemoglobin, vena.sat, 'down')
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
       </Form.Item>
 
@@ -78,18 +83,19 @@ const FickForm = ({ form }: FickFormProps) => {
       >
         {() => {
           const { hemoglobin, arteria } = getCurrentFormValues()
-          const value = util.calcO2Content(hemoglobin, arteria.sat) || '-'
-          return <InputNumber value={value} disabled />
+          const value = util.calcO2Content(hemoglobin, arteria.sat, 'up')
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
       </Form.Item>
+
       <Form.Item
         label="Capacidad de Hb"
         shouldUpdate={controller.shouldUpdateHbCapacity}
       >
         {() => {
           const { hemoglobin } = getCurrentFormValues()
-          const value = util.calcHbCapacity(hemoglobin) || '-'
-          return <InputNumber value={value} disabled />
+          const value = util.calcHbCapacity(hemoglobin, 'down')
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
       </Form.Item>
 
@@ -100,17 +106,17 @@ const FickForm = ({ form }: FickFormProps) => {
         {() => {
           const { weight, height, heartRate, age, hemoglobin, arteria, vena } =
             getCurrentFormValues()
-          const value =
-            util.calcCardiacOutput(
-              weight,
-              height,
-              age,
-              heartRate,
-              hemoglobin,
-              vena.sat,
-              arteria.sat
-            ) || '-'
-          return <InputNumber value={value} disabled />
+          const value = util.calcCardiacOutput(
+            weight,
+            height,
+            age,
+            heartRate,
+            hemoglobin,
+            vena.sat,
+            arteria.sat,
+            'down'
+          )
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
       </Form.Item>
 
@@ -121,18 +127,18 @@ const FickForm = ({ form }: FickFormProps) => {
         {() => {
           const { weight, height, age, heartRate, hemoglobin, arteria, vena } =
             getCurrentFormValues()
-          const asc = util.calcASCValue(weight, height)
-          const cardiac = util.calcCardiacOutput(
+          const index = util.calcCardiacIndex(
             weight,
             height,
             age,
             heartRate,
             hemoglobin,
             vena.sat,
-            arteria.sat
+            arteria.sat,
+            'up'
           )
-          const value = (cardiac / asc).toFixed(2) || '-'
-          return <InputNumber value={value} disabled />
+          const value = index
+          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
       </Form.Item>
     </>

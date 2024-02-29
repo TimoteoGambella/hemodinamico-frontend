@@ -25,7 +25,7 @@ const StretcherConfing = () => {
 
       <Form.Item
         name="aid"
-        label="Etiqueta"
+        label="Asistencia"
         rules={[
           {
             required: true,

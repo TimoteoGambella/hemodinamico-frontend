@@ -1,11 +1,6 @@
-interface IFormType extends StretcherData {
-  patientId: PatientData
-  patientHeartRate: number
-}
-
 export const shouldUpdateConsumption = (
-  prevValues: IFormType,
-  curValues: IFormType
+  prevValues: IStretcherFormType,
+  curValues: IStretcherFormType
 ) => {
   const weight = curValues.patientId?.weight
   const height = curValues.patientId?.height
@@ -20,14 +15,17 @@ export const shouldUpdateConsumption = (
 }
 
 export const shouldUpdateHbCapacity = (
-  prevValues: IFormType,
-  curValues: IFormType
+  prevValues: IStretcherFormType,
+  curValues: IStretcherFormType
 ) => {
   const hemoglobin = curValues.fick?.hemoglobina
   return hemoglobin !== prevValues.fick?.hemoglobina
 }
 
-export const shouldUpdateDiff = (prevValues: IFormType, curValues: IFormType) => {
+export const shouldUpdateDiff = (
+  prevValues: IStretcherFormType,
+  curValues: IStretcherFormType
+) => {
   const hemoglobin = curValues.fick.hemoglobina
   const arteria = curValues.muestra.arteria.sat
   const vena = curValues.muestra.vena.sat
@@ -38,7 +36,10 @@ export const shouldUpdateDiff = (prevValues: IFormType, curValues: IFormType) =>
   )
 }
 
-export const shouldUpdateAP = (prevValues: IFormType, curValues: IFormType) => {
+export const shouldUpdateAP = (
+  prevValues: IStretcherFormType,
+  curValues: IStretcherFormType
+) => {
   const hemoglobin = curValues.fick.hemoglobina
   const vena = curValues.muestra.vena.sat
   return (
@@ -47,7 +48,10 @@ export const shouldUpdateAP = (prevValues: IFormType, curValues: IFormType) => {
   )
 }
 
-export const shouldUpdateAo = (prevValues: IFormType, curValues: IFormType) => {
+export const shouldUpdateAo = (
+  prevValues: IStretcherFormType,
+  curValues: IStretcherFormType
+) => {
   const hemoglobin = curValues.fick.hemoglobina
   const arteria = curValues.muestra.arteria.sat
   return (
@@ -56,7 +60,10 @@ export const shouldUpdateAo = (prevValues: IFormType, curValues: IFormType) => {
   )
 }
 
-export const shouldUpdateSpent = (prevValues: IFormType, curValues: IFormType) => {
+export const shouldUpdateSpent = (
+  prevValues: IStretcherFormType,
+  curValues: IStretcherFormType
+) => {
   const weight = curValues.patientId?.weight
   const height = curValues.patientId?.height
   const heartRate = curValues.patientHeartRate
@@ -75,7 +82,10 @@ export const shouldUpdateSpent = (prevValues: IFormType, curValues: IFormType) =
   )
 }
 
-export const shouldUpdateIndex = (prevValues: IFormType, curValues: IFormType) => {
+export const shouldUpdateIndex = (
+  prevValues: IStretcherFormType,
+  curValues: IStretcherFormType
+) => {
   const weight = curValues.patientId?.weight
   const height = curValues.patientId?.height
   const heartRate = curValues.patientHeartRate
