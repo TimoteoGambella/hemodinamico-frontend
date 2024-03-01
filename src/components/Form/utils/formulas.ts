@@ -23,9 +23,11 @@ export function calcO2Consumption(
 }
 
 export function calcHbCapacity(hemoglobin: number, round: RoundTypes = 'none') {
-  if (round === 'none') return Number((1.34 * hemoglobin).toFixed(2))
-  if (round === 'up') return Math.ceil(Number((1.34 * hemoglobin).toFixed(2)))
-  else return Math.floor(Number((1.34 * hemoglobin).toFixed(2)))
+  const value = Number((1.34 * hemoglobin).toFixed(2))
+
+  if (round === 'none') return value
+  if (round === 'up') return Math.ceil(value)
+  else return Math.floor(value)
 }
 
 export function calcO2Content(
@@ -33,16 +35,13 @@ export function calcO2Content(
   saturation: number,
   round: RoundTypes = 'none'
 ) {
-  if (round === 'none')
-    return Number(((calcHbCapacity(hemoglobin) * saturation) / 100).toFixed(2))
-  if (round === 'up')
-    return Math.ceil(
-      Number(((calcHbCapacity(hemoglobin) * saturation) / 100).toFixed(2))
-    )
-  else
-    return Math.floor(
-      Number(((calcHbCapacity(hemoglobin) * saturation) / 100).toFixed(2))
-    )
+  const value = Number(
+    ((calcHbCapacity(hemoglobin) * saturation) / 100).toFixed(2)
+  )
+
+  if (round === 'none') return value
+  if (round === 'up') return Math.ceil(value)
+  else return Math.floor(value)
 }
 
 export function calcDiffSys(
@@ -51,31 +50,15 @@ export function calcDiffSys(
   arterySat: number,
   round: RoundTypes = 'none'
 ) {
-  if (round === 'none')
-    return Number(
-      (
-        calcO2Content(hemoglobin, arterySat) -
-        calcO2Content(hemoglobin, veinSat)
-      ).toFixed(2)
-    )
-  if (round === 'up')
-    return Math.ceil(
-      Number(
-        (
-          calcO2Content(hemoglobin, arterySat) -
-          calcO2Content(hemoglobin, veinSat)
-        ).toFixed(2)
-      )
-    )
-  else
-    return Math.floor(
-      Number(
-        (
-          calcO2Content(hemoglobin, arterySat) -
-          calcO2Content(hemoglobin, veinSat)
-        ).toFixed(2)
-      )
-    )
+  const value = Number(
+    (
+      calcO2Content(hemoglobin, arterySat) - calcO2Content(hemoglobin, veinSat)
+    ).toFixed(2)
+  )
+
+  if (round === 'none') return value
+  if (round === 'up') return Math.ceil(value)
+  else return Math.floor(value)
 }
 
 export function calcCardiacOutput(
@@ -92,10 +75,11 @@ export function calcCardiacOutput(
   const AP = calcO2Content(hemoglobin, saturationAp)
   const Ao = calcO2Content(hemoglobin, saturationAo)
   const diff = Ao - AP
-  if (round === 'none') return Number((0.1 * (consumption / diff)).toFixed(2))
-  if (round === 'up')
-    return Math.ceil(Number((0.1 * (consumption / diff)).toFixed(2)))
-  else return Math.floor(Number((0.1 * (consumption / diff)).toFixed(2)))
+  const value = Number((0.1 * (consumption / diff)).toFixed(2))
+
+  if (round === 'none') return value
+  if (round === 'up') return Math.ceil(value)
+  else return Math.floor(value)
 }
 
 export function calcCardiacIndex(
@@ -130,11 +114,10 @@ export function calcAvgPAP(
   diastolica: number,
   round: RoundTypes = 'none'
 ) {
-  if (round === 'none')
-    return Number(((diastolica + 2 * sistolica) / 3).toFixed(2))
-  if (round === 'up')
-    return Math.ceil(Number(((diastolica + 2 * sistolica) / 3).toFixed(2)))
-  else return Math.floor(Number(((diastolica + 2 * sistolica) / 3).toFixed(2)))
+  const value = Number(((diastolica + 2 * sistolica) / 3).toFixed(2))
+  if (round === 'none') return value
+  if (round === 'up') return Math.ceil(value)
+  else return Math.floor(value)
 }
 
 export function calcTPGradient(
@@ -143,18 +126,12 @@ export function calcTPGradient(
   presionCapilar: number,
   round: RoundTypes = 'none'
 ) {
-  if (round === 'none')
-    return Number(
-      (calcAvgPAP(sistolica, diastolica) - presionCapilar).toFixed(2)
-    )
-  if (round === 'up')
-    return Math.ceil(
-      Number((calcAvgPAP(sistolica, diastolica) - presionCapilar).toFixed(2))
-    )
-  else
-    return Math.floor(
-      Number((calcAvgPAP(sistolica, diastolica) - presionCapilar).toFixed(2))
-    )
+  const value = Number(
+    (calcAvgPAP(sistolica, diastolica) - presionCapilar).toFixed(2)
+  )
+  if (round === 'none') return value
+  if (round === 'up') return Math.ceil(value)
+  else return Math.floor(value)
 }
 
 export function calcSysEndurance(
@@ -163,16 +140,13 @@ export function calcSysEndurance(
   gasto: number,
   round: RoundTypes = 'none'
 ) {
-  if (round === 'none')
-    return Number((((mediaSistemica - presionAD) / gasto) * 79.92).toFixed(2))
-  if (round === 'up')
-    return Math.ceil(
-      Number((((mediaSistemica - presionAD) / gasto) * 79.92).toFixed(2))
-    )
-  else
-    return Math.floor(
-      Number((((mediaSistemica - presionAD) / gasto) * 79.92).toFixed(2))
-    )
+  const value = Number(
+    (((mediaSistemica - presionAD) / gasto) * 79.92).toFixed(2)
+  )
+
+  if (round === 'none') return value
+  if (round === 'up') return Math.ceil(value)
+  else return Math.floor(value)
 }
 
 export function calcPulmonaryResistance(
@@ -182,26 +156,13 @@ export function calcPulmonaryResistance(
   gasto: number,
   round: RoundTypes = 'none'
 ) {
-  if (round === 'none')
-    return Number(
-      ((calcAvgPAP(sistolica, diastolica) - presionCapilar) / gasto).toFixed(2)
-    )
-  if (round === 'up')
-    return Math.ceil(
-      Number(
-        ((calcAvgPAP(sistolica, diastolica) - presionCapilar) / gasto).toFixed(
-          2
-        )
-      )
-    )
-  else
-    return Math.floor(
-      Number(
-        ((calcAvgPAP(sistolica, diastolica) - presionCapilar) / gasto).toFixed(
-          2
-        )
-      )
-    )
+  const value = Number(
+    ((calcAvgPAP(sistolica, diastolica) - presionCapilar) / gasto).toFixed(2)
+  )
+
+  if (round === 'none') return value
+  if (round === 'up') return Math.ceil(value)
+  else return Math.floor(value)
 }
 
 export function calcCardiacIndexTD(

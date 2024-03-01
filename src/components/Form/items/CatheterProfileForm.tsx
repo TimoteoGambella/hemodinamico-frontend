@@ -1,6 +1,6 @@
 import { Form, FormInstance, InputNumber, Typography } from 'antd'
 import * as ctrl from '../controller/catheterProfile.controller'
-import * as util from '../utils'
+import * as util from '../utils/formulas'
 
 interface CatheterFormProps {
   form: FormInstance
@@ -83,7 +83,7 @@ const CatheterForm = ({ form }: CatheterFormProps) => {
             sistolica,
             diastolica,
             capilar,
-            'down'
+            'up'
           )
           return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}

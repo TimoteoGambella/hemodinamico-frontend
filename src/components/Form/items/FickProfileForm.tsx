@@ -1,6 +1,6 @@
 import { Form, FormInstance, InputNumber, Typography } from 'antd'
 import * as controller from '../controller/fickProfile.controller'
-import * as util from '../utils'
+import * as util from '../utils/formulas'
 
 interface FickFormProps {
   form: FormInstance
