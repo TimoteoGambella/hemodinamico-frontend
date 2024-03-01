@@ -7,7 +7,9 @@ import LiverProfileForm from './items/LiverProfileForm'
 import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
 import { validateTableSuppliedValues } from './EditableTable/utils/refactors'
+import { LaboratoryDataContext } from '../../contexts/LaboratoryDataProvider'
 import { StretcherDataContext } from '../../contexts/StretcherDataProvider'
+import { PatientDataContext } from '../../contexts/PatientDataProvider'
 import EditableTable, { DataSourceType } from './EditableTable'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
 import StretcherDiagnostic from './items/StretcherDiagnostic'
@@ -21,6 +23,7 @@ import GasometricForm from './items/GasometricForm'
 import { calcASCValue } from './utils/formulas'
 import FickForm from './items/FickProfileForm'
 import useMsgApi from '../../hooks/useMsgApi'
+import { ArgsProps } from 'antd/es/message'
 import { AxiosError } from 'axios'
 import './style.css'
 
@@ -290,13 +293,23 @@ CustomForm.EditPatient = function PatientForm(props: FormProps) {
 CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
   const msgApi = useMsgApi()
   const [form] = Form.useForm<LaboratoryData>()
+  const { updateLabs } = useContext(LaboratoryDataContext)
+  const { updateStretchers } = useContext(StretcherDataContext)
   const [isLoading, setIsLoading] = useState(false)
   const { onFinish: onFinishLab, onFinishFailed } = FormController(
     {
       formType: 'lab',
       formProp,
     },
-    () => setIsLoading(false)
+    (res) => {
+      setIsLoading(false)
+      msgApi.destroy('lab-form')
+      if (res instanceof AxiosError) {
+        msgApi.error('Error al actualizar la información del laboratorio.')
+      } else {
+        msgApi.success('Laboratorio actualizado con éxito.')
+      }
+    }
   )
   const { onFinish: onFinishPatient } = FormController(
     {
@@ -305,6 +318,7 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
       formProp,
     },
     (res) => {
+      msgApi.destroy('lab-patient-form')
       if (res instanceof AxiosError) {
         msgApi.error('Error al actualizar la información del paciente.')
       } else {
@@ -320,10 +334,38 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
 
     const patient = values.patientId as PatientData
     patient._id = (data as { patientId: PatientData }).patientId._id
+    patient.stretcherId = (
+      data as { patientId: PatientData }
+    ).patientId.stretcherId
 
     setIsLoading(true)
+    msgApi.open({
+      type: 'loading',
+      content: 'Actualizando paciente...',
+      key: 'lab-patient-form',
+      duration: 0,
+    })
+    msgApi.open({
+      type: 'loading',
+      content: 'Actualizando laboratorio...',
+      key: 'lab-form',
+      duration: 0,
+    })
     onFinishLab(lab as LaboratoryData)
-    onFinishPatient(patient)
+    onFinishPatient(patient).finally(() => {
+      msgApi.open({
+        type: 'loading',
+        content: 'Actualizando repositorios...',
+        key: 'update-repos',
+        duration: 0,
+      })
+      Promise.all([updateLabs(), updateStretchers()])
+        .then(() => {
+          msgApi.destroy('update-repos')
+          msgApi.success('Repositorio actualizado con éxito.')
+        })
+        .catch(() => msgApi.destroy('update-repos'))
+    })
   }
 
   useEffect(() => {
@@ -380,6 +422,7 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
   const [form] = Form.useForm<StretcherData>()
   const [isLoading, setIsLoading] = useState(false)
   const { updateStretchers } = useContext(StretcherDataContext)
+  const { updatePatients } = useContext(PatientDataContext)
   const [tableValues, setTableValues] = useState(
     stretcherInfo.suministros.drogas
   )
@@ -388,17 +431,20 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
       formType: 'update-stretcher',
       formProp,
     },
-    () => {
+    (res) => {
       setIsLoading(false)
-      msgApi.open({
-        type: 'loading',
-        content: 'Actualizando repositorio...',
-        key: 'update-stretcher',
-        duration: 0,
-      })
-      updateStretchers().finally(() => msgApi.destroy('update-stretcher'))
+      msgApi.destroy('update-lab')
+      if (res instanceof AxiosError) {
+        msgApi.error('Error al actualizar el laboratorio.')
+      } else {
+        msgApi.success('Laboratorio actualizado con éxito.')
+      }
     }
   )
+  const { onFinish: onPatientFinish } = FormController({
+    formType: 'update-patient',
+    formProp,
+  })
   if (stretcherInfo && !stretcherInfo.diagnostic.type) {
     stretcherInfo.diagnostic.type = ''
   }
@@ -416,6 +462,12 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
   }
 
   const handleSubmit = (values: Partial<StretcherData>) => {
+    /* PATIENT */
+    const patientId = stretcherInfo.patientId as PatientData
+    const patient = values.patientId as PatientData
+    patient._id = patientId._id
+    patient.stretcherId = patientId.stretcherId
+    /* LAB */
     delete values.patientId
     const suppliedData = validateTableSuppliedValues(
       tableValues as DataSourceType[]
@@ -430,7 +482,28 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
     values.suministros = { drogas: tableValues }
     values._id = stretcherInfo._id
     setIsLoading(true)
-    onFinish(values as StretcherData)
+    const msgBody: ArgsProps = {
+      type: 'loading',
+      content: 'Actualizando laboratorio...',
+      key: 'update-lab',
+      duration: 0,
+    }
+    /* SEND REQUEST */
+    msgApi.open(msgBody)
+    onPatientFinish(patient)
+    onFinish(values as StretcherData).finally(() => {
+      msgApi.open({
+        ...msgBody,
+        content: 'Actualizando repositorios...',
+        key: 'update-repos',
+      })
+      Promise.all([updateStretchers(), updatePatients()])
+        .then(() => {
+          msgApi.destroy('update-repos')
+          msgApi.success('Repositorio actualizado con éxito.')
+        })
+        .catch(() => msgApi.destroy('update-repos'))
+    })
   }
 
   useEffect(() => {

@@ -87,7 +87,6 @@ const MainContent = ({ data, msgApi, collapsed }: MainContentProps) => {
     if (formProp.status === 'loading') return
 
     if (formProp.status === 'ok') {
-      msgApi.success('Laboratorio actualizado con éxito.')
       setFormProp({
         ...formProp,
         status: 'initial',
