@@ -6,9 +6,11 @@ import HemotologyForm from './items/HematologyForm'
 import LiverProfileForm from './items/LiverProfileForm'
 import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
+import { validateTableSuppliedValues } from './EditableTable/utils/refactors'
 import { StretcherDataContext } from '../../contexts/StretcherDataProvider'
+import EditableTable, { DataSourceType } from './EditableTable'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
-import * as refactors from './EditableTable/utils/refactors'
+import StretcherDiagnostic from './items/StretcherDiagnostic'
 import StretcherConfing from './items/StretcherConfigForm'
 import CalculedVariables from './items/CalculedVariables'
 import CatheterForm from './items/CatheterProfileForm'
@@ -19,7 +21,6 @@ import GasometricForm from './items/GasometricForm'
 import { calcASCValue } from './utils/formulas'
 import FickForm from './items/FickProfileForm'
 import useMsgApi from '../../hooks/useMsgApi'
-import EditableTable from './EditableTable'
 import { AxiosError } from 'axios'
 import './style.css'
 
@@ -375,12 +376,12 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
 
 CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
   const msgApi = useMsgApi()
-  const stretcherInfo = data as StretcherData
+  const stretcherInfo = JSON.parse(JSON.stringify(data)) as StretcherData
   const [form] = Form.useForm<StretcherData>()
   const [isLoading, setIsLoading] = useState(false)
   const { updateStretchers } = useContext(StretcherDataContext)
   const [tableValues, setTableValues] = useState(
-    refactors.suppliedToTableValuesType(stretcherInfo.suministros.drogas)
+    stretcherInfo.suministros.drogas
   )
   const { onFinish, onFinishFailed } = FormController(
     {
@@ -398,6 +399,9 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
       updateStretchers().finally(() => msgApi.destroy('update-stretcher'))
     }
   )
+  if (stretcherInfo && !stretcherInfo.diagnostic.type) {
+    stretcherInfo.diagnostic.type = ''
+  }
 
   const shouldUpdateASC = (
     curValues: IStretcherFormType,
@@ -413,12 +417,17 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
 
   const handleSubmit = (values: Partial<StretcherData>) => {
     delete values.patientId
-    const suppliedData = refactors.tableValuesAsSupplied(tableValues)
-    if (suppliedData instanceof Promise) {
-      suppliedData.catch((err) => msgApi.warning(err))
+    const suppliedData = validateTableSuppliedValues(
+      tableValues as DataSourceType[]
+    )
+    if (!suppliedData) {
+      msgApi.warning(
+        'Por favor complete la información de los suministros correctamente.'
+      )
       return
     }
-    values.suministros = { drogas: suppliedData }
+    if (values.diagnostic?.type === '') values.diagnostic.type = null
+    values.suministros = { drogas: tableValues }
     values._id = stretcherInfo._id
     setIsLoading(true)
     onFinish(values as StretcherData)
@@ -426,9 +435,10 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
 
   useEffect(() => {
     setTimeout(() => {
-      form.setFieldsValue(data as LaboratoryData)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      form.setFieldsValue(stretcherInfo as any)
     }, 0)
-  }, [data, form])
+  }, [form, stretcherInfo])
 
   return (
     <Form
@@ -466,7 +476,9 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
       <Divider />
       <CalculedVariables form={form} />
       <Divider />
-      <EditableTable dataSource={tableValues} setDataSource={setTableValues} />
+      <EditableTable data={tableValues} setDataSource={setTableValues} />
+      <Divider />
+      <StretcherDiagnostic form={form} />
       <div className="submit-container">
         <Button type="primary" htmlType="submit" loading={isLoading}>
           Guardar registro

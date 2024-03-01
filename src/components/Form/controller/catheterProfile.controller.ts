@@ -28,7 +28,8 @@ export const shouldUpdatePulmonary = (curValues: IStretcherFormType, prevValues:
 
 export const shouldUpdateIndex = (curValues: IStretcherFormType, prevValues: IStretcherFormType) => {
   const gasto = curValues.cateter.gasto
-  const weight = curValues.patientId.weight
-  const height = curValues.patientId.height
-  return gasto !== prevValues.cateter.gasto || weight !== prevValues.patientId.weight || height !== prevValues.patientId.height
+  const weight = curValues.patientId?.weight
+  const height = curValues.patientId?.height
+  if (!curValues.patientId) console.error('patientId is undefined')
+  return gasto !== prevValues.cateter.gasto || weight !== prevValues.patientId?.weight || height !== prevValues.patientId?.height
 }

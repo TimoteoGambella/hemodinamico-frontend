@@ -1,31 +1,39 @@
 import React from 'react'
-import { Button, Popconfirm, Table } from 'antd'
+import { Button, Table, Typography } from 'antd'
 import useMsgApi from '../../../hooks/useMsgApi'
 import EditableCell from './items/EditableCell'
 import { suppliedSchema } from '../constants/suppliedSchemaDrugs'
 import EditableRow from './items/EditableRow'
+import DeleteBtn from './items/DeleteBtn'
+import * as refactor from './utils/refactors'
 
 type EditableTableProps = Parameters<typeof Table>[0]
 
 export interface DataSourceType {
   key: React.Key
-  name: SuppliedDrugs["name"] | 'SELECCIONAR'
-  dose: SuppliedDrugs["dose"]
+  name: SuppliedDrugs['name'] | 'SELECCIONAR'
+  dose: SuppliedDrugs['dose']
 }
 
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>
 
 interface IProps {
-  dataSource: DataSourceType[]
-  setDataSource: (value: DataSourceType[]) => void
+  data: SuppliedDrugs[]
+  setDataSource: (value: SuppliedDrugs[]) => void
 }
 
-const EditableTable = ({ dataSource, setDataSource }: IProps) => {
+const EditableTable = ({ data, setDataSource }: IProps) => {
   const msgApi = useMsgApi()
+  const dataSource = refactor.suppliedToTableValuesType(data)
+  const setValues = (newData: DataSourceType[]) => {
+    const value = refactor.tableValuesAsSupplied(newData)
+    if (value instanceof Promise) return
+    setDataSource(value)
+  }
 
   const handleDelete = (key: React.Key) => {
     const newData = dataSource.filter((item) => item.key !== key)
-    setDataSource(newData)
+    setValues(newData)
   }
 
   const defaultColumns: (ColumnTypes[number] & {
@@ -47,7 +55,7 @@ const EditableTable = ({ dataSource, setDataSource }: IProps) => {
       title: 'UNIDADES',
       dataIndex: 'units',
       render: (_, record) => {
-        const data = record as Supplied["drogas"][number]
+        const data = record as Supplied['drogas'][number]
         for (const item of suppliedSchema) {
           if (item.children.find((child) => child.value === data.name)) {
             return item.children.find((child) => child.value === data.name)
@@ -60,15 +68,13 @@ const EditableTable = ({ dataSource, setDataSource }: IProps) => {
     {
       title: 'ELIMINAR',
       dataIndex: 'operation',
-      render: (_, record) =>
-        dataSource.length >= 1 ? (
-          <Popconfirm
-            title="Sure to delete?"
-            onConfirm={() => handleDelete(record.key as React.Key)}
-          >
-            <a>Delete</a>
-          </Popconfirm>
-        ) : null,
+      render: (_, record) => (
+        <DeleteBtn
+          dataSource={dataSource}
+          record={record as DataSourceType}
+          handleDelete={handleDelete}
+        />
+      ),
     },
   ]
 
@@ -82,7 +88,7 @@ const EditableTable = ({ dataSource, setDataSource }: IProps) => {
       dose: 1,
       key: dataSource.length,
     }
-    setDataSource([...dataSource, newData])
+    setValues([...dataSource, newData])
   }
 
   const handleSave = (row: DataSourceType) => {
@@ -96,7 +102,7 @@ const EditableTable = ({ dataSource, setDataSource }: IProps) => {
     newData.forEach((item) =>
       Array.isArray(item.name) ? (item.name = item.name[1]) : null
     )
-    setDataSource(newData)
+    setValues(newData)
   }
 
   const components = {
@@ -112,7 +118,7 @@ const EditableTable = ({ dataSource, setDataSource }: IProps) => {
     }
     return {
       ...col,
-      onCell: (record: Supplied["drogas"][number]) => ({
+      onCell: (record: Supplied['drogas'][number]) => ({
         record,
         editable: col.editable,
         dataIndex: col.dataIndex,
@@ -123,19 +129,20 @@ const EditableTable = ({ dataSource, setDataSource }: IProps) => {
   })
 
   return (
-    <div>
+    <>
+      <Typography.Title level={4}>DROGAS SUMINISTRADAS</Typography.Title>
       <Button onClick={handleAdd} type="primary" style={{ marginBottom: 16 }}>
-        Add a row
+        Agregar
       </Button>
       <Table
-        components={components}
-        rowClassName={() => 'editable-row'}
         bordered
+        components={components}
         dataSource={dataSource}
         columns={columns as ColumnTypes}
         style={{ marginBottom: '1rem' }}
+        rowClassName={() => 'editable-row'}
       />
-    </div>
+    </>
   )
 }
 
