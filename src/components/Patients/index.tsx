@@ -1,9 +1,9 @@
-import { getColumns } from './controller'
-import { PlusOutlined } from '@ant-design/icons'
-import { useContext, useEffect, useState } from 'react'
 import { Button, Modal, Table, Typography } from 'antd'
-import { PatientDataContext } from '../../contexts/PatientDataProvider'
+import { PlusOutlined } from '@ant-design/icons'
+import usePatients from '../../hooks/usePatients'
 import useMsgApi from '../../hooks/useMsgApi'
+import { useEffect, useState } from 'react'
+import { getColumns } from './controller'
 import CustomForm from '../Form'
 import './style.css'
 
@@ -12,9 +12,7 @@ interface PateintsProps {}
 // eslint-disable-next-line no-empty-pattern
 const Patients = ({}: PateintsProps) => {
   const [open, setOpen] = useState(false)
-  const { patients: data, updatePatients } = useContext(PatientDataContext)
-  const [isLoading, setIsLoading] = useState(false)
-  const [shouldGetUsers, setShouldGetUsers] = useState(false)
+  const data = usePatients()
   const [confirmLoading, setConfirmLoading] = useState(false)
   const [formProp, setFormProp] = useState<FormPropType>({
     enable: true,
@@ -22,24 +20,13 @@ const Patients = ({}: PateintsProps) => {
     status: 'initial',
     shouldSubmit: false,
     setFormProp: undefined,
-    handleUpdate: setShouldGetUsers
   })
   const msgApi = useMsgApi()
-  const columns = getColumns({ setShouldGetUsers })
+  const columns = getColumns()
 
   const handleOk = () => {
     setFormProp({ ...formProp, shouldSubmit: true, setFormProp })
   }
-
-  useEffect(() => {
-    if (!shouldGetUsers) return
-
-    setIsLoading(true)
-    updatePatients().then(() => {
-      setIsLoading(false)
-      setShouldGetUsers(false)
-    })
-  }, [shouldGetUsers, updatePatients])
 
   useEffect(() => {
     if (formProp.shouldSubmit) return
@@ -47,7 +34,6 @@ const Patients = ({}: PateintsProps) => {
     if (formProp.status === 'ok') {
       msgApi.success('Paciente creado con éxito.')
       setOpen(false)
-      setShouldGetUsers(true)
       setConfirmLoading(false)
       setFormProp({ ...formProp, status: 'initial', message: null })
     } else if (formProp.status === 'form-error') {
@@ -84,7 +70,6 @@ const Patients = ({}: PateintsProps) => {
       </Modal>
       <Table
         bordered
-        loading={isLoading}
         columns={columns}
         rowKey={(user) => user._id}
         dataSource={data}

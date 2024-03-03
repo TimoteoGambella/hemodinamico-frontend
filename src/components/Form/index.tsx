@@ -1,15 +1,12 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormController } from './controller'
-import { Button, Divider, Empty, Form, Input, InputNumber } from 'antd'
 import LabPatientForm from './items/LabPatientForm'
 import HemotologyForm from './items/HematologyForm'
 import LiverProfileForm from './items/LiverProfileForm'
 import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
+import { Button, Divider, Empty, Form, Input, InputNumber } from 'antd'
 import { validateTableSuppliedValues } from './EditableTable/utils/refactors'
-import { LaboratoryDataContext } from '../../contexts/LaboratoryDataProvider'
-import { StretcherDataContext } from '../../contexts/StretcherDataProvider'
-import { PatientDataContext } from '../../contexts/PatientDataProvider'
 import EditableTable, { DataSourceType } from './EditableTable'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
 import StretcherDiagnostic from './items/StretcherDiagnostic'
@@ -23,9 +20,9 @@ import GasometricForm from './items/GasometricForm'
 import { calcASCValue } from './utils/formulas'
 import FickForm from './items/FickProfileForm'
 import useMsgApi from '../../hooks/useMsgApi'
-import { ArgsProps } from 'antd/es/message'
 import { AxiosError } from 'axios'
 import './style.css'
+import useUpdateRepo from '../../hooks/useUpdateRepo'
 
 interface FormProps {
   formProp: FormPropType
@@ -205,6 +202,7 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
 CustomForm.EditPatient = function PatientForm(props: FormProps) {
   const { formProp, data, onFieldsChange, onCancel } = props
   const msgApi = useMsgApi()
+  const updateRepo = useUpdateRepo()
   const [form] = Form.useForm<PatientData>()
   const patientData = { ...(data as PatientData) }
   const stretchers = useStretchers()
@@ -215,7 +213,7 @@ CustomForm.EditPatient = function PatientForm(props: FormProps) {
       formType: 'update-patient',
       formProp,
     },
-    () => formProp.handleUpdate?.(true)
+    () => updateRepo()
   )
   let label: string | undefined | null
   if (!patientData.stretcherId) {
@@ -292,9 +290,8 @@ CustomForm.EditPatient = function PatientForm(props: FormProps) {
 
 CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
   const msgApi = useMsgApi()
+  const updateRepo = useUpdateRepo()
   const [form] = Form.useForm<LaboratoryData>()
-  const { updateLabs } = useContext(LaboratoryDataContext)
-  const { updateStretchers } = useContext(StretcherDataContext)
   const [isLoading, setIsLoading] = useState(false)
   const { onFinish: onFinishLab, onFinishFailed } = FormController(
     {
@@ -351,21 +348,10 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
       key: 'lab-form',
       duration: 0,
     })
-    onFinishLab(lab as LaboratoryData)
-    onFinishPatient(patient).finally(() => {
-      msgApi.open({
-        type: 'loading',
-        content: 'Actualizando repositorios...',
-        key: 'update-repos',
-        duration: 0,
-      })
-      Promise.all([updateLabs(), updateStretchers()])
-        .then(() => {
-          msgApi.destroy('update-repos')
-          msgApi.success('Repositorio actualizado con éxito.')
-        })
-        .catch(() => msgApi.destroy('update-repos'))
-    })
+    Promise.all([
+      onFinishLab(lab as LaboratoryData),
+      onFinishPatient(patient),
+    ]).finally(() => updateRepo())
   }
 
   useEffect(() => {
@@ -418,11 +404,10 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
 
 CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
   const msgApi = useMsgApi()
+  const updateRepo = useUpdateRepo()
   const stretcherInfo = JSON.parse(JSON.stringify(data)) as StretcherData
   const [form] = Form.useForm<StretcherData>()
   const [isLoading, setIsLoading] = useState(false)
-  const { updateStretchers } = useContext(StretcherDataContext)
-  const { updatePatients } = useContext(PatientDataContext)
   const [tableValues, setTableValues] = useState(
     stretcherInfo.suministros.drogas
   )
@@ -445,6 +430,7 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
     formType: 'update-patient',
     formProp,
   })
+
   if (stretcherInfo && !stretcherInfo.diagnostic.type) {
     stretcherInfo.diagnostic.type = ''
   }
@@ -482,28 +468,17 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
     values.suministros = { drogas: tableValues }
     values._id = stretcherInfo._id
     setIsLoading(true)
-    const msgBody: ArgsProps = {
+    msgApi.open({
       type: 'loading',
       content: 'Actualizando laboratorio...',
       key: 'update-lab',
       duration: 0,
-    }
-    /* SEND REQUEST */
-    msgApi.open(msgBody)
-    onPatientFinish(patient)
-    onFinish(values as StretcherData).finally(() => {
-      msgApi.open({
-        ...msgBody,
-        content: 'Actualizando repositorios...',
-        key: 'update-repos',
-      })
-      Promise.all([updateStretchers(), updatePatients()])
-        .then(() => {
-          msgApi.destroy('update-repos')
-          msgApi.success('Repositorio actualizado con éxito.')
-        })
-        .catch(() => msgApi.destroy('update-repos'))
     })
+    /* SEND REQUEST */
+    Promise.all([
+      onFinish(values as StretcherData),
+      onPatientFinish(patient),
+    ]).finally(() => updateRepo())
   }
 
   useEffect(() => {

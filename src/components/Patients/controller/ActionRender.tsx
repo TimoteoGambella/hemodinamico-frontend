@@ -11,10 +11,9 @@ import CustomForm from '../../Form'
 
 interface ActionRenderProps {
   data: PatientData['_id']
-  setShouldGetUsers: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const ActionRender = ({ data, setShouldGetUsers }: ActionRenderProps) => {
+const ActionRender = ({ data }: ActionRenderProps) => {
   const [IsOpen, setIsOpen] = useState(false)
   const [isCancel, setIsCancel] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -30,7 +29,7 @@ const ActionRender = ({ data, setShouldGetUsers }: ActionRenderProps) => {
     status: 'initial',
     shouldSubmit: false,
     setFormProp: undefined,
-    handleUpdate: setShouldUpdate
+    handleUpdate: setShouldUpdate,
   })
   const msgApi = useMsgApi()
 
@@ -46,13 +45,12 @@ const ActionRender = ({ data, setShouldGetUsers }: ActionRenderProps) => {
 
     if (formProp.status === 'ok') {
       setIsLoading(false)
-      setShouldGetUsers(true)
       setIsOpen(false)
       setFormProp({ ...formProp, status: 'initial', message: null })
     } else if (formProp.status === 'loading') {
       setIsLoading(true)
     }
-  }, [formProp, msgApi, setShouldGetUsers])
+  }, [formProp, msgApi])
 
   useEffect(() => {
     if (!shouldUpdate) return

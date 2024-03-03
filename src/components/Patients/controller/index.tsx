@@ -6,11 +6,7 @@ import { MessageInstance } from 'antd/es/message/interface'
 
 const axios = new AxiosController()
 
-interface GetColumnsProps {
-  setShouldGetUsers: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-export function getColumns({ setShouldGetUsers }: GetColumnsProps): TableProps<PatientData>['columns'] {
+export function getColumns(): TableProps<PatientData>['columns'] {
   return [
     {
       title: 'DNI',
@@ -51,9 +47,7 @@ export function getColumns({ setShouldGetUsers }: GetColumnsProps): TableProps<P
       key: 'action',
       width: 265,
       render: (_, data) => {
-        return (
-          <ActionRender data={data._id} setShouldGetUsers={setShouldGetUsers} />
-        )
+        return <ActionRender data={data._id} />
       },
     },
   ]
@@ -66,14 +60,19 @@ interface HandleAssignLabProps {
   msgApi: MessageInstance
 }
 
-export async function handleAssignLab({ patient, updateLabs, updatePatients, msgApi }: HandleAssignLabProps) {
-  if(!patient) return
+export async function handleAssignLab({
+  patient,
+  updateLabs,
+  updatePatients,
+  msgApi,
+}: HandleAssignLabProps) {
+  if (!patient) return
   const body = { patientId: patient._id }
   msgApi.open({
     type: 'loading',
     content: 'Asignando laboratorio...',
     duration: 0,
-    key: 'assign-lab'
+    key: 'assign-lab',
   })
   const res = await axios.createLab(body)
   msgApi.destroy('assign-lab')
@@ -86,10 +85,12 @@ export async function handleAssignLab({ patient, updateLabs, updatePatients, msg
     type: 'loading',
     content: 'Actualizando repositorios...',
     duration: 0,
-    key: 'update-all'
+    key: 'update-all',
   })
-  await Promise.all([updateLabs(), updatePatients()]).then(() => {
-    msgApi.destroy('update-all')
-    msgApi.success('Repositorios actualizados con éxito.')
-  }).catch(() => msgApi.destroy('update-all'))
+  await Promise.all([updateLabs(), updatePatients()])
+    .then(() => {
+      msgApi.destroy('update-all')
+      msgApi.success('Repositorios actualizados con éxito.')
+    })
+    .catch(() => msgApi.destroy('update-all'))
 }
