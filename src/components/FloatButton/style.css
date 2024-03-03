@@ -1,0 +1,59 @@
+:root{
+  --float-bottom: calc(100dvh - 110px);
+  --float-max-bottom: calc(100dvh - 220px);
+}
+.float-btn-lab-form[data-open='true'] {
+  animation: onOpen 0.2s ease forwards;
+}
+.float-btn-lab-form[data-open='false'] {
+  animation: onClose 0.5s cubic-bezier(0.84, -0.27, 0.64, 0.22) forwards;
+}
+.float-btn-lab-form {
+  bottom: var(--float-bottom);
+  transition: left 0.5s
+    linear(
+      0 0%,
+      0 1.8%,
+      0.01 3.6%,
+      0.03 6.35%,
+      0.07 9.1%,
+      0.13 11.4%,
+      0.19 13.4%,
+      0.27 15%,
+      0.34 16.1%,
+      0.54 18.35%,
+      0.66 20.6%,
+      0.72 22.4%,
+      0.77 24.6%,
+      0.81 27.3%,
+      0.85 30.4%,
+      0.88 35.1%,
+      0.92 40.6%,
+      0.94 47.2%,
+      0.96 55%,
+      0.98 64%,
+      0.99 74.4%,
+      1 86.4%,
+      1 100%
+    )
+    0s;
+  & > button .ant-float-btn-content {
+    margin-right: 3px;
+  }
+}
+@keyframes onOpen {
+  0% {
+    bottom: var(--float-bottom);
+  }
+  100% {
+    bottom: var(--float-max-bottom);
+  }
+}
+@keyframes onClose {
+  0% {
+    bottom: var(--float-max-bottom);
+  }
+  100% {
+    bottom: var(--float-bottom);
+  }
+}

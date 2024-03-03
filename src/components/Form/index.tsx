@@ -366,7 +366,7 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
     }, 0)
   }, [data, form])
 
-  if (!data) return <Empty />
+  if (!data) return <Empty description="Sin datos" />
 
   return (
     <Form

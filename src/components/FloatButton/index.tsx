@@ -2,6 +2,7 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
 import useCollapsed from '../../hooks/useCollapsed'
 import { FloatButton } from 'antd'
 import Icon from '../Icon'
+import './style.css'
 
 interface LocalFloatButtonProps {
   onEditClick: () => void
