@@ -1,6 +1,6 @@
 import { MessageInstance } from "antd/es/message/interface"
 import { Flex, Typography, Tag, Space } from "antd"
-import FormFloatButton from "../FloatButton"
+import FloatBtn from "../FloatBtn"
 import { useState } from "react"
 import CustomForm from "../Form"
 
@@ -34,7 +34,8 @@ const StretcherContent = ({ stretcherData }: MainContentProps) => {
           ))}
         </Flex>
       </Flex>
-      <FormFloatButton onEditClick={handleEdit} />
+      <FloatBtn.Options onEditClick={handleEdit} />
+      <FloatBtn.ToTop />
       <Flex justify="center" gap={10} wrap="wrap">
         <Space className="form-space-content">
           <CustomForm.Stretchers formProp={formProp} data={stretcherData} />

@@ -1,15 +1,8 @@
-:root{
+:root {
   --float-bottom: calc(100dvh - 110px);
   --float-max-bottom: calc(100dvh - 220px);
 }
-.float-btn-lab-form[data-open='true'] {
-  animation: onOpen 0.2s ease forwards;
-}
-.float-btn-lab-form[data-open='false'] {
-  animation: onClose 0.5s cubic-bezier(0.84, -0.27, 0.64, 0.22) forwards;
-}
-.float-btn-lab-form {
-  bottom: var(--float-bottom);
+.float-btn {
   transition: left 0.5s
     linear(
       0 0%,
@@ -37,6 +30,15 @@
       1 100%
     )
     0s;
+}
+.float-btn.lab-form[data-open='true'] {
+  animation: onOpen 0.2s ease forwards;
+}
+.float-btn.lab-form[data-open='false'] {
+  animation: onClose 0.5s cubic-bezier(0.84, -0.27, 0.64, 0.22) forwards;
+}
+.float-btn.lab-form {
+  bottom: var(--float-bottom);
   & > button .ant-float-btn-content {
     margin-right: 3px;
   }

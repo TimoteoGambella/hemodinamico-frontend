@@ -1,7 +1,7 @@
 import { Empty, Flex, Space, Typography } from "antd"
 import { MessageInstance } from "antd/es/message/interface"
 import { useState, useEffect } from "react"
-import FormFloatButton from "../FloatButton"
+import FloatBtn from "../FloatBtn"
 import CustomForm from "../Form"
 
 interface MainContentProps {
@@ -65,7 +65,8 @@ const LabContent = ({ data, msgApi }: MainContentProps) => {
   return (
     <>
       <Typography.Title level={2}>EXÁMEN DE LABORATORIO</Typography.Title>
-      <FormFloatButton onEditClick={handleEnableEdit} />
+      <FloatBtn.Options onEditClick={handleEnableEdit} />
+      <FloatBtn.ToTop />
       <Flex justify="center" gap={10} wrap="wrap">
         <Space className="form-space-content">
           <CustomForm.Laboratory
