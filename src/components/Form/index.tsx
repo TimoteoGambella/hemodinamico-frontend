@@ -496,8 +496,9 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
       onFinish={handleSubmit}
       onFinishFailed={onFinishFailed}
       className="form-component"
-      scrollToFirstError
       initialValues={{ ...stretcherInfo, patientId: stretcherInfo!.patientId }}
+      disabled={!formProp.enable}
+      scrollToFirstError
     >
       <StretcherConfing />
       <Divider />

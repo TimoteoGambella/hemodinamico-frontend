@@ -8,6 +8,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom'
+import { CollapseContext } from '../../contexts/CollapseProvider'
 import useLoginStatus from '../../hooks/useLoginStatus'
 import useStretchers from '../../hooks/useStretchers'
 import * as Controller from './controller'
@@ -23,9 +24,7 @@ import './index.css'
 const { Content, Sider } = Layout
 
 const App = () => {
-  const [collapsed, setCollapsed] = useState(
-    window.document.body.clientWidth <= 768
-  )
+  const { isCollapsed, setIsCollapsed } = useContext(CollapseContext)
   const { msgApi, contextHolder } = useContext(MsgApiContext)
   const [defaultSelectedKey, setDefaultSelectedKey] = useState(['dashboard'])
   const { handleLogout, renderMenuItems } = Controller
@@ -50,23 +49,10 @@ const App = () => {
   }, [msgApi, stretchers, labs])
 
   useEffect(() => {
-    const handleResize = () => {
-      if (!collapsed && window.document.body.clientWidth <= 768)
-        setCollapsed(true)
-    }
-
-    window.addEventListener('resize', handleResize)
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [collapsed])
-
-  useEffect(() => {
     Controller.selectDefaultController(location.pathname, setDefaultSelectedKey)
   }, [location])
 
-  if(!isLogged) return null
+  if (!isLogged) return null
 
   return (
     <>
@@ -75,8 +61,8 @@ const App = () => {
       <Layout>
         <Sider
           collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
+          collapsed={isCollapsed}
+          onCollapse={(value) => setIsCollapsed(value)}
         >
           <Button
             icon={<Icon.CloseSession />}
@@ -102,10 +88,7 @@ const App = () => {
               <Route path="/usuarios" element={<Users />} />
               <Route path="/pacientes" element={<Patients />} />
               <Route path="/cama/:id" element={<Stretcher />} />
-              <Route
-                path="/laboratorio/:id"
-                element={<Laboratory collapsed={collapsed} />}
-              />
+              <Route path="/laboratorio/:id" element={<Laboratory />} />
               <Route path="*" element={<Navigate to="/404" replace />} />
             </Switch>
           </Content>

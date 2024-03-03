@@ -1,16 +1,14 @@
-import { MessageInstance } from 'antd/es/message/interface'
 import { Empty, Flex, Space, Spin, Tag, Typography } from 'antd'
+import { MessageInstance } from 'antd/es/message/interface'
 import useStretchers from '../../hooks/useStretchers'
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import FormFloatButton from '../FloatButton'
 import useMsgApi from '../../hooks/useMsgApi'
+import { useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import CustomForm from '../Form'
 import './style.css'
 
-interface StretcherProps {}
-
-// eslint-disable-next-line no-empty-pattern
-const Stretcher = ({}: StretcherProps) => {
+const Stretcher = () => {
   const { id } = useParams()
   const msgApi = useMsgApi()
   const [isLoading, setIsLoading] = useState(true)
@@ -39,14 +37,15 @@ interface MainContentProps {
 }
 
 const MainContent = ({ stretcherData }: MainContentProps) => {
-  const [formProp] = useState<FormPropType>({
+  const [formProp, setFormProp] = useState<FormPropType>({
     shouldSubmit: false,
+    enable: false,
     status: 'ok',
     message: '',
-    enable: true,
   })
 
-  useEffect(() => {}, [formProp])
+  const handleEdit = () =>
+    setFormProp({ ...formProp, enable: !formProp.enable })
 
   return (
     <>
@@ -62,6 +61,7 @@ const MainContent = ({ stretcherData }: MainContentProps) => {
           ))}
         </Flex>
       </Flex>
+      <FormFloatButton onEditClick={handleEdit} />
       <Flex justify="center" gap={10} wrap="wrap">
         <Space className="form-space-content">
           <CustomForm.Stretchers formProp={formProp} data={stretcherData} />
