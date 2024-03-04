@@ -65,7 +65,7 @@ const LabContent = ({ data, msgApi }: MainContentProps) => {
   return (
     <>
       <Typography.Title level={2}>EXÁMEN DE LABORATORIO</Typography.Title>
-      <FloatBtn.Options onEditClick={handleEnableEdit} />
+      <FloatBtn.Options onEditClick={handleEnableEdit} deleteType="lab" />
       <FloatBtn.ToTop />
       <Flex justify="center" gap={10} wrap="wrap">
         <Space className="form-space-content">

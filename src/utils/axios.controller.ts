@@ -122,6 +122,13 @@ export default class AxiosController {
     })
   }
 
+  async deleteLab(id: string): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/laboratory/delete/${id}`,
+      method: 'DELETE'
+    })
+  }
+
   async createLab(body: { patientId: string }): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: '/laboratory/create',

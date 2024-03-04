@@ -34,7 +34,7 @@ const StretcherContent = ({ stretcherData }: MainContentProps) => {
           ))}
         </Flex>
       </Flex>
-      <FloatBtn.Options onEditClick={handleEdit} />
+      <FloatBtn.Options onEditClick={handleEdit} deleteType="stretcher" />
       <FloatBtn.ToTop />
       <Flex justify="center" gap={10} wrap="wrap">
         <Space className="form-space-content">

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormController } from './controller'
 import LabPatientForm from './items/LabPatientForm'
 import HemotologyForm from './items/HematologyForm'
@@ -7,11 +7,11 @@ import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
 import { Button, Divider, Empty, Form, Input, InputNumber } from 'antd'
 import { validateTableSuppliedValues } from './EditableTable/utils/refactors'
-import { StretcherDataContext } from '../../contexts/StretcherDataProvider'
-import { PatientDataContext } from '../../contexts/PatientDataProvider'
+import useUpdateStretchers from '../../hooks/useUpdateStretcher'
 import EditableTable, { DataSourceType } from './EditableTable'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
 import StretcherDiagnostic from './items/StretcherDiagnostic'
+import useUpdatePatients from '../../hooks/useUpdatePatients'
 import StretcherConfing from './items/StretcherConfigForm'
 import CalculedVariables from './items/CalculedVariables'
 import CatheterForm from './items/CatheterProfileForm'
@@ -151,8 +151,8 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
 CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
   const msgApi = useMsgApi()
   const [form] = Form.useForm<PatientData>()
-  const { updatePatients } = useContext(PatientDataContext)
-  const { updateStretchers } = useContext(StretcherDataContext)
+  const updatePatients = useUpdatePatients()
+  const updateStretchers =useUpdateStretchers()
   const freeStretchers = useStretchers()?.filter(
     (stretcher) => !stretcher.patientId
   )

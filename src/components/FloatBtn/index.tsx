@@ -1,7 +1,18 @@
-import { DeleteOutlined, EditOutlined, VerticalAlignTopOutlined } from '@ant-design/icons'
+import {
+  DeleteOutlined,
+  EditOutlined,
+  VerticalAlignTopOutlined,
+} from '@ant-design/icons'
+import { handleDeleteClick } from './controller'
 import useCollapsed from '../../hooks/useCollapsed'
+import { useParams, useNavigate } from 'react-router-dom'
+import useUpdatePatients from '../../hooks/useUpdatePatients'
+import useUpdateLabs from '../../hooks/useUpdateLabs'
+import { FloatButton, Popconfirm } from 'antd'
+import useMsgApi from '../../hooks/useMsgApi'
 import { useEffect, useState } from 'react'
-import { FloatButton } from 'antd'
+import useLabs from '../../hooks/useLabs'
+import { AxiosError } from 'axios'
 import Icon from '../Icon'
 import './style.css'
 
@@ -11,10 +22,22 @@ export default function FloatBtn(children: React.ReactNode) {
 
 interface LocalFloatButtonProps {
   onEditClick: () => void
+  deleteType: 'lab' | 'stretcher'
 }
 
-FloatBtn.Options = function Options({ onEditClick }: LocalFloatButtonProps) {
+FloatBtn.Options = function Options({
+  onEditClick,
+  deleteType,
+}: LocalFloatButtonProps) {
+  const labs = useLabs()
+  const { id } = useParams()
+  const msgApi = useMsgApi()
   const collapsed = useCollapsed()
+  const navigateTo = useNavigate()
+  const updateLabs = useUpdateLabs()
+  const updatePatients = useUpdatePatients()
+
+  if (!id) return
 
   const handleOpen = (open: boolean) => {
     const el = document.querySelector('.float-btn.lab-form') as HTMLElement
@@ -23,6 +46,25 @@ FloatBtn.Options = function Options({ onEditClick }: LocalFloatButtonProps) {
     } else {
       el.dataset.open = 'false'
     }
+  }
+  const handleDelete = () => {
+    handleDeleteClick(id, msgApi, deleteType).then((res) => {
+      if (!(res instanceof AxiosError)) {
+        msgApi.open({
+          content: 'Actualizando repositorio...',
+          duration: 0,
+          key: 'update-partial-repo',
+          type: 'loading',
+        })
+        Promise.all([updateLabs(), updatePatients()])
+          .then(() => {
+            const to = labs.find((lab) => lab._id !== id)?._id
+            if (to) navigateTo('/laboratorio/' + to)
+            else navigateTo('/pacientes')
+          })
+          .finally(() => msgApi.destroy('update-partial-repo'))
+      }
+    })
   }
 
   return (
@@ -35,7 +77,17 @@ FloatBtn.Options = function Options({ onEditClick }: LocalFloatButtonProps) {
       style={!collapsed ? { left: 220 } : { left: 100 }}
     >
       <FloatButton onClick={onEditClick} icon={<EditOutlined />} />
-      <FloatButton icon={<DeleteOutlined />} />
+      <Popconfirm
+        title={`¿Estás seguro de eliminar ${
+          deleteType === 'lab' ? 'este laboratorio' : 'esta cama'
+        }?`}
+        placement="rightBottom"
+        onConfirm={handleDelete}
+        cancelText="No"
+        okText="Sí"
+      >
+        <FloatButton icon={<DeleteOutlined />} />
+      </Popconfirm>
     </FloatButton.Group>
   )
 }
@@ -67,7 +119,7 @@ FloatBtn.ToTop = function ToTop() {
           type="default"
           onClick={handleClick}
           tooltip="Volver arriba"
-          className='float-btn to-top'
+          className="float-btn to-top"
           icon={<VerticalAlignTopOutlined />}
           style={!collapsed ? { left: 220 } : { left: 100 }}
         />
