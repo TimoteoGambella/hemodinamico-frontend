@@ -164,7 +164,6 @@ interface Infective {
 interface Kidney {
   urea: number | null
   creatinina: number | null
-  TFG: number | null
 }
 
 interface Diagnostic {

@@ -239,3 +239,15 @@ export function calcITSVI(
     (((avgPAP - capilar) * cardiacIndex * 13.6) / heartRate).toFixed(2)
   )
 }
+
+/* ================== KIDNEY PROFILE ==================== */
+
+export function calcTFG(gender: PatientData["gender"], creatinina: number, age: number, weight: number) {
+  const val = (140 - age) * weight / (72 * creatinina)
+  console.log('val', creatinina)
+  if (gender === 'M') {
+    return Number((val * 1).toFixed(2))
+  } else {
+    return Number((val * 0.85).toFixed(2))
+  }
+}

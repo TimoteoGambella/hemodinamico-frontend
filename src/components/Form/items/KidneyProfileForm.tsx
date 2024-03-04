@@ -1,4 +1,5 @@
 import { Form, Input, InputNumber, Typography } from 'antd'
+import { calcTFG } from '../utils/formulas'
 
 const KidneyProfileForm = () => {
   return (
@@ -31,17 +32,15 @@ const KidneyProfileForm = () => {
         <InputNumber step={0.1} />
       </Form.Item>
 
-      <Form.Item
-        name={['kidney', 'TFG']}
-        label="T.F.G (C-G)"
-        rules={[
-          {
-            required: true,
-            message: 'Por favor ingrese el valor de TFG del paciente',
-          },
-        ]}
-      >
-        <Input readOnly />
+      <Form.Item shouldUpdate label="T.F.G (C-G)">
+        {(form) => {
+          const creatinina = form.getFieldValue(['kidney', 'creatinina']) || '-'
+          const weight = form.getFieldValue(['patientId', 'weight']) || '-'
+          const gender = form.getFieldValue(['patientId', 'gender']) || '-'
+          const age = form.getFieldValue(['patientId', 'age']) || '-'
+          const value = calcTFG(gender, creatinina, age, weight)
+          return <Input value={!isNaN(value) ? value : '-'} disabled />
+        }}
       </Form.Item>
     </>
   )

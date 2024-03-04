@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { FormController } from './controller'
 import LabPatientForm from './items/LabPatientForm'
 import HemotologyForm from './items/HematologyForm'
@@ -7,6 +7,8 @@ import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
 import { Button, Divider, Empty, Form, Input, InputNumber } from 'antd'
 import { validateTableSuppliedValues } from './EditableTable/utils/refactors'
+import { StretcherDataContext } from '../../contexts/StretcherDataProvider'
+import { PatientDataContext } from '../../contexts/PatientDataProvider'
 import EditableTable, { DataSourceType } from './EditableTable'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
 import StretcherDiagnostic from './items/StretcherDiagnostic'
@@ -14,6 +16,7 @@ import StretcherConfing from './items/StretcherConfigForm'
 import CalculedVariables from './items/CalculedVariables'
 import CatheterForm from './items/CatheterProfileForm'
 import useStretchers from '../../hooks/useStretchers'
+import useUpdateRepo from '../../hooks/useUpdateRepo'
 import DiagnosticForm from './items/DiagnosticForm'
 import formItemLayout from './constants/formLayout'
 import GasometricForm from './items/GasometricForm'
@@ -22,7 +25,6 @@ import FickForm from './items/FickProfileForm'
 import useMsgApi from '../../hooks/useMsgApi'
 import { AxiosError } from 'axios'
 import './style.css'
-import useUpdateRepo from '../../hooks/useUpdateRepo'
 
 interface FormProps {
   formProp: FormPropType
@@ -147,7 +149,10 @@ CustomForm.User = function UserForm({ formProp }: FormProps) {
 }
 
 CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
+  const msgApi = useMsgApi()
   const [form] = Form.useForm<PatientData>()
+  const { updatePatients } = useContext(PatientDataContext)
+  const { updateStretchers } = useContext(StretcherDataContext)
   const freeStretchers = useStretchers()?.filter(
     (stretcher) => !stretcher.patientId
   )
@@ -156,9 +161,19 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
       formType: 'patient',
       formProp,
     },
-    () => {
-      form.resetFields()
-      formProp.handleUpdate?.(true)
+    (res) => {
+      if (!(res instanceof AxiosError)) {
+        form.resetFields()
+        msgApi.open({
+          type: 'loading',
+          content: 'Actualizando repositorio...',
+          duration: 0,
+          key: 'update-patientForm-repo',
+        })
+        Promise.all([updatePatients(), updateStretchers()])
+          .then(() => msgApi.success('Repositorio actualizado con éxito.', 4))
+          .finally(() => msgApi.destroy('update-patientForm-repo'))
+      }
     }
   )
 
