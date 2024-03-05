@@ -205,7 +205,9 @@ interface LaboratoryData {
   diagnostic: Diagnostic
   infective: Infective
   kidney: Kidney
-  timestamp: number
+  editedBy: string
+  editedAt: number | null
+  createdAt: number
 }
 
 interface IStretcherFormType extends StretcherData {

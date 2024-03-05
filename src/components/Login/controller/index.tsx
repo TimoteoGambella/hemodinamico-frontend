@@ -41,7 +41,6 @@ export const handleSubmit =
         type: 'success',
         content: 'Inicio de sesión exitoso',
       })
-      console.log(res)
       setTimeout(() => {
         loginProvider.updateIsLogged().then(() => navigateTo('/dashboard'))
       }, 1200)

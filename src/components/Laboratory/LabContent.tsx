@@ -1,8 +1,8 @@
-import { Empty, Flex, Space, Typography } from "antd"
-import { MessageInstance } from "antd/es/message/interface"
-import { useState, useEffect } from "react"
-import FloatBtn from "../FloatBtn"
-import CustomForm from "../Form"
+import { Empty, Flex, Space, Typography } from 'antd'
+import { MessageInstance } from 'antd/es/message/interface'
+import { useState, useEffect } from 'react'
+import FloatBtn from '../FloatBtn'
+import CustomForm from '../Form'
 
 interface MainContentProps {
   msgApi: MessageInstance
@@ -10,7 +10,9 @@ interface MainContentProps {
 }
 
 const LabContent = ({ data, msgApi }: MainContentProps) => {
+  const { editedAt, createdAt } = data
   const { patientId: patientInfo } = data
+  const editedBy = new Date(editedAt ? editedAt : createdAt).toLocaleString()
   const [labInfo, setLabInfo] = useState<LaboratoryData | null>(null)
   const [formProp, setFormProp] = useState<FormPropType>({
     enable: false,
@@ -64,7 +66,13 @@ const LabContent = ({ data, msgApi }: MainContentProps) => {
   if (typeof patientInfo === 'string') return <Empty description="Sin datos" />
   return (
     <>
-      <Typography.Title level={2}>EXÁMEN DE LABORATORIO</Typography.Title>
+      <div className="form-lab-header">
+        <Typography.Title className='title' level={2}>EXÁMEN DE LABORATORIO</Typography.Title>
+        <Typography.Text className='text'>
+          {data.editedAt ? 'Última vez editado: ' : 'Creado el: '}
+          {editedBy}
+        </Typography.Text>
+      </div>
       <FloatBtn.Options onEditClick={handleEnableEdit} deleteType="lab" />
       <FloatBtn.ToTop />
       <Flex justify="center" gap={10} wrap="wrap">

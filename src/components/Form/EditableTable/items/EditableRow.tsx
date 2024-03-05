@@ -18,7 +18,7 @@ const EditableRow: React.FC<EditableRowProps> = ({ index, ...props }) => {
   const [form] = Form.useForm()
 
   return (
-    <Form onFinish={(e) => console.log(e)} form={form} component={false}>
+    <Form form={form} component={false}>
       <EditableContext.Provider value={form}>
         <tr {...props} />
       </EditableContext.Provider>

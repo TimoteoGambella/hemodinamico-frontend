@@ -185,7 +185,6 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
 
   useEffect(() => {
     if (formProp.shouldSubmit && formProp.status === 'initial') {
-      console.log('submitting form')
       form.submit()
     }
   }, [formProp, form])
@@ -251,7 +250,6 @@ CustomForm.EditPatient = function PatientForm(props: FormProps) {
 
   useEffect(() => {
     if (formProp.shouldSubmit && formProp.status === 'initial') {
-      console.log('submitting form')
       form.submit()
     }
   }, [formProp, form])

@@ -1,5 +1,5 @@
 import useMsgApi from '../../hooks/useMsgApi'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import useLabs from '../../hooks/useLabs'
 import { Empty, Spin, Tabs } from 'antd'
@@ -7,19 +7,19 @@ import LabContent from './LabContent'
 import './style.css'
 
 const Laboratory = () => {
+  const labs = useLabs()
   const { id } = useParams()
   const msgApi = useMsgApi()
-  const [shouldRender] = useState(true)
+  const navigateTo = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
-  const data = useLabs().find((lab) => lab._id === id)
-
+  const [data, setData] = useState<LaboratoryData | null>(null)
   const tabs = [
     {
       label: 'Información general',
-      key: '0',
+      key: 'general-info',
       children: (
         <Spin spinning={isLoading}>
-          {shouldRender && data ? (
+          {data ? (
             <LabContent data={data} msgApi={msgApi} />
           ) : (
             <Empty description="Sin datos" />
@@ -29,19 +29,28 @@ const Laboratory = () => {
     },
     {
       label: 'Resumen',
-      key: '1',
+      key: 'summary',
       children: <Empty description="Sin datos" />,
     },
     {
       label: 'Gráficos y tendencias',
-      key: '2',
+      key: 'graphs-trends',
       children: <Empty description="Sin datos" />,
-    }
+    },
   ]
 
   useEffect(() => {
-    if (data) setIsLoading(false)
-  }, [data])
+    const res = labs.find((lab) => lab._id === id) || null
+    setData(res)
+    setIsLoading(false)
+  }, [id, labs])
+
+  useEffect(() => {
+    if (!data && !isLoading && id && labs.length > 0) {
+      const res = labs.find((lab) => lab._id === id)
+      if (!res) navigateTo('/404')
+    }
+  }, [data, id, isLoading, labs, navigateTo])
 
   return <Tabs type="card" items={tabs} />
 }
