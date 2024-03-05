@@ -15,6 +15,7 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
       <Typography.Title level={4}>DIAGNÓSTICO</Typography.Title>
       <Form.Item name={['diagnostic', 'type']} label="Tipo">
         <Select
+          placeholder="Seleccionar"
           onChange={(e) => {
             form.setFieldValue(['diagnostic', 'subtype'], null)
             form.setFieldValue(['diagnostic', 'child'], null)
@@ -41,11 +42,15 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
       >
         {() => {
           const selected = form.getFieldValue(['diagnostic', 'type'])
-          const enabled = selected ? true : false
           const obj = schemeValues.find((value) => value.name === selected)
+          const enabled = selected ? true : false
+          const isDisabled = !isEnabled || !enabled
           return (
             <Form.Item name={['diagnostic', 'subtype']} noStyle>
-              <Select disabled={!isEnabled || !enabled}>
+              <Select
+                placeholder={!isDisabled ? 'Seleccionar' : null}
+                disabled={isDisabled}
+              >
                 {obj?.subType.map((value, index) => (
                   <Select.Option key={index} value={value.name}>
                     {value.label}
@@ -76,11 +81,17 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
           const selected = form.getFieldValue(['diagnostic', 'type'])
           const obj = schemeValues.find((value) => value.name === selected)
           const enabled = selected ? true : false
+          const isDisabled = !isEnabled || !(enabled && !!obj?.child)
           return (
             <Form.Item name={['diagnostic', 'child']} noStyle>
-              <Select disabled={!isEnabled || !(enabled && !!obj?.child)}>
+              <Select
+                placeholder={!isDisabled ? 'Seleccionar' : null}
+                disabled={isDisabled}
+              >
                 {obj?.child?.map((value, index) => (
-                  <Select.Option key={index} value={value.name}>{value.label}</Select.Option>
+                  <Select.Option key={index} value={value.name}>
+                    {value.label}
+                  </Select.Option>
                 ))}
               </Select>
             </Form.Item>
