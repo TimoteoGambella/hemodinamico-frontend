@@ -18,10 +18,8 @@
   background-color: white;
   position: absolute;
   right: 0;
-  width: 45%;
+  width: clamp(300px, 50%, 750px);
   height: 100dvh;
-  max-width: 750px;
-  min-width: 200px;
   transition: all 0.5s;
 }
 .ant-form.login-form .ant-typography {
@@ -35,6 +33,20 @@
   max-width: 700px;
   padding: .5rem 2rem;
   transition: padding 0.5s;
+  position: relative;
+}
+.ant-form.login-form .login-form-header {
+  position: absolute;
+  top: 10%;
+  display: flex;
+  flex-direction: column;
+  & .ant-typography {
+    margin-bottom: 0 !important;
+  }
+}
+.ant-form.login-form .logo {
+  align-self: center;
+  width: clamp(70px, 15%, 250px);
 }
 
 @media screen and (max-width: 1023px) {
@@ -50,5 +62,11 @@
     left: 50%;
     bottom: 50%;
     transform: translate(-50%, 50%);
+  }
+  .ant-form.login-form .login-form-header {
+    position: inherit;
+    & .ant-typography {
+      margin-bottom: 2rem !important;
+    }
   }
 }

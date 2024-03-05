@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from 'react'
 import useFlushRepo from '../../hooks/useFlushRepo'
 import { useNavigate } from 'react-router-dom'
 import { handleSubmit } from './controller'
+import logo from '../../assets/logo.webp'
 import './style.css'
 
 const Login = (): React.ReactElement => {
@@ -36,6 +37,13 @@ const Login = (): React.ReactElement => {
               loginProvider,
             })}
           >
+            <div className='login-form-header'>
+              <img src={logo} alt="logo" className="logo" />
+              <Typography.Title level={4}>
+                <span>SERVICIO DE CARDIOLOGÍA CLÍNICA</span><br />
+                <span>INSTITUTO NACIONAL CARDIOVASCULAR</span>
+              </Typography.Title>
+            </div>
             <Typography.Title level={2}>Iniciar Sesión</Typography.Title>
             <Form.Item
               name="username"
