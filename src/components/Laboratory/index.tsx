@@ -32,6 +32,11 @@ const Laboratory = () => {
       key: '1',
       children: <Empty description="Sin datos" />,
     },
+    {
+      label: 'Gráficos y tendencias',
+      key: '2',
+      children: <Empty description="Sin datos" />,
+    }
   ]
 
   useEffect(() => {
