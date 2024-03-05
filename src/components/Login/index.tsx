@@ -30,9 +30,9 @@ const Login = (): React.ReactElement => {
             className="login-form"
             initialValues={{ remember: true }}
             onFinish={handleSubmit({
-              setIsLoading,
               msgApi,
               navigateTo,
+              setIsLoading,
               loginProvider,
             })}
           >

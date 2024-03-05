@@ -63,7 +63,13 @@ export async function handleLogout(msgApi: MessageInstance, navigateTo: Navigate
   }
 }
 
-export async function getItems(reqStretchers: StretcherData[], reqLabs: LaboratoryData[]): Promise<MenuItem[]> {
+interface GetItemsProps {
+  reqStretchers: StretcherData[] | AxiosError
+  reqLabs: LaboratoryData[] | AxiosError
+  isAdmin: boolean
+}
+
+export async function getItems({ reqStretchers, reqLabs, isAdmin }: GetItemsProps): Promise<MenuItem[]> {
   return await new Promise((resolve, reject) => {
     if (reqStretchers instanceof AxiosError) return reject([])
     if (reqLabs instanceof AxiosError) return reject([])
@@ -81,13 +87,16 @@ export async function getItems(reqStretchers: StretcherData[], reqLabs: Laborato
         <SolutionOutlined />
       )
     )
-    return resolve([
+
+    const items = [
       getItem('Dashboard', 'dashboard', <PieChartOutlined />),
-      getItem('Usuarios', 'usuarios', <TeamOutlined />),
       getItem('Pacientes', 'pacientes', <TeamOutlined />),
       getItem('Laboratorio', 'laboratorio', <Icon.Flask />, laboratories),
       getItem('Camas', 'cama', <AppstoreOutlined />, stretchers),
-    ])
+    ]
+
+    if (isAdmin) items.splice(1, 0, getItem('Usuarios', 'usuarios', <TeamOutlined />))
+    return resolve(items)
   })
 }
 

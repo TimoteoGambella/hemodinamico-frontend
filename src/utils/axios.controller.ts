@@ -26,6 +26,13 @@ export default class AxiosController {
     return response.status === 200
   }
 
+  async getAuthUser(): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: '/auth/user',
+      method: 'GET'
+    })
+  }
+
   async login(body: FormLogin): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: '/auth/login',

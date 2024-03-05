@@ -21,6 +21,8 @@ type UserData = {
   timestamp: number
 }
 
+type AuthUserData = Omit<UserData, 'timestamp'>
+
 type PatientData = {
   _id: string
   stretcherId: string | null | undefined

@@ -11,6 +11,7 @@ import {
 import { CollapseContext } from '../../contexts/CollapseProvider'
 import useLoginStatus from '../../hooks/useLoginStatus'
 import useStretchers from '../../hooks/useStretchers'
+import useUserInfo from '../../hooks/useUserInfo'
 import * as Controller from './controller'
 import useLabs from '../../hooks/useLabs'
 import Laboratory from '../Laboratory'
@@ -24,9 +25,9 @@ import './index.css'
 const { Content, Sider } = Layout
 
 const App = () => {
+  const [defaultSelectedKey, setDefaultSelectedKey] = useState(['dashboard'])
   const { isCollapsed, setIsCollapsed } = useContext(CollapseContext)
   const { msgApi, contextHolder } = useContext(MsgApiContext)
-  const [defaultSelectedKey, setDefaultSelectedKey] = useState(['dashboard'])
   const { handleLogout, renderMenuItems } = Controller
   const [items, setItems] = useState<MenuItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -34,11 +35,16 @@ const App = () => {
   const isLogged = useLoginStatus()
   const navigateTo = useNavigate()
   const location = useLocation()
+  const authUser = useUserInfo()
   const labs = useLabs()
 
   useEffect(() => {
     if (!stretchers || !labs) return
-    Controller.getItems(stretchers, labs)
+    Controller.getItems({
+      reqStretchers: stretchers,
+      reqLabs: labs,
+      isAdmin: authUser?.isAdmin ?? false,
+    })
       .then((items) => {
         setItems(items)
         setIsLoading(false)
@@ -46,7 +52,7 @@ const App = () => {
       .catch(() => {
         msgApi!.error('Error al cargar el menú. Inténtelo de nuevo más tarde.')
       })
-  }, [msgApi, stretchers, labs])
+  }, [msgApi, stretchers, labs, authUser])
 
   useEffect(() => {
     Controller.selectDefaultController(location.pathname, setDefaultSelectedKey)

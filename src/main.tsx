@@ -7,6 +7,7 @@ import { PatientDataProvider } from './contexts/PatientDataProvider'
 import { LoginStatusProvider } from './contexts/LoginStatusProvider'
 import { UserDataProvider } from './contexts/UserDataProvider'
 import { CollapseProvider } from './contexts/CollapseProvider'
+import { UserInfoProvider } from './contexts/UserInfoProvider'
 import MsgApiProvider from './contexts/MsgApiProvider'
 import NotFound from './components/NotFound'
 import Login from './components/Login'
@@ -19,19 +20,21 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <CollapseProvider>
         <BrowserRouter>
           <LoginStatusProvider>
-            <StretcherDataProvider>
-              <LaboratoryDataProvider>
-                <PatientDataProvider>
-                  <UserDataProvider>
-                    <Switch>
-                      <Route path="/*" element={<App />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/404" element={<NotFound />} />
-                    </Switch>
-                  </UserDataProvider>
-                </PatientDataProvider>
-              </LaboratoryDataProvider>
-            </StretcherDataProvider>
+            <UserInfoProvider>
+              <StretcherDataProvider>
+                <LaboratoryDataProvider>
+                  <PatientDataProvider>
+                    <UserDataProvider>
+                      <Switch>
+                        <Route path="/*" element={<App />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/404" element={<NotFound />} />
+                      </Switch>
+                    </UserDataProvider>
+                  </PatientDataProvider>
+                </LaboratoryDataProvider>
+              </StretcherDataProvider>
+            </UserInfoProvider>
           </LoginStatusProvider>
         </BrowserRouter>
       </CollapseProvider>

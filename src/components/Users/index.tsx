@@ -1,7 +1,9 @@
 import { UserDataContext } from '../../contexts/UserDataProvider'
 import { useContext, useEffect, useState } from 'react'
 import { Button, Modal, Table, Typography } from 'antd'
+import useUserInfo from '../../hooks/useUserInfo'
 import { PlusOutlined } from '@ant-design/icons'
+import { useNavigate } from 'react-router-dom'
 import useMsgApi from '../../hooks/useMsgApi'
 import { getColumns } from './controller'
 import CustomForm from '../Form'
@@ -11,6 +13,7 @@ interface UsersProps {}
 
 // eslint-disable-next-line no-empty-pattern
 const Users = ({}: UsersProps) => {
+  const authUser = useUserInfo()
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { users, updateUsers } = useContext(UserDataContext)
@@ -26,10 +29,18 @@ const Users = ({}: UsersProps) => {
   })
   const msgApi = useMsgApi()
   const columns = getColumns()
+  const navigateTo = useNavigate()
 
   const handleOk = () => {
     setFormProp({ ...formProp, shouldSubmit: true, setFormProp })
   }
+
+  useEffect(() => {
+    if (authUser?.isAdmin === false) {
+      msgApi.warning('No tienes permisos para acceder a esta sección.')
+      navigateTo('/dashboard')
+    }
+  }, [authUser, navigateTo, msgApi])
 
   useEffect(() => {
     if (!shouldGetUsers) return
@@ -61,6 +72,8 @@ const Users = ({}: UsersProps) => {
       setConfirmLoading(true)
     }
   }, [formProp, msgApi])
+
+  if (authUser?.isAdmin === false) return null
 
   return (
     <>
