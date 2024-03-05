@@ -9,17 +9,24 @@ const axios = new AxiosController()
 interface IPatientDataContext {
   patients: PatientData[]
   updatePatients: () => Promise<void>
+  flushPatients: () => void
 }
 
 export const PatientDataContext = createContext<IPatientDataContext>({
   patients: [],
   updatePatients: async () => {},
+  flushPatients: () => {},
 })
 
-export const PatientDataProvider = ({ children }: { children: React.ReactNode }) => {
+export const PatientDataProvider = ({
+  children,
+}: {
+  children: React.ReactNode
+}) => {
   const msgApi = useMsgApi()
   const isLogged = useLoginStatus()
-  const [patients, setStretchers] = useState<PatientData[]>([])
+  const [patients, setPatients] = useState<PatientData[]>([])
+
   const fetchData = useCallback(async () => {
     if (!isLogged) return
     const res = await axios.getPatients()
@@ -28,7 +35,7 @@ export const PatientDataProvider = ({ children }: { children: React.ReactNode })
       msgApi.error('No se pudo obtener la información de los pacientes.', 5)
       throw res
     } else {
-      setStretchers(res.data.data)
+      setPatients(res.data.data)
     }
   }, [msgApi, isLogged])
 
@@ -40,12 +47,18 @@ export const PatientDataProvider = ({ children }: { children: React.ReactNode })
     }
   }, [fetchData])
 
+  const flushPatients = useCallback(() => {
+    if (patients.length > 0) setPatients([])
+  }, [patients])
+
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
   return (
-    <PatientDataContext.Provider value={{ patients, updatePatients }}>
+    <PatientDataContext.Provider
+      value={{ patients, updatePatients, flushPatients }}
+    >
       {children}
     </PatientDataContext.Provider>
   )

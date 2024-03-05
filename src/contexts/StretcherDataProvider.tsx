@@ -9,17 +9,24 @@ const axios = new AxiosController()
 interface IStretcherDataContext {
   stretchers: StretcherData[] | null
   updateStretchers: () => Promise<void>
+  flushStretchers: () => void
 }
 
 export const StretcherDataContext = createContext<IStretcherDataContext>({
   stretchers: null,
   updateStretchers: async () => {},
+  flushStretchers: () => {},
 })
 
-export const StretcherDataProvider = ({ children }: { children: React.ReactNode }) => {
+export const StretcherDataProvider = ({
+  children,
+}: {
+  children: React.ReactNode
+}) => {
   const msgApi = useMsgApi()
   const isLogged = useLoginStatus()
   const [stretchers, setStretchers] = useState<StretcherData[] | null>(null)
+
   const fetchData = useCallback(async () => {
     if (!isLogged) return
     const res = await axios.getStretchers(true)
@@ -40,12 +47,18 @@ export const StretcherDataProvider = ({ children }: { children: React.ReactNode 
     }
   }, [fetchData])
 
+  const flushStretchers = useCallback(() => {
+    setStretchers(null)
+  }, [])
+
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
   return (
-    <StretcherDataContext.Provider value={{ stretchers, updateStretchers }}>
+    <StretcherDataContext.Provider
+      value={{ stretchers, updateStretchers, flushStretchers }}
+    >
       {children}
     </StretcherDataContext.Provider>
   )

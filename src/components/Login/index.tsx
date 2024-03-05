@@ -2,6 +2,7 @@ import { Button, Col, Form, Input, Row, Typography, message } from 'antd'
 import { LoginStatusContext } from '../../contexts/LoginStatusProvider'
 import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import { useContext, useEffect, useState } from 'react'
+import useFlushRepo from '../../hooks/useFlushRepo'
 import { useNavigate } from 'react-router-dom'
 import { handleSubmit } from './controller'
 import './style.css'
@@ -10,11 +11,13 @@ const Login = (): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(false)
   const [msgApi, contextHolder] = message.useMessage()
   const loginProvider = useContext(LoginStatusContext)
+  const flushRepo = useFlushRepo()
   const navigateTo = useNavigate()
 
   useEffect(() => {
     if (loginProvider.isLogged) navigateTo('/dashboard')
-  }, [navigateTo, loginProvider])
+    else flushRepo()
+  }, [navigateTo, flushRepo, loginProvider])
 
   return (
     <>

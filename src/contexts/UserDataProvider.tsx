@@ -9,17 +9,24 @@ const axios = new AxiosController()
 interface IUserDataContext {
   users: UserData[]
   updateUsers: () => Promise<void>
+  flushUsers: () => void
 }
 
 export const UserDataContext = createContext<IUserDataContext>({
   users: [],
   updateUsers: async () => {},
+  flushUsers: () => {},
 })
 
-export const UserDataProvider = ({ children }: { children: React.ReactNode }) => {
+export const UserDataProvider = ({
+  children,
+}: {
+  children: React.ReactNode
+}) => {
   const msgApi = useMsgApi()
   const isLogged = useLoginStatus()
   const [users, setUser] = useState<UserData[]>([])
+
   const fetchData = useCallback(async () => {
     if (!isLogged) return
     const res = await axios.getUsers()
@@ -40,12 +47,16 @@ export const UserDataProvider = ({ children }: { children: React.ReactNode }) =>
     }
   }, [fetchData])
 
+  const flushUsers = useCallback(() => {
+    if (users.length > 0) setUser([])
+  }, [users])
+
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
   return (
-    <UserDataContext.Provider value={{ users, updateUsers }}>
+    <UserDataContext.Provider value={{ users, updateUsers, flushUsers }}>
       {children}
     </UserDataContext.Provider>
   )

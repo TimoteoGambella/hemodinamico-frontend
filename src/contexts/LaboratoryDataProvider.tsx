@@ -9,17 +9,24 @@ const axios = new AxiosController()
 interface ILaboratoryDataContext {
   labs: LaboratoryData[]
   updateLabs: () => Promise<void>
+  flushLabs: () => void
 }
 
 export const LaboratoryDataContext = createContext<ILaboratoryDataContext>({
   labs: [],
   updateLabs: async () => {},
+  flushLabs: () => {},
 })
 
-export const LaboratoryDataProvider = ({ children }: { children: React.ReactNode }) => {
+export const LaboratoryDataProvider = ({
+  children,
+}: {
+  children: React.ReactNode
+}) => {
   const msgApi = useMsgApi()
   const isLogged = useLoginStatus()
   const [labs, setLabs] = useState<LaboratoryData[]>([])
+
   const fetchData = useCallback(async () => {
     if (!isLogged) return
     const res = await axios.getLabs(true)
@@ -40,12 +47,16 @@ export const LaboratoryDataProvider = ({ children }: { children: React.ReactNode
     }
   }, [fetchData])
 
+  const flushLabs = useCallback(() => {
+    if (labs.length > 0) setLabs([])
+  }, [labs])
+
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
   return (
-    <LaboratoryDataContext.Provider value={{ labs, updateLabs }}>
+    <LaboratoryDataContext.Provider value={{ labs, updateLabs, flushLabs }}>
       {children}
     </LaboratoryDataContext.Provider>
   )
