@@ -1,13 +1,15 @@
 import useUpdateStretchers from '../../../hooks/useUpdateStretcher'
+import DeleteBtn from '../../Form/EditableTable/items/DeleteBtn'
 import useUpdatePatients from '../../../hooks/useUpdatePatients'
 import useUpdateLabs from '../../../hooks/useUpdateLabs'
+import { handleAssignLab, handleDeletePatient } from '.'
 import usePatients from '../../../hooks/usePatients'
 import useMsgApi from '../../../hooks/useMsgApi'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Space, Modal } from 'antd'
-import { handleAssignLab } from '.'
 import CustomForm from '../../Form'
+import { DataSourceType } from '../../Form/EditableTable'
 
 interface ActionRenderProps {
   data: PatientData['_id']
@@ -38,6 +40,10 @@ const ActionRender = ({ data }: ActionRenderProps) => {
   }
   const handleClick = () => {
     handleAssignLab({ patient, updateLabs, updatePatients, msgApi })
+  }
+  const handleDelete = async (id: React.Key) => {
+    const res = await handleDeletePatient(id, msgApi)
+    if (res) updatePatients()
   }
 
   useEffect(() => {
@@ -94,6 +100,11 @@ const ActionRender = ({ data }: ActionRenderProps) => {
           />
         )}
       </Modal>
+      <DeleteBtn
+        record={{ key: patient._id } as DataSourceType}
+        handleDelete={handleDelete}
+        dataSource={new Array(1).fill(null)}
+      />
     </Space>
   )
 }

@@ -93,6 +93,13 @@ export default class AxiosController {
     })
   }
 
+  async deletePatient(id: string): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/patient/delete/${id}`,
+      method: 'DELETE'
+    })
+  }
+
   async getStretchers(populate = false): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: `/stretcher/list?populate=${populate}`,

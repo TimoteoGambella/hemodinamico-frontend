@@ -10,7 +10,7 @@ interface DeleteBtnProps {
 const DeleteBtn = ({ dataSource, handleDelete, record }: DeleteBtnProps) =>
   dataSource.length >= 1 ? (
     <Popconfirm
-      title="Sure to delete?"
+      title="¿Estás seguro de eliminar?"
       onConfirm={() => handleDelete(record.key as React.Key)}
     >
       <a>Eliminar</a>

@@ -45,7 +45,7 @@ export function getColumns(): TableProps<PatientData>['columns'] {
     {
       title: 'Acciones',
       key: 'action',
-      width: 265,
+      width: 275,
       render: (_, data) => {
         return <ActionRender data={data._id} />
       },
@@ -93,4 +93,30 @@ export async function handleAssignLab({
       msgApi.success('Repositorios actualizados con éxito.')
     })
     .catch(() => msgApi.destroy('update-all'))
+}
+
+export async function handleDeletePatient(
+  id: React.Key,
+  msgApi: MessageInstance
+) {
+  msgApi.open({
+    type: 'loading',
+    content: 'Realizando solicitud...',
+    duration: 0,
+    key: 'delete-patient',
+  })
+  const res = await axios.deletePatient(String(id))
+  msgApi.destroy('delete-patient')
+  if (res instanceof AxiosError) {
+    console.error(res)
+    msgApi.error(
+      (res.response?.data as { message: string })?.message ||
+        'Error desconocido',
+      5
+    )
+    return false
+  } else {
+    msgApi.success('Paciente eliminado con exito')
+    return true
+  }
 }
