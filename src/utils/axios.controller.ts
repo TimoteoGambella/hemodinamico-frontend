@@ -63,6 +63,13 @@ export default class AxiosController {
     })
   }
 
+  async deleteUser(username: string): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/user/delete/${username}`,
+      method: 'DELETE'
+    })
+  }
+
   async getPatients(): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: '/patient/list',
