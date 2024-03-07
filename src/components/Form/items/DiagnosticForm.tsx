@@ -1,6 +1,6 @@
 import { Form, FormInstance, Select, Typography } from 'antd'
 import schemeValues from '../constants/diagnosticSchemeValues'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface DiagnosticFormProps {
   form: FormInstance
@@ -9,6 +9,12 @@ interface DiagnosticFormProps {
 
 const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
   const [typeValue, setTypeValue] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (typeValue !== 'falla_cardiaca') {
+      form.setFieldValue(['diagnostic', 'FEVI'], null)
+    }
+  }, [typeValue, form])
 
   return (
     <>
@@ -69,7 +75,7 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
             prevValues['diagnostic']?.tipo !== curValues['diagnostic']?.tipo
           )
         }}
-        label="Child"
+        label="Diagnostico 3"
         rules={[
           {
             required: typeValue && typeValue !== 'shock' ? true : false,
@@ -99,15 +105,37 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
         }}
       </Form.Item>
 
-      {/*
-        TODO: Falta implementar el campo de FEVI
-      */}
-      <Form.Item shouldUpdate name={['diagnostic', 'FEVI']} label="FEVI">
-        <Select disabled>
-          <Select.Option value="50">{'>50%'}</Select.Option>
-          <Select.Option value="40-">{'40-'}</Select.Option>
-          <Select.Option value="40">{'<40%'}</Select.Option>
-        </Select>
+      <Form.Item
+        shouldUpdate={(prevValues, curValues) => {
+          const type = prevValues.diagnostic?.type
+          return type !== curValues.diagnostic?.type
+        }}
+        label="FEVI"
+        rules={[
+          {
+            required:
+              form.getFieldValue(['diagnostic', 'type']) === 'falla_cardiaca',
+            message: 'Por favor seleccione un valor.',
+          },
+        ]}
+      >
+        {() => {
+          let isDisabled =
+            form.getFieldValue(['diagnostic', 'type']) !== 'falla_cardiaca'
+          isDisabled = !isEnabled || isDisabled
+          return (
+            <Form.Item name={['diagnostic', 'FEVI']} noStyle>
+              <Select
+                placeholder={!isDisabled ? 'Seleccionar' : ''}
+                disabled={isDisabled}
+              >
+                <Select.Option value="50">{'>50%'}</Select.Option>
+                <Select.Option value="40-">{'40-'}</Select.Option>
+                <Select.Option value="40">{'<40%'}</Select.Option>
+              </Select>
+            </Form.Item>
+          )
+        }}
       </Form.Item>
     </>
   )
