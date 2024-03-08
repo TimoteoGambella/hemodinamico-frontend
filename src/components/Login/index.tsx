@@ -41,7 +41,8 @@ const Login = (): React.ReactElement => {
               <img src={logo} alt="logo" className="logo" />
               <Typography.Title level={4}>
                 <span>SERVICIO DE CARDIOLOGÍA CLÍNICA</span><br />
-                <span>INSTITUTO NACIONAL CARDIOVASCULAR</span>
+                <span>INSTITUTO NACIONAL CARDIOVASCULAR</span><br />
+                <span>UNIDAD DE CUIDADO CARDIACO CRITICO</span>
               </Typography.Title>
             </div>
             <Typography.Title level={2}>Iniciar Sesión</Typography.Title>
