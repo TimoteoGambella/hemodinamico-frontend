@@ -1,6 +1,5 @@
 import { UserDataContext } from "../../../contexts/UserDataProvider"
 import DeleteBtn from "../../Form/EditableTable/items/DeleteBtn"
-import { DataSourceType } from "../../Form/EditableTable"
 import useMsgApi from "../../../hooks/useMsgApi"
 import { handleUserDelete } from "."
 import { useContext } from "react"
@@ -20,7 +19,7 @@ const DeleteAction = ({ record }: { record: UserData }) => {
   return (
     <Space size="middle">
       <DeleteBtn
-        record={{ key: record.username } as DataSourceType}
+        record={{ key: record.username }}
         handleDelete={handleClick}
         dataSource={new Array(1).fill(null)}
       />

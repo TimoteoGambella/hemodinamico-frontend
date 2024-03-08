@@ -6,9 +6,8 @@ import LiverProfileForm from './items/LiverProfileForm'
 import CardiacProfileForm from './items/CardiacProfileForm'
 import KidneyProfileForm from './items/KidneyProfileForm'
 import { Button, Divider, Empty, Form, Input, InputNumber } from 'antd'
-import { validateTableSuppliedValues } from './EditableTable/utils/refactors'
+import { cultivoFormToCultivo, cultivoToCultivoForm, validateTableSuppliedValues } from './EditableTable/utils/refactors'
 import useUpdateStretchers from '../../hooks/useUpdateStretcher'
-import EditableTable, { DataSourceType } from './EditableTable'
 import InfectiveProfileForm from './items/InfectiveProfileForm'
 import StretcherDiagnostic from './items/StretcherDiagnostic'
 import useUpdatePatients from '../../hooks/useUpdatePatients'
@@ -23,6 +22,7 @@ import GasometricForm from './items/GasometricForm'
 import { calcASCValue } from './utils/formulas'
 import FickForm from './items/FickProfileForm'
 import useMsgApi from '../../hooks/useMsgApi'
+import EditableTable from './EditableTable'
 import { AxiosError } from 'axios'
 import './style.css'
 
@@ -152,7 +152,7 @@ CustomForm.Patients = function PatientForm({ formProp }: FormProps) {
   const msgApi = useMsgApi()
   const [form] = Form.useForm<PatientData>()
   const updatePatients = useUpdatePatients()
-  const updateStretchers =useUpdateStretchers()
+  const updateStretchers = useUpdateStretchers()
   const freeStretchers = useStretchers()?.filter(
     (stretcher) => !stretcher.patientId
   )
@@ -306,6 +306,7 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
   const updateRepo = useUpdateRepo()
   const [form] = Form.useForm<LaboratoryData>()
   const [isLoading, setIsLoading] = useState(false)
+  const [cultivos, setCultivos] = useState<CultivoFormType[]>([])
   const { onFinish: onFinishLab, onFinishFailed } = FormController(
     {
       formType: 'lab',
@@ -341,6 +342,7 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
     const lab: Partial<LaboratoryData> = JSON.parse(JSON.stringify(values))
     delete lab.patientId
     lab._id = data!._id
+    lab.infective!.cultivos = cultivoFormToCultivo(cultivos)
 
     const patient = values.patientId as PatientData
     patient._id = (data as { patientId: PatientData }).patientId._id
@@ -366,6 +368,13 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
       onFinishPatient(patient),
     ]).finally(() => updateRepo())
   }
+
+  useEffect(() => {
+    if (!data) return
+    const labData = JSON.parse(JSON.stringify(data)) as LaboratoryData
+    const cultivos = cultivoToCultivoForm(labData.infective.cultivos || [])
+    setCultivos(cultivos)
+  }, [data, setCultivos])
 
   useEffect(() => {
     if (formProp.shouldSubmit && formProp.status === 'initial') {
@@ -401,7 +410,12 @@ CustomForm.Laboratory = function LabForm({ formProp, data }: FormProps) {
       <Divider />
       <CardiacProfileForm />
       <Divider />
-      <InfectiveProfileForm form={form} isEnabled={formProp.enable} />
+      <InfectiveProfileForm
+        form={form}
+        isEnabled={formProp.enable}
+        cultivos={cultivos}
+        setCultivos={setCultivos}
+      />
       <Divider />
       <KidneyProfileForm />
       <Divider />
@@ -538,7 +552,10 @@ CustomForm.Stretchers = function StretcherForm({ formProp, data }: FormProps) {
       <Divider />
       <CalculedVariables form={form} />
       <Divider />
-      <EditableTable data={tableValues} setDataSource={setTableValues} />
+      <EditableTable.Stretcher
+        data={tableValues}
+        setDataSource={setTableValues}
+      />
       <Divider />
       <StretcherDiagnostic form={form} />
       <div className="submit-container">

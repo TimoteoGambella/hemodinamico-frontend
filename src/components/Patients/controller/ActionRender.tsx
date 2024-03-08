@@ -9,7 +9,6 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Space, Modal } from 'antd'
 import CustomForm from '../../Form'
-import { DataSourceType } from '../../Form/EditableTable'
 
 interface ActionRenderProps {
   data: PatientData['_id']
@@ -101,7 +100,7 @@ const ActionRender = ({ data }: ActionRenderProps) => {
         )}
       </Modal>
       <DeleteBtn
-        record={{ key: patient._id } as DataSourceType}
+        record={{ key: patient._id }}
         handleDelete={handleDelete}
         dataSource={new Array(1).fill(null)}
       />

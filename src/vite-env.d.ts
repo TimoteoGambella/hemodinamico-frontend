@@ -155,12 +155,24 @@ interface CardiacProfile {
   CA125: number | null
 }
 
+type Cultivo = {
+  cultivo: 'hemocultivo' | 'urocultivo' | 'cultivo de secreción'
+  resultado: boolean | 'true' | 'false'
+  germen: string | null
+}
+
+interface CultivoFormType {
+  [x: string]: unknown
+  key: number
+  cultivo: 'Hemocultivo' | 'Urocultivo' | 'Cultivo de secreción'
+  resultado: 'POSITIVO' | 'NEGATIVO'
+  germen: string
+}
+
 interface Infective {
   proteinaC: number | null
   procalcitonina: number | null
-  cultivo: 'hemocultivo' | 'urocultivo' | 'cultivo de secreción' | null
-  resultado: boolean | string | null
-  germen: string | null
+  cultivos: Cultivo[]
 }
 
 interface Kidney {
@@ -214,3 +226,11 @@ interface IStretcherFormType extends StretcherData {
   patientId: PatientData
   patientHeartRate: number
 }
+
+interface DataSourceType {
+  key: React.Key
+  name: SuppliedDrugs['name'] | 'SELECCIONAR'
+  dose: SuppliedDrugs['dose']
+}
+
+type RecordWithKey = Record<string, unknown> & { key: React.Key }

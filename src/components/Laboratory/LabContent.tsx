@@ -33,13 +33,7 @@ const LabContent = ({ data, msgApi }: MainContentProps) => {
 
   useEffect(() => {
     if (labInfo?._id === data._id) return
-    setLabInfo({
-      ...data,
-      infective: {
-        ...data.infective,
-        resultado: data.infective.resultado ? 'true' : 'false',
-      },
-    })
+    setLabInfo(data)
   }, [labInfo, data])
 
   useEffect(() => {

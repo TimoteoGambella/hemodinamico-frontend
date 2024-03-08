@@ -1,14 +1,8 @@
-import React, {
-  Ref,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { suppliedSchema } from '../../../../constants/suppliedSchemaDrugs'
+import React, { Ref, useContext, useEffect, useRef, useState } from 'react'
 import { Cascader, Form, Input, InputNumber } from 'antd'
-import type { GetRef } from 'antd'
-import { suppliedSchema } from '../../constants/suppliedSchemaDrugs'
 import { EditableContext, Item } from './EditableRow'
+import type { GetRef } from 'antd'
 
 type InputRef = GetRef<typeof Input>
 

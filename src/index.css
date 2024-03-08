@@ -130,3 +130,6 @@ table {
 .ant-typography {
   text-align: center;
 }
+.editable-cell-value-wrap {
+  min-height: 22px;
+}
