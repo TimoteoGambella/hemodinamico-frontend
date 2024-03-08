@@ -1,3 +1,4 @@
+import formLayout from '../../../../constants/formLayout'
 import { Select, Input, Form, FormInstance } from 'antd'
 import { useState } from 'react'
 
@@ -9,7 +10,7 @@ const CultivoForm = ({ form }: CultivoFormProps) => {
   const [result, setResult] = useState(false)
 
   return (
-    <Form form={form} name="cultivos-form">
+    <Form {...formLayout} form={form} name="cultivos-form">
       <Form.Item
         name="cultivo"
         label="Cultivo"
