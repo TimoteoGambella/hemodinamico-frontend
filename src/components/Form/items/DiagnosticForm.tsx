@@ -19,7 +19,7 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
   return (
     <>
       <Typography.Title level={4}>DIAGNÓSTICO</Typography.Title>
-      <Form.Item name={['diagnostic', 'type']} label="Tipo">
+      <Form.Item name={['diagnostic', 'type']} label="Diagnostico 1">
         <Select
           placeholder="Seleccionar"
           onChange={(e) => {
@@ -38,7 +38,7 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
 
       <Form.Item
         shouldUpdate
-        label="Sub tipo"
+        label="Diagnostico 2"
         rules={[
           {
             required: typeValue ? true : false,
@@ -110,7 +110,7 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
           const type = prevValues.diagnostic?.type
           return type !== curValues.diagnostic?.type
         }}
-        label="FEVI"
+        label="FEVI (%)"
         rules={[
           {
             required:
