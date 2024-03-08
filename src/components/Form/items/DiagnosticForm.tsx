@@ -8,7 +8,9 @@ interface DiagnosticFormProps {
 }
 
 const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
-  const [typeValue, setTypeValue] = useState<string | null>(null)
+  const [typeValue, setTypeValue] = useState<string | null>(
+    form.getFieldValue(['diagnostic', 'type']) || null
+  )
 
   useEffect(() => {
     if (typeValue !== 'falla_cardiaca') {
@@ -37,12 +39,14 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
       </Form.Item>
 
       <Form.Item
-        shouldUpdate
+        shouldUpdate={(prevValues, curValues) => {
+          const type = prevValues.diagnostic?.type
+          return type !== curValues.diagnostic?.type
+        }}
         label="Diagnostico 2"
         rules={[
           {
             required: typeValue ? true : false,
-            message: 'Por favor seleccione el subtipo del diagnóstico.',
           },
         ]}
       >
@@ -52,7 +56,16 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
           const enabled = selected ? true : false
           const isDisabled = !isEnabled || !enabled
           return (
-            <Form.Item name={['diagnostic', 'subtype']} noStyle>
+            <Form.Item
+              name={['diagnostic', 'subtype']}
+              rules={[
+                {
+                  required: typeValue ? true : false,
+                  message: 'Por favor seleccione una opción.',
+                },
+              ]}
+              noStyle
+            >
               <Select
                 placeholder={!isDisabled ? 'Seleccionar' : null}
                 disabled={isDisabled}
@@ -75,13 +88,12 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
             prevValues['diagnostic']?.tipo !== curValues['diagnostic']?.tipo
           )
         }}
-        label="Diagnostico 3"
         rules={[
           {
             required: typeValue && typeValue !== 'shock' ? true : false,
-            message: 'Por favor seleccione un valor.',
           },
         ]}
+        label="Diagnostico 3"
       >
         {() => {
           const selected = form.getFieldValue(['diagnostic', 'type'])
@@ -89,7 +101,16 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
           const enabled = selected ? true : false
           const isDisabled = !isEnabled || !(enabled && !!obj?.child)
           return (
-            <Form.Item name={['diagnostic', 'child']} noStyle>
+            <Form.Item
+              name={['diagnostic', 'child']}
+              rules={[
+                {
+                  required: typeValue && typeValue !== 'shock' ? true : false,
+                  message: 'Por favor seleccione una opción.',
+                },
+              ]}
+              noStyle
+            >
               <Select
                 placeholder={!isDisabled ? 'Seleccionar' : null}
                 disabled={isDisabled}
@@ -110,21 +131,31 @@ const DiagnosticForm = ({ form, isEnabled }: DiagnosticFormProps) => {
           const type = prevValues.diagnostic?.type
           return type !== curValues.diagnostic?.type
         }}
-        label="FEVI (%)"
         rules={[
           {
             required:
               form.getFieldValue(['diagnostic', 'type']) === 'falla_cardiaca',
-            message: 'Por favor seleccione un valor.',
           },
         ]}
+        label="FEVI (%)"
       >
         {() => {
           let isDisabled =
             form.getFieldValue(['diagnostic', 'type']) !== 'falla_cardiaca'
           isDisabled = !isEnabled || isDisabled
           return (
-            <Form.Item name={['diagnostic', 'FEVI']} noStyle>
+            <Form.Item
+              name={['diagnostic', 'FEVI']}
+              rules={[
+                {
+                  required:
+                    form.getFieldValue(['diagnostic', 'type']) ===
+                    'falla_cardiaca',
+                  message: 'Por favor seleccione una opción.',
+                },
+              ]}
+              noStyle
+            >
               <Select
                 placeholder={!isDisabled ? 'Seleccionar' : ''}
                 disabled={isDisabled}
