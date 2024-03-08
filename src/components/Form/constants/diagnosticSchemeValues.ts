@@ -1,7 +1,7 @@
 export default [
   {
     name: 'shock',
-    label: 'Shock',
+    label: 'Shock Cardiogenico',
     subType: [
       {
         name: 'isquemico',
