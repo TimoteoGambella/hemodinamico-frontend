@@ -1,9 +1,9 @@
-import useMsgApi from '../../hooks/useMsgApi'
 import { useNavigate, useParams } from 'react-router-dom'
+import LabContent from './components/LabContent'
+import useMsgApi from '../../hooks/useMsgApi'
 import { useEffect, useState } from 'react'
 import useLabs from '../../hooks/useLabs'
 import { Empty, Spin, Tabs } from 'antd'
-import LabContent from './LabContent'
 import './style.css'
 
 const Laboratory = () => {

@@ -1,8 +1,8 @@
-import { Empty, Flex, Space, Typography } from 'antd'
 import { MessageInstance } from 'antd/es/message/interface'
+import { Empty, Flex, Space, Typography } from 'antd'
 import { useState, useEffect } from 'react'
-import FloatBtn from '../FloatBtn'
-import CustomForm from '../Form'
+import FloatBtn from '../../FloatBtn'
+import CustomForm from '../../Form'
 
 interface MainContentProps {
   msgApi: MessageInstance
