@@ -224,6 +224,7 @@ interface LaboratoryData {
   editedBy: string
   editedAt: number | null
   createdAt: number
+  __v: number
 }
 
 interface IStretcherFormType extends StretcherData {
