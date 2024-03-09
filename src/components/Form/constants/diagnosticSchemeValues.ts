@@ -43,7 +43,7 @@ export default [
   },
   {
     name: 'infarto',
-    label: 'Infarto',
+    label: 'Infarto de miocardio',
     subType: [
       {
         name: 'st_no_elevado',
@@ -75,7 +75,7 @@ export default [
   },
   {
     name: 'valvular',
-    label: 'Valvular',
+    label: 'Valvulotopía',
     subType: [
       {
         name: 'aortico',
