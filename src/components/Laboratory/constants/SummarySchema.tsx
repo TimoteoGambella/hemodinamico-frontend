@@ -57,6 +57,7 @@ const SummarySchema: TableColumnsType<SchemaType> = [
     width: 150,
     fixed: 'left',
     render: (value) => new Date(value).toLocaleString(),
+    sorter: (a: SchemaType, b: SchemaType) => sortNums(a, b, ['editedAt']),
   },
   {
     title: 'HEMATOLOGÍA Y COAGULACIÓN',
@@ -178,7 +179,7 @@ const SummarySchema: TableColumnsType<SchemaType> = [
           const total = record.liver_profile.bilirrubina.total ?? '-'
           const directa = record.liver_profile.bilirrubina.directa ?? '-'
           const res = Number(total) - Number(directa)
-          return !isNaN(res) ? res : '-'
+          return !isNaN(res) ? res.toFixed(2) : '-'
         },
         key: 'age',
         width: 160,
