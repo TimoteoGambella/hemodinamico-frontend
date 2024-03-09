@@ -34,7 +34,11 @@ type PatientData = {
   age: number
   dni: number
   bloodType: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
-  timestamp: number
+  createdAt: number
+  editedAt: number | null
+  editedBy: string | null
+  isDeleted: boolean
+  __v: number
 }
 
 interface GasometricSamples {

@@ -133,3 +133,15 @@ table {
 .editable-cell-value-wrap {
   min-height: 22px;
 }
+.transition-w-ease-out {
+  transition: width 0.5s ease-out 0s;
+}
+.min-w-680 {
+  min-width: 680px;
+}
+.modal-no-pd .ant-modal-content {
+  padding: 0 0 .5rem 0;
+}
+.tbl-td-center .ant-table-cell {
+  text-align: center;
+}

@@ -166,6 +166,13 @@ export default class AxiosController {
     })
   }
 
+  async getLabListVersion(id: string, populate: boolean): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/laboratory/list/versions/${id}?populate=${populate}`,
+      method: 'GET'
+    })
+  }
+
   private async request<T>(config: AxiosRequestConfig): Promise<AxiosError | AxiosResponse<T>> {
     try {
       const response = await this.axiosInstance.request<T>(config)
