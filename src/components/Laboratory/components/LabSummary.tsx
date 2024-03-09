@@ -18,10 +18,13 @@ export default function LabSummary({ id }: { id: string }) {
         console.error(res)
         return
       } else {
-        const val = (res.data.data as LaboratoryData[]).map((lab, index) => ({
-          ...lab,
-          key: index,
-        }))
+        const val = (res.data.data as LaboratoryData[])
+          .map((lab, index) => ({
+            ...lab,
+            key: index,
+          }))
+          .filter((lab) => lab.__v !== 0)
+          .sort((a, b) => b.__v - a.__v)
         setData(val)
       }
     })
