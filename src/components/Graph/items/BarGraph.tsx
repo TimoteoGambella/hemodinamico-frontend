@@ -1,8 +1,18 @@
 import { Typography } from 'antd'
 import { BarChart, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
 
+type MarginProps = {
+  top?: number
+  right?: number
+  left?: number
+  bottom?: number
+}
+
 interface BarProps {
   title?: string
+  width?: number
+  height?: number
+  margin?: MarginProps | ((props: MarginProps) => MarginProps)
   data: unknown[]
   currentTab: string
   yAxis?: React.ReactNode
@@ -15,7 +25,14 @@ export default function BarGraph({
   children,
   title,
   yAxis,
+  width,
+  height,
+  margin,
 }: BarProps) {
+  const defaultWidth = width || 556
+  const defaultHeight = height || 350
+  const defaultMargin = initializeMargin(margin)
+
   if (currentTab !== 'graphs-trends') return null
 
   return (
@@ -24,14 +41,9 @@ export default function BarGraph({
 
       <BarChart
         data={data}
-        width={600}
-        height={290}
-        margin={{
-          top: 20,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
+        width={defaultWidth}
+        height={defaultHeight}
+        margin={defaultMargin}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <YAxis />
@@ -42,4 +54,15 @@ export default function BarGraph({
       </BarChart>
     </div>
   )
+}
+
+function initializeMargin(margin: BarProps["margin"]) {
+  const defaultMargin = {
+    top: 20,
+    right: 5,
+    left: 5,
+    bottom: 5,
+  }
+  if (margin instanceof Function) return margin(defaultMargin)
+  else return margin || defaultMargin
 }

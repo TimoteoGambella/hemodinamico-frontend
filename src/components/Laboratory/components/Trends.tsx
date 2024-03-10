@@ -56,6 +56,7 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
         title="HEMATOLOGÍA I: HB, LEUCOCITOS, COAGULACIÓN"
         data={HB1}
         currentTab={currentTab}
+        margin={(props) => ({ ...props, right: -32, left: 20 })}
         yAxis={<YAxis yAxisId="right" orientation="right" stroke="#ffc658" />}
       >
         <Bar dataKey="hemoglobina" fill="#8884d8" />
@@ -107,8 +108,9 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
 
       <Graphs.Bar
         title="INFLAMATORIO / INFECCIOSO"
-        data={INF}
         currentTab={currentTab}
+        data={INF}
+        width={630}
         yAxis={
           <>
             <YAxis

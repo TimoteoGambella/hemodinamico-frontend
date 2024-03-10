@@ -21,8 +21,8 @@ export default function LinealGraph({
       {title && <Typography.Title level={4}>{title}</Typography.Title>}
 
       <LineChart
-        width={500}
-        height={290}
+        width={556}
+        height={350}
         data={data}
         margin={{
           top: 20,
