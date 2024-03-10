@@ -3,9 +3,12 @@ import useCollapsed from '../../hooks/useCollapsed'
 import LabSummary from './components/LabSummary'
 import LabContent from './components/LabContent'
 import useMsgApi from '../../hooks/useMsgApi'
+import { getLabVersions } from './controller'
 import { useEffect, useState } from 'react'
 import useLabs from '../../hooks/useLabs'
 import { Empty, Spin, Tabs } from 'antd'
+import Trends from './components/Trends'
+import { AxiosError } from 'axios'
 import './style.css'
 
 type TabsKeys = 'general-info' | 'summary' | 'graphs-trends'
@@ -19,6 +22,7 @@ const Laboratory = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [data, setData] = useState<LaboratoryData | null>(null)
   const [currentTab, setCurrentTab] = useState<TabsKeys>('general-info')
+  const [versions, setVersions] = useState<LaboratoryData[] | null>(null)
   const tabs = [
     {
       label: 'Información general',
@@ -36,12 +40,12 @@ const Laboratory = () => {
     {
       label: 'Resumen',
       key: 'summary',
-      children: <LabSummary id={id as string} />,
+      children: <LabSummary versions={versions} />,
     },
     {
       label: 'Gráficos y tendencias',
       key: 'graphs-trends',
-      children: <Empty description="Sin datos" />,
+      children: <Trends versions={versions} currentTab={currentTab} />,
     },
   ]
 
@@ -68,6 +72,23 @@ const Laboratory = () => {
       if (!res) navigateTo('/404')
     }
   }, [data, id, isLoading, labs, navigateTo])
+
+  useEffect(() => {
+    if (!id) return
+    const fetchApi = async () => {
+      const res = await getLabVersions(id)
+      if (res instanceof AxiosError) {
+        msgApi.error(res.message)
+        return
+      } else {
+        const val = (res.data.data as LaboratoryData[])
+          .filter((lab) => lab.__v !== 0)
+          .sort((a, b) => b.__v - a.__v)
+        setVersions(val)
+      }
+    }
+    fetchApi()
+  }, [setVersions, id, msgApi])
 
   return (
     <Tabs

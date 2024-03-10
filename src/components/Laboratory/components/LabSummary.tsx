@@ -1,34 +1,27 @@
-import AxiosController from '../../../utils/axios.controller'
 import SummarySchema from '../constants/SummarySchema'
 import { useEffect, useState } from 'react'
-import { AxiosError } from 'axios'
 import { Table } from 'antd'
 
-const axios = new AxiosController()
 
 type LabDataWithKey = LaboratoryData & { key: React.Key }
 
-export default function LabSummary({ id }: { id: string }) {
+interface LabSummaryProps {
+  versions: LaboratoryData[] | null
+}
+
+export default function LabSummary({ versions }: LabSummaryProps) {
   const [data, setData] = useState<LabDataWithKey[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    axios.getLabListVersion(id, true).then((res) => {
-      if (res instanceof AxiosError) {
-        console.error(res)
-        return
-      } else {
-        const val = (res.data.data as LaboratoryData[])
-          .map((lab, index) => ({
-            ...lab,
-            key: index,
-          }))
-          .filter((lab) => lab.__v !== 0)
-          .sort((a, b) => b.__v - a.__v)
-        setData(val)
-      }
-    })
-  }, [id])
+    if (!versions) return
+    const val = versions
+      .map((lab, index) => ({
+        ...lab,
+        key: index,
+      }))
+    setData(val)
+  }, [versions])
 
   useEffect(() => {
     if (data) setIsLoading(false)
