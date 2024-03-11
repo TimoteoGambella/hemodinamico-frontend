@@ -27,7 +27,7 @@ export default function BarGraph({
 
   useEffect(() => {
     if (data[0] === undefined) return
-    setItems(ctrl.generateMenuItems(data[0] as object, setSelectedItem))
+    setItems(ctrl.generateMenuItems(data[0], setSelectedItem))
   }, [data])
 
   if (currentTab !== 'graphs-trends') return null
@@ -38,11 +38,11 @@ export default function BarGraph({
 
       <Dropdown menu={{ items }} placement="bottomLeft" open={isOpen} arrow>
         <Button
-          type="primary"
           onClick={() => setIsOpen(!isOpen)}
           onBlur={() => setIsOpen(false)}
-          size="small"
           className='trendButton'
+          type="primary"
+          size="small"
         >
           <StockOutlined />
         </Button>

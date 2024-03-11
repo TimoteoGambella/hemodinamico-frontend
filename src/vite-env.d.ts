@@ -252,7 +252,7 @@ type BarGraphProps = {
   width?: number
   height?: number
   margin?: MarginProps | ((props: MarginProps) => MarginProps)
-  data: unknown[]
+  data: { [key: string]: number }[]
   currentTab: string
   yAxis?: React.ReactNode
   children: React.ReactNode
