@@ -25,29 +25,57 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
   const [INF, setINF] = useState<Infective[]>([])
   const [KP, setKP] = useState<Kidney[]>([])
 
+  /**
+   *
+   * @param key Debe ser una de las claves que se encuentre en `LaboratoryData`
+   * @param select Debe ser un array de strings que contenga las claves que se desean seleccionar del objeto previamente seleccionado en `key`
+   */
   const getValueOf = useCallback(
-    (key: keyof LaboratoryData) => {
+    (key: keyof CreatedTypesOfLab, select: string[] = ['*']) => {
       if (!versions) throw new Error('No versions initialized')
-      return versions.map((version) => {
-        return version[key]
+      const selectedKey = versions.map((version) => {
+        return { ...(version[key] as object) }
       })
+      if (select[0] !== '*') {
+        const newData = selectedKey.map((data) => {
+          let props = Object.keys(data as object)
+          for (const i of select) {
+            if (props.includes(i)) props = props.filter((prop) => prop !== i)
+          }
+          for (const prop of props) {
+            delete data[prop as keyof typeof data]
+          }
+          return data
+        })
+        return newData
+      }
+      return selectedKey
     },
     [versions]
   )
 
   useEffect(() => {
     if (!versions) return
+    setHB2(getValueOf('hematology', ['plaquetas']) as { plaquetas: number }[])
+    setINF(
+      getValueOf('infective', ['proteinaC', 'procalcitonina']) as Infective[]
+    )
     setCP(getValueOf('cardiac_profile') as CardiacProfile[])
     setLP1(getValueOf('liver_profile') as LiverProfile[])
-    setHB1(getValueOf('hematology') as Hematology[])
-    ctrl.initializeHB2({ versions, setter: setHB2 })
     ctrl.initializeLP2({ versions, setter: setLP2 })
-    setINF(getValueOf('infective') as Infective[])
     ctrl.initializeKP({
       versions,
       setter: setKP,
       kidney: getValueOf('kidney') as Kidney[],
     })
+    setHB1(
+      getValueOf('hematology', [
+        'hemoglobina',
+        'leucocitos',
+        'TPA',
+        'INR',
+      ]) as Hematology[]
+    )
   }, [getValueOf, versions])
 
   return (

@@ -6,13 +6,6 @@ interface ControllerProps {
   setter: React.Dispatch<React.SetStateAction<any>>
 }
 
-export const initializeHB2 = ({ versions, setter }: ControllerProps) => {
-  const data = versions.map((version) => {
-    return { plaquetas: version.hematology.plaquetas! }
-  })
-  setter(data)
-}
-
 export const initializeKP = ({
   versions,
   setter,

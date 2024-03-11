@@ -239,3 +239,37 @@ interface DataSourceType {
 }
 
 type RecordWithKey = Record<string, unknown> & { key: React.Key }
+
+type MarginProps = {
+  top?: number
+  right?: number
+  left?: number
+  bottom?: number
+}
+
+type BarGraphProps = {
+  title?: string
+  width?: number
+  height?: number
+  margin?: MarginProps | ((props: MarginProps) => MarginProps)
+  data: unknown[]
+  currentTab: string
+  yAxis?: React.ReactNode
+  children: React.ReactNode
+}
+
+type CascaderOption = {
+  value: string
+  label: React.ReactNode
+  children?: CascaderOption[]
+}
+
+type CreatedTypesOfLab = {
+  patientId: PatientData
+  hematology: Hematology
+  liver_profile: LiverProfile
+  cardiac_profile: CardiacProfile
+  diagnostic: Diagnostic
+  infective: Infective
+  kidney: Kidney
+}
