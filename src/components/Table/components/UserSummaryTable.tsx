@@ -2,14 +2,18 @@ import UserSummarySchema from '../constants/UserSummarySchema'
 import useStretchers from '../../../hooks/useStretchers'
 import { useState, useCallback, useEffect } from 'react'
 import usePatients from '../../../hooks/usePatients'
-import { PatientWithStretcher } from '..'
 import { Typography, Table } from 'antd'
 
-export default function UserSummaryTable({
-  patientId,
-}: {
+export interface PatientWithStretcher extends Omit<PatientData, 'stretcherId'> {
+  key: React.Key
+  stretcherId: string | StretcherData | null
+}
+
+interface UsrSumProps {
   patientId: string | null
-}) {
+}
+
+export default function UserSummaryTable({ patientId }: UsrSumProps) {
   const [patient, setPatient] = useState<PatientWithStretcher[] | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const stretchers = useStretchers()
@@ -46,9 +50,7 @@ export default function UserSummaryTable({
   }, [patient])
   return (
     <>
-      <Typography.Title level={3}>
-        Datos del paciente
-      </Typography.Title>
+      <Typography.Title level={3}>Datos del paciente</Typography.Title>
       <Table
         className="CustomTable user-summary"
         loading={isLoading}
