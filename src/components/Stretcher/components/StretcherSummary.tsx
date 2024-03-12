@@ -5,7 +5,6 @@ interface StretcherSummaryProps {
 }
 
 export default function StretcherSummary({ stretcher }: StretcherSummaryProps) {
-
   return (
     <>
       <div style={{ marginBottom: '1.5rem' }}>

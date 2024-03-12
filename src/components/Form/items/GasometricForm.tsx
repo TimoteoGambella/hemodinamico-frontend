@@ -43,6 +43,7 @@ const GasometricForm = ({ form }: GasometricFormProps) => {
       <Form.Item label="Delta CO2" shouldUpdate>
         {() => {
           const { vena, arteria } = getCurrentFormValues()
+          if (!vena || !arteria) return <InputNumber disabled />
           const value = Number(vena.pC02) - Number(arteria.pC02)
           return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
