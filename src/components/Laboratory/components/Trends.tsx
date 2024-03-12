@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
+import { handleSetter } from './controllers/trends.controller'
 import * as ctrl from './controllers/trends.controller'
-import { Bar, Line, YAxis } from 'recharts'
+import { useEffect, useState } from 'react'
+import { Line, YAxis } from 'recharts'
 import Graphs from '../../Graph'
 import { Flex } from 'antd'
 
@@ -17,81 +18,74 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
    * CP: Cardiac Profile
    * INF: Infective
    */
-  const [LP2, setLP2] = useState<LiverProfile['bilirrubina'][]>([])
-  const [HB2, setHB2] = useState<{ plaquetas: number }[]>([])
-  const [LP1, setLP1] = useState<LiverProfile[]>([])
-  const [CP, setCP] = useState<CardiacProfile[]>([])
-  const [HB1, setHB1] = useState<Hematology[]>([])
-  const [INF, setINF] = useState<Infective[]>([])
-  const [KP, setKP] = useState<Kidney[]>([])
-
-  /**
-   *
-   * @param key Debe ser una de las claves que se encuentre en `LaboratoryData`
-   * @param select Debe ser un array de strings que contenga las claves que se desean seleccionar del objeto previamente seleccionado en `key`
-   */
-  const getValueOf = useCallback(
-    (key: keyof CreatedTypesOfLab, select: string[] = ['*']) => {
-      if (!versions) throw new Error('No versions initialized')
-      const selectedKey = versions.map((version) => {
-        return { ...(version[key] as object) }
-      })
-      if (select[0] !== '*') {
-        const newData = selectedKey.map((data) => {
-          let props = Object.keys(data as object)
-          for (const i of select) {
-            if (props.includes(i)) props = props.filter((prop) => prop !== i)
-          }
-          for (const prop of props) {
-            delete data[prop as keyof typeof data]
-          }
-          return data
-        })
-        return newData
-      }
-      return selectedKey
-    },
-    [versions]
-  )
+  const [LP2, setLP2] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
+  const [HB2, setHB2] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
+  const [LP1, setLP1] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
+  const [CP, setCP] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
+  const [HB1, setHB1] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
+  const [INF, setINF] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
+  const [KP, setKP] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
 
   useEffect(() => {
     if (!versions) return
-    setHB2(getValueOf('hematology', ['plaquetas']) as { plaquetas: number }[])
-    setINF(
-      getValueOf('infective', ['proteinaC', 'procalcitonina']) as Infective[]
+    const getValueOf = ctrl.initGetValueOf(versions)
+    setLP1((prevLP1) =>
+      handleSetter(
+        prevLP1,
+        getValueOf('liver_profile', ['TGO', 'TGP', 'albumina', 'fosfatasa'])
+      )
     )
-    setCP(getValueOf('cardiac_profile') as CardiacProfile[])
-    setLP1(getValueOf('liver_profile') as LiverProfile[])
-    ctrl.initializeLP2({ versions, setter: setLP2 })
-    ctrl.initializeKP({
+    setHB2((prevHB2) =>
+      handleSetter(prevHB2, getValueOf('hematology', ['plaquetas']))
+    )
+    setCP((prevCP) =>
+      handleSetter(
+        prevCP,
+        getValueOf('cardiac_profile', ['troponina', 'CPK', 'PRO'])
+      )
+    )
+    setINF((prevINF) =>
+      handleSetter(
+        prevINF,
+        getValueOf('infective', ['proteinaC', 'procalcitonina'])
+      )
+    )
+    setHB1((prevHB1) =>
+      handleSetter(
+        prevHB1,
+        getValueOf('hematology', ['hemoglobina', 'leucocitos', 'TPA', 'INR'])
+      )
+    )
+    ctrl.initializeLP2({
       versions,
-      setter: setKP,
-      kidney: getValueOf('kidney') as Kidney[],
+      setter: (newVal: ObjectOnlyNumbers[]) => {
+        setLP2((prevLP2) => handleSetter(prevLP2, newVal))
+      },
     })
-    setHB1(
-      getValueOf('hematology', [
-        'hemoglobina',
-        'leucocitos',
-        'TPA',
-        'INR',
-      ]) as Hematology[]
-    )
-  }, [getValueOf, versions])
+    ctrl.initializeKP({
+      kidney: getValueOf('kidney') as Kidney[],
+      setter: (newValued: ObjectOnlyNumbers[]) => {
+        setKP((prevKP) => handleSetter(prevKP, newValued))
+      },
+      versions,
+    })
+  }, [versions])
 
   return (
     <Flex wrap="wrap" justify="center">
-      <Graphs.Bar
-        title="HEMATOLOGÍA I: HB, LEUCOCITOS, COAGULACIÓN"
+      <Graphs.Line
         data={HB1}
         currentTab={currentTab}
-        margin={(props) => ({ ...props, right: -32, left: 20 })}
+        yAxisKey={['INR', 'right']}
+        title="HEMATOLOGÍA I: HB, LEUCOCITOS, COAGULACIÓN"
+        margin={(props) => ({ ...props, right: -25, left: 5 })}
         yAxis={<YAxis yAxisId="right" orientation="right" stroke="#ffc658" />}
       >
-        <Bar dataKey="hemoglobina" fill="#8884d8" />
-        <Bar dataKey="leucocitos" fill="#82ca9d" />
-        <Bar dataKey="TPA" fill="#54c2b9" />
-        <Bar yAxisId="right" dataKey="INR" fill="#ffc658" />
-      </Graphs.Bar>
+        <Line dataKey="hemoglobina" stroke="#8884d8" />
+        <Line dataKey="leucocitos" stroke="#82ca9d" />
+        <Line dataKey="TPA" stroke="#54c2b9" />
+        <Line yAxisId="right" dataKey="INR" stroke="#ffc658" />
+      </Graphs.Line>
 
       <Graphs.Line
         title="HEMATOLOGÍA II: PLAQUETAS"
@@ -102,9 +96,9 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
       </Graphs.Line>
 
       <Graphs.Line
-        title="PERFIL HEPÁTICO I: TRANSAMINASAS, FA, ALBUMINA"
         data={LP1}
         currentTab={currentTab}
+        title="PERFIL HEPÁTICO I: TRANSAMINASAS, FA, ALBUMINA"
       >
         <Line dataKey="TGO" stroke="#8884d8" />
         <Line dataKey="TGP" stroke="#82ca9d" />
@@ -113,9 +107,9 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
       </Graphs.Line>
 
       <Graphs.Line
-        title="PERFIL HEPÁTICO II: BILIRRUBINAS"
         data={LP2}
         currentTab={currentTab}
+        title="PERFIL HEPÁTICO II: BILIRRUBINAS"
       >
         <Line dataKey="total" stroke="#8884d8" />
         <Line dataKey="directa" stroke="#82ca9d" />
@@ -134,26 +128,17 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
         <Line dataKey="PRO" stroke="#54c2b9" />
       </Graphs.Line>
 
-      <Graphs.Bar
-        title="INFLAMATORIO / INFECCIOSO"
-        currentTab={currentTab}
+      <Graphs.Line
         data={INF}
         width={630}
-        yAxis={
-          <>
-            <YAxis
-              style={{ transform: 'translateX(59px)' }}
-              yAxisId="left"
-              orientation="left"
-              stroke="#8884d8"
-            />
-            <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
-          </>
-        }
+        currentTab={currentTab}
+        title="INFLAMATORIO / INFECCIOSO"
+        yAxisKey={['procalcitonina', 'right']}
+        yAxis={<YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />}
       >
-        <Bar yAxisId="left" dataKey="proteinaC" fill="#8884d8" />
-        <Bar yAxisId="right" dataKey="procalcitonina" fill="#82ca9d" />
-      </Graphs.Bar>
+        <Line dataKey="proteinaC" stroke="#8884d8" />
+        <Line yAxisId="right" dataKey="procalcitonina" stroke="#82ca9d" />
+      </Graphs.Line>
     </Flex>
   )
 }

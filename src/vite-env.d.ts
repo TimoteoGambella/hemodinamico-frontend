@@ -247,13 +247,14 @@ type MarginProps = {
   bottom?: number
 }
 
-type BarGraphProps = {
+type GraphsProps = {
   title?: string
   width?: number
   height?: number
   margin?: MarginProps | ((props: MarginProps) => MarginProps)
-  data: { [key: string]: number }[]
+  data: ObjectOnlyNumbers[]
   currentTab: string
+  yAxisKey?: [string, ('left' | 'right')]
   yAxis?: React.ReactNode
   children: React.ReactNode
 }
@@ -272,4 +273,8 @@ type CreatedTypesOfLab = {
   diagnostic: Diagnostic
   infective: Infective
   kidney: Kidney
+}
+
+type ObjectOnlyNumbers = {
+  [key: string]: number
 }

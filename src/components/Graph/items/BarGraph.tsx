@@ -13,7 +13,7 @@ export default function BarGraph({
   width,
   height,
   margin,
-}: BarGraphProps) {
+}: GraphsProps) {
   const defaultWidth = width || 556
   const defaultHeight = height || 350
   const [isOpen, setIsOpen] = useState(false)

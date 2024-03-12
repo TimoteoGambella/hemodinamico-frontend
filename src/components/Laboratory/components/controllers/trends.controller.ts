@@ -34,3 +34,52 @@ export const initializeLP2 = ({ versions, setter }: ControllerProps) => {
   })
   setter(data)
 }
+
+/**
+ *
+ * @param versions Lista de versiones de laboratorio
+ * @returns Función que devuelve un objeto con las claves seleccionadas de cada versión
+ */
+export const initGetValueOf = (versions: LaboratoryData[]) => {
+  /**
+   *
+   * @param key Debe ser una de las claves que se encuentre en `LaboratoryData`
+   * @param select Debe ser un array de strings que contenga las claves que se desean seleccionar del objeto previamente seleccionado en `key`
+   */
+  const getValueOf = (
+    key: keyof CreatedTypesOfLab,
+    select: string[] = ['*']
+  ) => {
+    if (!versions) throw new Error('No versions initialized')
+    const selectedKey = versions.map((version) => {
+      return { ...(version[key] as object) }
+    })
+    if (select[0] !== '*') {
+      const newData = selectedKey.map((data) => {
+        let props = Object.keys(data as object)
+        for (const i of select) {
+          if (props.includes(i)) props = props.filter((prop) => prop !== i)
+        }
+        for (const prop of props) {
+          delete data[prop as keyof typeof data]
+        }
+        return data as { [key: string]: number }[]
+      })
+      return newData as unknown as { [key: string]: number }[]
+    }
+    return selectedKey
+  }
+
+  return getValueOf
+}
+
+export const handleSetter = (
+  prev: ObjectOnlyNumbers[],
+  newVal: ObjectOnlyNumbers[]
+) => {
+  const newLP2 = [...prev]
+  newVal.forEach((value, index) => {
+    newLP2[index] = value
+  })
+  return newLP2
+}

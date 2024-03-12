@@ -4,7 +4,7 @@
     padding: 0 !important;
   }
 }
-.Graph.barGraph {
+.Graph.p-relative {
   position: relative;
 }
 .Graph .trendButton {
