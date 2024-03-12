@@ -1,6 +1,6 @@
+import StretcherSummary from './components/StretcherSummary'
+import StretcherContent from './components/StretcherContent'
 import useStretchers from '../../hooks/useStretchers'
-import StretcherContent from './StretcherContent'
-import useMsgApi from '../../hooks/useMsgApi'
 import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { Empty, Spin, Tabs } from 'antd'
@@ -8,11 +8,10 @@ import './style.css'
 
 const Stretcher = () => {
   const { id } = useParams()
-  const msgApi = useMsgApi()
   const [isLoading, setIsLoading] = useState(true)
   const stretcherData = useStretchers()?.find(
     (stretcher) => stretcher._id === id
-  )
+  ) as PopulatedStretcher
 
   const tabs = [
     {
@@ -21,7 +20,7 @@ const Stretcher = () => {
       children: (
         <Spin spinning={isLoading}>
           {stretcherData ? (
-            <StretcherContent stretcherData={stretcherData} msgApi={msgApi} />
+            <StretcherContent stretcherData={stretcherData} />
           ) : (
             <Empty description="Sin datos" />
           )}
@@ -31,7 +30,11 @@ const Stretcher = () => {
     {
       label: 'Resumen',
       key: '1',
-      children: <Empty description="Sin datos" />,
+      children: stretcherData ? (
+        <StretcherSummary stretcher={stretcherData} />
+      ) : (
+        <Empty description="Sin datos" />
+      ),
     },
   ]
 

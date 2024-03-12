@@ -1,11 +1,9 @@
-import { MessageInstance } from "antd/es/message/interface"
 import { Flex, Typography, Tag, Space } from "antd"
-import FloatBtn from "../FloatBtn"
+import FloatBtn from "../../FloatBtn"
+import CustomForm from "../../Form"
 import { useState } from "react"
-import CustomForm from "../Form"
 
 interface MainContentProps {
-  msgApi: MessageInstance
   stretcherData: StretcherData
 }
 

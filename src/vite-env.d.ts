@@ -278,3 +278,7 @@ type CreatedTypesOfLab = {
 type ObjectOnlyNumbers = {
   [key: string]: number
 }
+
+interface PopulatedStretcher extends Omit<StretcherData, 'patientId'> {
+  patientId: PatientData | null
+}
