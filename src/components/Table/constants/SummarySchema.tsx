@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import RenderCultivos from '../components/RenderCultivos'
 import { calcTFG } from '../../Form/utils/formulas'
 import { TableColumnsType } from 'antd'
+import RenderCultivos from '../../Laboratory/components/RenderCultivos'
 
 type SchemaType = LaboratoryData & { key: React.Key }
 type LabKeys = keyof LaboratoryData | string
