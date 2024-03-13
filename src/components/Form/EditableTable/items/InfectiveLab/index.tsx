@@ -75,7 +75,7 @@ export default function InfectiveLab({ data, setData }: StretcherProps) {
   ]
 
   const handleAdd = useCallback(() => {
-    if (data.length >= 4) {
+    if (data.length >= 3) {
       msgApi.warning('Alcanzó el límite de cultivos aplicables por paciente.')
       return
     }
