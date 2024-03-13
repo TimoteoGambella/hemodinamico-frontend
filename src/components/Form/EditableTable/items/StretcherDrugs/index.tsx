@@ -129,6 +129,7 @@ export default function StretcherDrugs({ data, setDataSource }: StretcherProps) 
       </Button>
       <Table
         bordered
+        pagination={false}
         components={components}
         dataSource={dataSource}
         columns={columns as ColumnTypes}
