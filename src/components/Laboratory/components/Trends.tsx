@@ -28,7 +28,10 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
 
   useEffect(() => {
     if (!versions) return
-    const getValueOf = ctrl.initGetValueOf(versions)
+    const versionsCopy: LaboratoryData[] = (
+      JSON.parse(JSON.stringify(versions)) as LaboratoryData[]
+    ).reverse()
+    const getValueOf = ctrl.initGetValueOf(versionsCopy)
     setLP1((prevLP1) =>
       handleSetter(
         prevLP1,
@@ -57,7 +60,7 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
       )
     )
     ctrl.initializeLP2({
-      versions,
+      versions: versionsCopy,
       setter: (newVal: ObjectOnlyNumbers[]) => {
         setLP2((prevLP2) => handleSetter(prevLP2, newVal))
       },
@@ -67,7 +70,7 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
       setter: (newValued: ObjectOnlyNumbers[]) => {
         setKP((prevKP) => handleSetter(prevKP, newValued))
       },
-      versions,
+      versions: versionsCopy,
     })
   }, [versions])
 
