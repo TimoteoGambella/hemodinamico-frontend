@@ -1,6 +1,6 @@
-import { AxiosError, AxiosResponse } from "axios"
 import AxiosController from "../../../utils/axios.controller"
 import { MessageInstance } from "antd/es/message/interface"
+import { AxiosError, AxiosResponse } from "axios"
 
 const axios = new AxiosController()
 
@@ -20,11 +20,7 @@ export const handleDeleteClick = async(id: string, msgApi: MessageInstance, type
   let res: AxiosResponse | AxiosError | undefined
 
   if (type === 'lab') await axios.deleteLab(id)
-  else {
-    msgApi.destroy('delete-lab')
-    msgApi.error('Esta operación aún no esta soportada.', 3)
-    throw new Error('Type not supported yet.')
-  }
+  else await axios.deleteStretcher(id)
 
   if (res instanceof AxiosError) {
     msgApi.error({

@@ -129,6 +129,13 @@ export default class AxiosController {
     })
   }
 
+  async deleteStretcher(id: string): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/stretcher/delete/${id}`,
+      method: 'DELETE'
+    })
+  }
+
   async getLabs(populate = false): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: `/laboratory/list?populate=${populate}`,

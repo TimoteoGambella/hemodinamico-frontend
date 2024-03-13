@@ -7,7 +7,9 @@ import { handleDeleteClick } from './controller'
 import useCollapsed from '../../hooks/useCollapsed'
 import { useParams, useNavigate } from 'react-router-dom'
 import useUpdatePatients from '../../hooks/useUpdatePatients'
+import useUpdateStretchers from '../../hooks/useUpdateStretcher'
 import useUpdateLabs from '../../hooks/useUpdateLabs'
+import useStretchers from '../../hooks/useStretchers'
 import { FloatButton, Popconfirm } from 'antd'
 import useMsgApi from '../../hooks/useMsgApi'
 import { useEffect, useState } from 'react'
@@ -35,6 +37,8 @@ FloatBtn.Options = function Options({
   const collapsed = useCollapsed()
   const navigateTo = useNavigate()
   const updateLabs = useUpdateLabs()
+  const stretchers = useStretchers()
+  const updateStretchers = useUpdateStretchers()
   const updatePatients = useUpdatePatients()
 
   if (!id) return
@@ -56,11 +60,20 @@ FloatBtn.Options = function Options({
           key: 'update-partial-repo',
           type: 'loading',
         })
-        Promise.all([updateLabs(), updatePatients()])
+        const promiseAray = [updatePatients()]
+        if (deleteType === 'lab') promiseAray.push(updateLabs())
+        else promiseAray.push(updateStretchers())
+        Promise.all(promiseAray)
           .then(() => {
-            const to = labs.find((lab) => lab._id !== id)?._id
-            if (to) navigateTo('/laboratorio/' + to)
-            else navigateTo('/pacientes')
+            if (deleteType === 'lab') {
+              const to = labs.find((lab) => lab._id !== id)?._id
+              if (to) navigateTo('/laboratorio/' + to)
+              else navigateTo('/pacientes')
+            } else {
+              const to = stretchers?.find((stretcher) => stretcher._id !== id)?._id
+              if (to) navigateTo('/cama/' + to)
+              else navigateTo('/pacientes')
+            }
           })
           .finally(() => msgApi.destroy('update-partial-repo'))
       }
