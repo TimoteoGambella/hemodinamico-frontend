@@ -54,6 +54,8 @@ const ActionRender = ({ data }: ActionRenderProps) => {
       setFormProp({ ...formProp, status: 'initial', message: null })
     } else if (formProp.status === 'loading') {
       setIsLoading(true)
+    } else if (formProp.status === 'server-error') {
+      setIsLoading(false)
     }
   }, [formProp, msgApi])
 
