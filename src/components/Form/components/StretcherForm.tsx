@@ -1,4 +1,5 @@
 import { validateTableSuppliedValues } from '../EditableTable/utils/refactors'
+import FormDirty, { removeUnusedProps } from '../../../utils/FormDirty'
 import StretcherDiagnostic from '../items/StretcherDiagnostic'
 import StretcherConfing from '../items/StretcherConfigForm'
 import CalculedVariables from '../items/CalculedVariables'
@@ -23,6 +24,24 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
   const stretcherInfo = JSON.parse(JSON.stringify(data)) as StretcherData
   const [form] = Form.useForm<StretcherData>()
   const [isLoading, setIsLoading] = useState(false)
+  const [initialValues] = useState({
+    ...stretcherInfo,
+    patientId: removeUnusedProps(
+      {
+        ...(stretcherInfo!.patientId as PatientData),
+      },
+      [
+        '_id',
+        'stretcherId',
+        'laboratoryId',
+        'createdAt',
+        'isDeleted',
+        'editedAt',
+        'editedBy',
+        '__v',
+      ]
+    ),
+  })
   const [tableValues, setTableValues] = useState(
     stretcherInfo.suministros.drogas
   )
@@ -46,6 +65,8 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
     formProp,
   })
 
+  const dirty = new FormDirty(initialValues)
+
   if (stretcherInfo && !stretcherInfo.diagnostic.type) {
     stretcherInfo.diagnostic.type = ''
   }
@@ -64,10 +85,14 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
 
   const handleSubmit = (values: Partial<StretcherData>) => {
     /* PATIENT */
-    const patientId = stretcherInfo.patientId as PatientData
-    const patient = values.patientId as PatientData
-    patient._id = patientId._id
-    patient.stretcherId = patientId.stretcherId
+    const shouldUpdatePatient = dirty.isDirty(values, 'patientId')
+    let patient: PatientData | undefined
+    if (shouldUpdatePatient) {
+      const patientId = stretcherInfo.patientId as PatientData
+      patient = values.patientId as PatientData
+      patient._id = patientId._id
+      patient.stretcherId = patientId.stretcherId
+    }
     /* LAB */
     delete values.patientId
     const suppliedData = validateTableSuppliedValues(
@@ -90,10 +115,9 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
       duration: 0,
     })
     /* SEND REQUEST */
-    Promise.all([
-      onFinish(values as StretcherData),
-      onPatientFinish(patient),
-    ]).finally(() => updateRepo())
+    const promiseArray = [onFinish(values as StretcherData)]
+    if (patient) promiseArray.push(onPatientFinish(patient))
+    Promise.all(promiseArray).finally(() => updateRepo())
   }
 
   useEffect(() => {
@@ -111,7 +135,7 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
       onFinish={handleSubmit}
       onFinishFailed={onFinishFailed}
       className="form-component"
-      initialValues={{ ...stretcherInfo, patientId: stretcherInfo!.patientId }}
+      initialValues={initialValues}
       disabled={!formProp.enable}
       scrollToFirstError
     >

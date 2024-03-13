@@ -1,3 +1,4 @@
+import FormDirty, { removeUnusedProps } from '../../../utils/FormDirty'
 import InfectiveProfileForm from '../items/InfectiveProfileForm'
 import CardiacProfileForm from '../items/CardiacProfileForm'
 import * as refactor from '../EditableTable/utils/refactors'
@@ -21,6 +22,8 @@ export default function LabForm({ formProp, data }: CustomFormProps) {
   const [form] = Form.useForm<LaboratoryData>()
   const [isLoading, setIsLoading] = useState(false)
   const [cultivos, setCultivos] = useState<CultivoFormType[]>([])
+  const [initialValues, setInitialValues] = useState({})
+  const dirty = new FormDirty(initialValues as LaboratoryData)
   const { onFinish: onFinishLab, onFinishFailed } = FormController(
     {
       formType: 'lab',
@@ -53,34 +56,41 @@ export default function LabForm({ formProp, data }: CustomFormProps) {
   )
 
   const handleSubmit = (values: LaboratoryData) => {
+    /* REMOVE PATIENT ID FROM LABORATORY */
     const lab: Partial<LaboratoryData> = JSON.parse(JSON.stringify(values))
     delete lab.patientId
     lab._id = data!._id
     lab.infective!.cultivos = refactor.cultivoFormToCultivo(cultivos)
-
-    const patient = values.patientId as PatientData
-    patient._id = (data as { patientId: PatientData }).patientId._id
-    patient.stretcherId = (
-      data as { patientId: PatientData }
-    ).patientId.stretcherId
-
+    /* CHECK IF PATIENT SHOULD BE UPDATED */
+    const shouldUpdatePatient = dirty.isDirty(values, 'patientId')
+    let patient: PatientData | undefined
+    if (shouldUpdatePatient) {
+      patient = values.patientId as PatientData
+      patient._id = (data as { patientId: PatientData }).patientId._id
+      patient.stretcherId = (
+        data as { patientId: PatientData }
+      ).patientId.stretcherId
+    }
+    /* SET LOADING */
     setIsLoading(true)
-    msgApi.open({
-      type: 'loading',
-      content: 'Actualizando paciente...',
-      key: 'lab-patient-form',
-      duration: 0,
-    })
+    if (patient) {
+      msgApi.open({
+        type: 'loading',
+        content: 'Actualizando paciente...',
+        key: 'lab-patient-form',
+        duration: 0,
+      })
+    }
     msgApi.open({
       type: 'loading',
       content: 'Actualizando laboratorio...',
       key: 'lab-form',
       duration: 0,
     })
-    Promise.all([
-      onFinishLab(lab as LaboratoryData),
-      onFinishPatient(patient),
-    ]).finally(() => updateRepo())
+    /* SEND REQUEST */
+    const promiseArray = [onFinishLab(lab as LaboratoryData)]
+    if (patient) promiseArray.push(onFinishPatient(patient))
+    Promise.all(promiseArray).finally(() => updateRepo())
   }
 
   useEffect(() => {
@@ -104,6 +114,28 @@ export default function LabForm({ formProp, data }: CustomFormProps) {
     }, 0)
   }, [data, form])
 
+  useEffect(() => {
+    if (!data) return
+    setInitialValues({
+      ...data,
+      patientId: removeUnusedProps(
+        {
+          ...((data as LaboratoryData)!.patientId as PatientData),
+        },
+        [
+          '_id',
+          'stretcherId',
+          'laboratoryId',
+          'createdAt',
+          'isDeleted',
+          'editedAt',
+          'editedBy',
+          '__v',
+        ]
+      ),
+    })
+  }, [data])
+
   if (!data) return <Empty description="Sin datos" />
 
   return (
@@ -114,7 +146,7 @@ export default function LabForm({ formProp, data }: CustomFormProps) {
       onFinish={handleSubmit}
       onFinishFailed={onFinishFailed}
       className="form-component"
-      initialValues={data}
+      initialValues={initialValues}
       scrollToFirstError
       disabled={!formProp.enable}
     >
