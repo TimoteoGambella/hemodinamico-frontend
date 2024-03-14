@@ -121,10 +121,17 @@ export default class AxiosController {
     })
   }
 
+  async getStretcherListVersion(id: string, populate: boolean): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/stretcher/list/versions/${id}?populate=${populate}`,
+      method: 'GET'
+    })
+  }
+
   async updateStretcher(id: string, body: StretcherData): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: `/stretcher/update/${id}`,
-      method: 'PUT',
+      method: 'PATCH',
       data: body
     })
   }

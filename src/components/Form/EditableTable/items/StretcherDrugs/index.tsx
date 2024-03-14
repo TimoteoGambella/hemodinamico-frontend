@@ -1,7 +1,8 @@
 import { suppliedSchema } from '../../../constants/suppliedSchemaDrugs'
+import { Button, FormInstance, Table, Typography } from 'antd'
+import { useCallback, useEffect, useState } from 'react'
 import useMsgApi from '../../../../../hooks/useMsgApi'
 import * as refactor from '../../utils/refactors'
-import { Button, Table, Typography } from 'antd'
 import EditableCell from './utils/EditableCell'
 import EditableRow from './utils/EditableRow'
 import DeleteBtn from '../DeleteBtn'
@@ -11,22 +12,41 @@ type EditableTableProps = Parameters<typeof Table>[0]
 type ColumnTypes = Exclude<EditableTableProps['columns'], undefined>
 
 interface StretcherProps {
-  data: SuppliedDrugs[]
-  setDataSource: (value: SuppliedDrugs[]) => void
+  form: FormInstance<StretcherData> & {
+    customFields: {
+      supplied: SuppliedDrugs[]
+    }
+  }
 }
 
-export default function StretcherDrugs({ data, setDataSource }: StretcherProps) {
+export default function StretcherDrugs({ form }: StretcherProps) {
+  const [source, setSource] = useState<DataSourceType[] | null>(null)
   const msgApi = useMsgApi()
-  const dataSource = refactor.suppliedToTableValuesType(data)
-  const setValues = (newData: DataSourceType[]) => {
-    const value = refactor.tableValuesAsSupplied(newData)
-    if (value instanceof Promise) return
-    setDataSource(value)
-  }
+
+  const setValues = useCallback(
+    (newData: DataSourceType[]) => {
+      const value = refactor.tableValuesAsSupplied(newData)
+      if (value instanceof Promise) return
+      form.customFields.supplied = value
+    },
+    [form.customFields]
+  )
+
+  useEffect(() => {
+    if (source) setValues(source)
+  }, [source, setValues])
+
+  useEffect(() => {
+    if (!source) {
+      setSource(refactor.suppliedToTableValuesType(form.customFields.supplied))
+    }
+  }, [form.customFields, source])
+
+  if (!source) return null
 
   const handleDelete = (key: React.Key) => {
-    const newData = dataSource.filter((item) => item.key !== key)
-    setValues(newData)
+    const newData = source.filter((item) => item.key !== key)
+    setSource(newData)
   }
 
   const defaultColumns: (ColumnTypes[number] & {
@@ -63,7 +83,7 @@ export default function StretcherDrugs({ data, setDataSource }: StretcherProps) 
       dataIndex: 'operation',
       render: (_, record) => (
         <DeleteBtn
-          dataSource={dataSource}
+          dataSource={source}
           record={record as RecordWithKey}
           handleDelete={handleDelete}
         />
@@ -72,20 +92,20 @@ export default function StretcherDrugs({ data, setDataSource }: StretcherProps) 
   ]
 
   const handleAdd = () => {
-    if (dataSource.length >= 4) {
+    if (source.length >= 4) {
       msgApi.warning('Alcanzó el límite de drogas aplicables por paciente.')
       return
     }
     const newData: DataSourceType = {
       name: 'SELECCIONAR',
       dose: 1,
-      key: dataSource.length,
+      key: source.length,
     }
-    setValues([...dataSource, newData])
+    setSource([...source, newData])
   }
 
   const handleSave = (row: DataSourceType) => {
-    const newData = [...dataSource]
+    const newData = [...source]
     const index = newData.findIndex((item) => row.key === item.key)
     const item = newData[index]
     newData.splice(index, 1, {
@@ -95,7 +115,7 @@ export default function StretcherDrugs({ data, setDataSource }: StretcherProps) 
     newData.forEach((item) =>
       Array.isArray(item.name) ? (item.name = item.name[1]) : null
     )
-    setValues(newData)
+    setSource(newData)
   }
 
   const components = {
@@ -131,7 +151,7 @@ export default function StretcherDrugs({ data, setDataSource }: StretcherProps) 
         bordered
         pagination={false}
         components={components}
-        dataSource={dataSource}
+        dataSource={source}
         columns={columns as ColumnTypes}
         style={{ marginBottom: '1rem' }}
         rowClassName={() => 'editable-row'}

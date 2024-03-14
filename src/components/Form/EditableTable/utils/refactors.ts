@@ -12,7 +12,8 @@ export function suppliedToTableValuesType(
 export function tableValuesAsSupplied(
   tableValues: DataSourceType[]
 ): SuppliedDrugs[] | Promise<never> {
-  return tableValues.map((item: Partial<DataSourceType>) => {
+  const arr = JSON.parse(JSON.stringify(tableValues))
+  return arr.map((item: Partial<DataSourceType>) => {
     delete item.key
     return item
   }) as SuppliedDrugs[]

@@ -1,6 +1,6 @@
-import SummarySchema from '../../Table/constants/SummarySchema'
+import MontoringSummary from '../../Table/components/MontoringSummary'
+import SummarySchema from '../../Table/constants/LabSummarySchema'
 import { useEffect, useState } from 'react'
-import { Table, Typography } from 'antd'
 import CustomTable from '../../Table'
 
 type LabDataWithKey = LaboratoryData & { key: React.Key }
@@ -36,17 +36,10 @@ export default function LabSummary({ versions }: LabSummaryProps) {
         <CustomTable.User patientId={patientId} />
       </div>
       <div>
-        <Typography.Title level={3} style={{ margin: '0 !important' }}>
-          Resumen de monitoreo
-        </Typography.Title>
-        <Table
-          columns={SummarySchema}
-          dataSource={data as LabDataWithKey[]}
-          loading={isLoading}
-          bordered
-          size="middle"
-          className="tbl-td-center transition-w-ease-out"
-          scroll={{ y: 280 }}
+        <MontoringSummary
+          schema={SummarySchema}
+          source={data as []}
+          isLoading={isLoading}
         />
       </div>
     </>

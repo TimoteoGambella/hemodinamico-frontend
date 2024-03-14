@@ -3,7 +3,7 @@ import FormDirty, { removeUnusedProps } from '../../../utils/FormDirty'
 import StretcherDiagnostic from '../items/StretcherDiagnostic'
 import StretcherConfing from '../items/StretcherConfigForm'
 import CalculedVariables from '../items/CalculedVariables'
-import { Button, Divider, Form, InputNumber } from 'antd'
+import { Button, Divider, Form, FormInstance, InputNumber } from 'antd'
 import useUpdateRepo from '../../../hooks/useUpdateRepo'
 import CatheterForm from '../items/CatheterProfileForm'
 import GasometricForm from '../items/GasometricForm'
@@ -18,11 +18,19 @@ import { useState, useEffect } from 'react'
 import { CustomFormProps } from '..'
 import { AxiosError } from 'axios'
 
+type CustomFormType = [
+  FormInstance<StretcherData> & {
+    customFields: {
+      supplied: SuppliedDrugs[]
+    }
+  }
+]
+
 export default function StretcherForm({ formProp, data }: CustomFormProps) {
   const msgApi = useMsgApi()
   const updateRepo = useUpdateRepo()
   const stretcherInfo = JSON.parse(JSON.stringify(data)) as StretcherData
-  const [form] = Form.useForm<StretcherData>()
+  const [form] = Form.useForm<StretcherData>() as unknown as CustomFormType
   const [isLoading, setIsLoading] = useState(false)
   const [initialValues] = useState({
     ...stretcherInfo,
@@ -42,9 +50,6 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
       ]
     ),
   })
-  const [tableValues, setTableValues] = useState(
-    stretcherInfo.suministros.drogas
-  )
   const { onFinish, onFinishFailed } = FormController(
     {
       formType: 'update-stretcher',
@@ -96,7 +101,7 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
     /* LAB */
     delete values.patientId
     const suppliedData = validateTableSuppliedValues(
-      tableValues as DataSourceType[]
+      form.customFields.supplied as DataSourceType[]
     )
     if (!suppliedData) {
       msgApi.warning(
@@ -105,7 +110,7 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
       return
     }
     if (values.diagnostic?.type === '') values.diagnostic.type = null
-    values.suministros = { drogas: tableValues }
+    values.suministros = { drogas: form.customFields.supplied }
     values._id = stretcherInfo._id
     setIsLoading(true)
     msgApi.open({
@@ -126,6 +131,12 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
       form.setFieldsValue(stretcherInfo as any)
     }, 0)
   }, [form, stretcherInfo])
+
+  if (!form.customFields && stretcherInfo) {
+    form.customFields = {
+      supplied: stretcherInfo.suministros.drogas,
+    }
+  }
 
   return (
     <Form
@@ -164,10 +175,7 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
       <Divider />
       <CalculedVariables form={form} />
       <Divider />
-      <EditableTable.Stretcher
-        data={tableValues}
-        setDataSource={setTableValues}
-      />
+      <EditableTable.Stretcher form={form} />
       <Divider />
       <StretcherDiagnostic form={form} />
       <div className="submit-container">

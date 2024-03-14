@@ -1,5 +1,5 @@
+import { PatientWithStretcher } from '../components/UserSummaryTable'
 import { ColumnsType } from 'antd/es/table'
-import { PatientWithStretcher } from '..'
 import { Link } from 'react-router-dom'
 
 export default [
