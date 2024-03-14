@@ -24,7 +24,8 @@ export default function LabSummary({ versions }: LabSummaryProps) {
 
   useEffect(() => {
     if (data) {
-      setPatientId((data[0].patientId as PatientData)._id)
+      const patientId = data[0].patientId
+      if (typeof patientId === 'string') setPatientId(patientId)
       setIsLoading(false)
     }
   }, [data])
