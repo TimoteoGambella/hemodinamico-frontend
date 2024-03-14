@@ -112,7 +112,8 @@ type StretcherData = {
     type: 'shock_isq' | 'shock' | 'falla_avanzada' | '' | null
     subtype: 'intermacs_1' | 'intermacs_2' | 'intermacs_3' | null
   }
-  timestamp: number
+  createdAt: number
+  __v: number
 }
 
 type FormPropType = {
@@ -281,4 +282,12 @@ type ObjectOnlyNumbers = {
 
 interface PopulatedStretcher extends Omit<StretcherData, 'patientId'> {
   patientId: PatientData | null
+}
+
+type TabsKeys = 'general-info' | 'summary' | 'graphs-trends'
+
+type TabType = {
+  label: string
+  key: TabsKeys
+  children: React.ReactNode
 }

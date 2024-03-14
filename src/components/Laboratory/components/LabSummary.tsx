@@ -6,9 +6,10 @@ import CustomTable from '../../Table'
 type LabDataWithKey = LaboratoryData & { key: React.Key }
 interface LabSummaryProps {
   versions: LaboratoryData[] | null
+  currentTab: string
 }
 
-export default function LabSummary({ versions }: LabSummaryProps) {
+export default function LabSummary({ versions, currentTab }: LabSummaryProps) {
   const [data, setData] = useState<LabDataWithKey[] | null>(null)
   const [patientId, setPatientId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -37,9 +38,11 @@ export default function LabSummary({ versions }: LabSummaryProps) {
       </div>
       <div>
         <MontoringSummary
+          currentTab={currentTab}
           schema={SummarySchema}
-          source={data as []}
           isLoading={isLoading}
+          source={data as []}
+          scroll={{ y: 280 }}
         />
       </div>
     </>

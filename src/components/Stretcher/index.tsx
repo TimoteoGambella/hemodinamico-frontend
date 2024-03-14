@@ -12,16 +12,17 @@ import './style.css'
 const Stretcher = () => {
   const { id } = useParams()
   const msgApi = useMsgApi()
+  const [currentTab, setCurrentTab] = useState<TabsKeys>('general-info')
   const [isLoading, setIsLoading] = useState(true)
   const stretcherData = useStretchers()?.find(
     (stretcher) => stretcher._id === id
   ) as PopulatedStretcher
   const [versions, setVersions] = useState<PopulatedStretcher[] | null>(null)
 
-  const tabs = [
+  const tabs: TabType[] = [
     {
       label: 'Información general',
-      key: '0',
+      key: 'general-info',
       children: (
         <Spin spinning={isLoading}>
           {stretcherData ? (
@@ -34,9 +35,9 @@ const Stretcher = () => {
     },
     {
       label: 'Resumen',
-      key: '1',
+      key: 'summary',
       children: stretcherData ? (
-        <StretcherSummary stretcher={versions} />
+        <StretcherSummary stretcher={versions} currentTab={currentTab} />
       ) : (
         <Empty description="Sin datos" />
       ),
@@ -52,16 +53,27 @@ const Stretcher = () => {
     const fetchVersions = async () => {
       const res = await getStretcherVersions(id)
       if (res instanceof AxiosError) {
-        msgApi.error((res.response?.data as { message: string })?.message || 'Error al obtener versiones')
+        msgApi.error(
+          (res.response?.data as { message: string })?.message ||
+            'Error al obtener versiones'
+        )
         return
       }
-      const versions = (res.data.data as PopulatedStretcher[]).filter((stretcher) => stretcher.patientId !== null)
-      setVersions(versions)
+      const versions = (res.data.data as PopulatedStretcher[]).filter(
+        (stretcher) => stretcher.patientId && stretcher.patientHeartRate
+      )
+      setVersions(versions.map((stretcher, i) => ({ ...stretcher, key: i })))
     }
     fetchVersions()
   }, [id, msgApi])
 
-  return <Tabs type="card" items={tabs} />
+  return (
+    <Tabs
+      type="card"
+      items={tabs}
+      onChange={(e) => setCurrentTab(e as TabsKeys)}
+    />
+  )
 }
 
 export default Stretcher

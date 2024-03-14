@@ -4,9 +4,11 @@ import CustomTable from '../../Table'
 
 interface StretcherSummaryProps {
   stretcher: PopulatedStretcher[] | null
+  currentTab: TabsKeys
 }
 
-export default function StretcherSummary({ stretcher }: StretcherSummaryProps) {
+export default function StretcherSummary(props: StretcherSummaryProps) {
+  const { stretcher, currentTab } = props
   const patientId = stretcher ? stretcher[0].patientId?._id || null : null
 
   return (
@@ -15,7 +17,12 @@ export default function StretcherSummary({ stretcher }: StretcherSummaryProps) {
         <CustomTable.User patientId={patientId} />
       </div>
       <div>
-        <MontoringSummary schema={SummarySchema} source={stretcher || []} />
+        <MontoringSummary
+          currentTab={currentTab}
+          source={stretcher?.sort((a, b) => b.__v - a.__v) || []}
+          schema={SummarySchema}
+          scroll={{ y: 280 }}
+        />
       </div>
     </>
   )

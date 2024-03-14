@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import useCollapsed from '../../hooks/useCollapsed'
 import LabSummary from './components/LabSummary'
 import LabContent from './components/LabContent'
 import useMsgApi from '../../hooks/useMsgApi'
@@ -11,13 +10,10 @@ import Trends from './components/Trends'
 import { AxiosError } from 'axios'
 import './style.css'
 
-type TabsKeys = 'general-info' | 'summary' | 'graphs-trends'
-
 const Laboratory = () => {
   const labs = useLabs()
   const { id } = useParams()
   const msgApi = useMsgApi()
-  const isCollapsed = useCollapsed()
   const navigateTo = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
   const [data, setData] = useState<LaboratoryData | null>(null)
@@ -40,7 +36,7 @@ const Laboratory = () => {
     {
       label: 'Resumen',
       key: 'summary',
-      children: <LabSummary versions={versions} />,
+      children: <LabSummary versions={versions} currentTab={currentTab} />,
     },
     {
       label: 'Gráficos y tendencias',
@@ -48,17 +44,6 @@ const Laboratory = () => {
       children: <Trends versions={versions} currentTab={currentTab} />,
     },
   ]
-
-  useEffect(() => {
-    const main = document.querySelector('main')!
-    if (currentTab === 'summary') {
-      main.classList.add(...['transition-w-ease-out', 'min-w-680'])
-      main.style.width = `calc(100dvw - ${isCollapsed ? 80 : 200}px)`
-    } else {
-      main.classList.remove(...['transition-w-ease-out', 'min-w-680'])
-      main.style.width = ''
-    }
-  }, [currentTab, isCollapsed])
 
   useEffect(() => {
     const res = labs.find((lab) => lab._id === id) || null
