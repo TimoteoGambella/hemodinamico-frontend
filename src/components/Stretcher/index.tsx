@@ -1,5 +1,6 @@
 import StretcherSummary from './components/StretcherSummary'
 import StretcherContent from './components/StretcherContent'
+import StretcherTrends from './components/StretcherTrends'
 import useStretchers from '../../hooks/useStretchers'
 import { getStretcherVersions } from './controller'
 import useMsgApi from '../../hooks/useMsgApi'
@@ -38,6 +39,15 @@ const Stretcher = () => {
       key: 'summary',
       children: stretcherData ? (
         <StretcherSummary stretcher={versions} currentTab={currentTab} />
+      ) : (
+        <Empty description="Sin datos" />
+      ),
+    },
+    {
+      label: 'Gráficos',
+      key: 'graphs-trends',
+      children: stretcherData ? (
+        <StretcherTrends currentTab={currentTab} versions={versions} />
       ) : (
         <Empty description="Sin datos" />
       ),

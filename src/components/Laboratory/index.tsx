@@ -1,12 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import LabSummary from './components/LabSummary'
 import LabContent from './components/LabContent'
+import LabTrends from './components/LabTrends'
 import useMsgApi from '../../hooks/useMsgApi'
 import { getLabVersions } from './controller'
 import { useEffect, useState } from 'react'
 import useLabs from '../../hooks/useLabs'
 import { Empty, Spin, Tabs } from 'antd'
-import Trends from './components/Trends'
 import { AxiosError } from 'axios'
 import './style.css'
 
@@ -41,7 +41,7 @@ const Laboratory = () => {
     {
       label: 'Gráficos y tendencias',
       key: 'graphs-trends',
-      children: <Trends versions={versions} currentTab={currentTab} />,
+      children: <LabTrends versions={versions} currentTab={currentTab} />,
     },
   ]
 

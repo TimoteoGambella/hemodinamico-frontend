@@ -4,26 +4,17 @@ import { StockOutlined } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
 import * as Chart from 'recharts'
 
-export default function LinealGraph({
-  data,
-  currentTab,
-  children,
-  title,
-  yAxis,
-  margin,
-  width,
-  height,
-  yAxisKey,
-}: GraphsProps) {
+export default function LinealGraph(props: GraphsProps) {
+  const { data, currentTab, children, title, yAxis, yAxisKey } = props
   const [selectedItem, setSelectedItem] = useState<string[]>(['none'])
   const [trendData, setTrendData] = useState<{ trend: number }[]>([])
   const [items, setItems] = useState<MenuProps['items']>([])
-  const defaultMargin = ctrl.initializeMargin(margin)
+  const defaultMargin = ctrl.initializeMargin(props.margin)
   const [isOpen, setIsOpen] = useState(false)
   const [max, setMax] = useState<number>(0)
   const [min, setMin] = useState<number>(0)
-  const defaultHeight = height || 350
-  const defaultWidth = width || 556
+  const defaultHeight = props.height || 350
+  const defaultWidth = props.width || 556
 
   useEffect(() => {
     setIsOpen(false)
@@ -53,20 +44,22 @@ export default function LinealGraph({
   if (currentTab !== 'graphs-trends') return null
 
   return (
-    <div className='Graph p-relative'>
+    <div className="Graph p-relative">
       {title && <Typography.Title level={4}>{title}</Typography.Title>}
 
-      <Dropdown menu={{ items }} placement="bottomLeft" open={isOpen} arrow>
-        <Button
-          onClick={() => setIsOpen(!isOpen)}
-          onBlur={() => setIsOpen(false)}
-          className="trendButton"
-          type="primary"
-          size="small"
-        >
-          <StockOutlined />
-        </Button>
-      </Dropdown>
+      {(items && items.length > 0) && (
+        <Dropdown menu={{ items }} placement="bottomLeft" open={isOpen} arrow>
+          <Button
+            onClick={() => setIsOpen(!isOpen)}
+            onBlur={() => setIsOpen(false)}
+            className="trendButton"
+            type="primary"
+            size="small"
+          >
+            <StockOutlined />
+          </Button>
+        </Dropdown>
+      )}
 
       <Chart.LineChart
         width={defaultWidth}
