@@ -1,5 +1,5 @@
 import RenderDrugs from '../../Stretcher/components/RenderDrugs'
-import * as util from '../../Form/utils/formulas'
+import * as util from '../../../utils/formulas'
 import { TableColumnsType, Tag } from 'antd'
 
 type SchemaType = StretcherData & { key: React.Key }

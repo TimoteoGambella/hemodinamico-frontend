@@ -1,6 +1,6 @@
 import { Form, FormInstance, InputNumber, Typography } from 'antd'
 import * as ctrl from '../controller/catheterProfile.controller'
-import * as util from '../utils/formulas'
+import * as util from '../../../utils/formulas'
 
 interface CatheterFormProps {
   form: FormInstance

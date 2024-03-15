@@ -1,4 +1,4 @@
-import { calcTFG } from '../../../Form/utils/formulas'
+import { calcTFG } from '../../../../utils/formulas'
 
 interface ControllerProps {
   versions: LaboratoryData[]

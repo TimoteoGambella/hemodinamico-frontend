@@ -6,7 +6,7 @@ import CustomTable from '../../Table'
 type LabDataWithKey = LaboratoryData & { key: React.Key }
 interface LabSummaryProps {
   versions: LaboratoryData[] | null
-  currentTab: string
+  currentTab: TabsKeys
 }
 
 export default function LabSummary({ versions, currentTab }: LabSummaryProps) {

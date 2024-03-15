@@ -1,5 +1,5 @@
 import { Form, Input, InputNumber, Typography } from 'antd'
-import { calcTFG } from '../utils/formulas'
+import { calcTFG } from '../../../utils/formulas'
 
 const KidneyProfileForm = () => {
   return (

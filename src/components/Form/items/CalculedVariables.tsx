@@ -1,5 +1,5 @@
 import { Typography, InputNumber, Form, FormInstance } from 'antd'
-import * as util from '../utils/formulas'
+import * as util from '../../../utils/formulas'
 
 interface CalculedVariablesProps {
   form: FormInstance
