@@ -1,5 +1,4 @@
 import SummarySchema from '../../Table/constants/StretcherSummarySchema'
-import MontoringSummary from '../../Table/components/MontoringSummary'
 import CustomTable from '../../Table'
 
 interface StretcherSummaryProps {
@@ -17,7 +16,7 @@ export default function StretcherSummary(props: StretcherSummaryProps) {
         <CustomTable.User patientId={patientId} />
       </div>
       <div>
-        <MontoringSummary
+        <CustomTable.Monitoring
           currentTab={currentTab}
           source={stretcher?.sort((a, b) => b.__v - a.__v) || []}
           schema={SummarySchema}

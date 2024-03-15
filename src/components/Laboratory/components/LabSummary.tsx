@@ -1,4 +1,3 @@
-import MontoringSummary from '../../Table/components/MontoringSummary'
 import SummarySchema from '../../Table/constants/LabSummarySchema'
 import { useEffect, useState } from 'react'
 import CustomTable from '../../Table'
@@ -37,7 +36,7 @@ export default function LabSummary({ versions, currentTab }: LabSummaryProps) {
         <CustomTable.User patientId={patientId} />
       </div>
       <div>
-        <MontoringSummary
+        <CustomTable.Monitoring
           currentTab={currentTab}
           schema={SummarySchema}
           isLoading={isLoading}
