@@ -143,9 +143,9 @@ export default class AxiosController {
     })
   }
 
-  async getLabs(populate = false): Promise<AxiosError | AxiosResponse> {
+  async getLabs(populate = false, includeDeleted = false): Promise<AxiosError | AxiosResponse> {
     return await this.request({
-      url: `/laboratory/list?populate=${populate}`,
+      url: `/laboratory/list?populate=${populate}&includeDeleted=${includeDeleted}`,
       method: 'GET'
     })
   }
@@ -180,9 +180,16 @@ export default class AxiosController {
     })
   }
 
-  async getLabListVersion(id: string, populate: boolean): Promise<AxiosError | AxiosResponse> {
+  async getLabVersionsById(id: string, populate: boolean): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: `/laboratory/list/versions/${id}?populate=${populate}`,
+      method: 'GET'
+    })
+  }
+  
+  async getLabVersions(populate: boolean): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/laboratory/list/versions?populate=${populate}`,
       method: 'GET'
     })
   }

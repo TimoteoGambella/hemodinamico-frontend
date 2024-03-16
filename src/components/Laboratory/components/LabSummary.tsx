@@ -1,4 +1,4 @@
-import SummarySchema from '../../Table/constants/LabSummarySchema'
+import LabSummarySchema from '../../Table/constants/LabSummarySchema'
 import { useEffect, useState } from 'react'
 import CustomTable from '../../Table'
 
@@ -38,7 +38,7 @@ export default function LabSummary({ versions, currentTab }: LabSummaryProps) {
       <div>
         <CustomTable.Monitoring
           currentTab={currentTab}
-          schema={SummarySchema}
+          schema={LabSummarySchema}
           isLoading={isLoading}
           source={data as []}
           scroll={{ y: 280 }}

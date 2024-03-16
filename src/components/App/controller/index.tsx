@@ -3,6 +3,7 @@ import {
   AppstoreOutlined,
   SolutionOutlined,
   TeamOutlined,
+  DatabaseOutlined,
 } from '@ant-design/icons'
 import { AxiosError } from 'axios'
 import { Link, NavigateFunction } from 'react-router-dom'
@@ -26,7 +27,10 @@ function getItem(
   }
 }
 
-export function renderMenuItems(item: MenuItem, previousKey?: string): MenuItem {
+export function renderMenuItems(
+  item: MenuItem,
+  previousKey?: string
+): MenuItem {
   const generateLink = () => {
     if (previousKey) return `${previousKey}/${item.key}`
     return `/${item.key}`
@@ -54,7 +58,10 @@ export function renderMenuItems(item: MenuItem, previousKey?: string): MenuItem 
   }
 }
 
-export async function handleLogout(msgApi: MessageInstance, navigateTo: NavigateFunction) {
+export async function handleLogout(
+  msgApi: MessageInstance,
+  navigateTo: NavigateFunction
+) {
   const res = await axios.logout()
   if (res instanceof AxiosError) {
     msgApi.error('Error al cerrar sesión. Inténtelo de nuevo más tarde.')
@@ -69,20 +76,26 @@ interface GetItemsProps {
   isAdmin: boolean
 }
 
-export async function getItems({ reqStretchers, reqLabs, isAdmin }: GetItemsProps): Promise<MenuItem[]> {
+export async function getItems({
+  reqStretchers,
+  reqLabs,
+  isAdmin,
+}: GetItemsProps): Promise<MenuItem[]> {
   return await new Promise((resolve, reject) => {
     if (reqStretchers instanceof AxiosError) return reject([])
     if (reqLabs instanceof AxiosError) return reject([])
-    const stretchers = (reqStretchers).map((stretcher) =>
+    const stretchers = reqStretchers.map((stretcher) =>
       getItem(
         stretcher.label ?? stretcher._id,
         stretcher._id,
         <SolutionOutlined />
       )
     )
-    const laboratories = (reqLabs).map((lab) =>
+    const laboratories = reqLabs.map((lab) =>
       getItem(
-        typeof lab.patientId === 'string' ? lab.patientId : lab.patientId.fullname ?? lab._id,
+        typeof lab.patientId === 'string'
+          ? lab.patientId
+          : lab.patientId.fullname ?? lab._id,
         lab._id,
         <SolutionOutlined />
       )
@@ -95,13 +108,23 @@ export async function getItems({ reqStretchers, reqLabs, isAdmin }: GetItemsProp
       getItem('Camas', 'cama', <AppstoreOutlined />, stretchers),
     ]
 
-    if (isAdmin) items.splice(1, 0, getItem('Usuarios', 'usuarios', <TeamOutlined />))
+    if (isAdmin) {
+      items.splice(1, 0, getItem('Usuarios', 'usuarios', <TeamOutlined />))
+      items.splice(
+        items.length,
+        0,
+        getItem('Base de datos', 'database', <DatabaseOutlined />)
+      )
+    }
     return resolve(items)
   })
 }
 
-export function selectDefaultController(pathname: string, setSelected: (_: string[]) => void){
+export function selectDefaultController(
+  pathname: string,
+  setSelected: (_: string[]) => void
+) {
   const path = pathname.split('/')
-  if(path[1] === 'cama' || path[1] === 'laboratorio') path.shift()
+  if (path[1] === 'cama' || path[1] === 'laboratorio') path.shift()
   if (path) setSelected([path[1]])
 }

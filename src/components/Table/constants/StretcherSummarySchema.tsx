@@ -4,7 +4,7 @@ import { TableColumnsType, Tag } from 'antd'
 
 type SchemaType = StretcherData & { key: React.Key }
 
-const SummarySchema: TableColumnsType<SchemaType> = [
+const StretcherSummarySchema: TableColumnsType<SchemaType> = [
   {
     title: 'Fecha',
     dataIndex: 'editedAt',
@@ -127,4 +127,4 @@ const SummarySchema: TableColumnsType<SchemaType> = [
   }
 ]
 
-export default SummarySchema
+export default StretcherSummarySchema

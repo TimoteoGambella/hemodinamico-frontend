@@ -41,7 +41,7 @@ function sortNums( a: SchemaType | number, b: SchemaType | number, key?: LabKeys
   return isNaN(result) ? 0 : result
 }
 
-const SummarySchema: TableColumnsType<SchemaType> = [
+const LabSummarySchema: TableColumnsType<SchemaType> = [
   {
     title: 'Fecha de creación',
     dataIndex: 'createdAt',
@@ -316,4 +316,4 @@ const SummarySchema: TableColumnsType<SchemaType> = [
   },
 ]
 
-export default SummarySchema
+export default LabSummarySchema

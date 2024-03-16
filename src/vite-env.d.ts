@@ -282,3 +282,14 @@ type TabType = {
   key: TabsKeys
   children: React.ReactNode
 }
+
+interface LabVersions extends Omit<LaboratoryData, 'isDeleted'> {
+  /**
+   * Should be a ObjectId of a patient - required
+   */
+  patientId: PatientData | null
+  /**
+   * Refers to the _id prop of a document in the laboratory collection 
+   */
+  refId: string
+}

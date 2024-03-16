@@ -1,4 +1,4 @@
-import SummarySchema from '../../Table/constants/StretcherSummarySchema'
+import StretcherSummarySchema from '../../Table/constants/StretcherSummarySchema'
 import CustomTable from '../../Table'
 
 interface StretcherSummaryProps {
@@ -19,7 +19,7 @@ export default function StretcherSummary(props: StretcherSummaryProps) {
         <CustomTable.Monitoring
           currentTab={currentTab}
           source={stretcher?.sort((a, b) => b.__v - a.__v) || []}
-          schema={SummarySchema}
+          schema={StretcherSummarySchema}
           scroll={{ y: 280 }}
         />
       </div>
