@@ -9,11 +9,12 @@ import { useEffect } from 'react'
 import { Form } from 'antd'
 
 export default function EditablePatientForm(props: CustomFormProps) {
-  const { formProp, data, onFieldsChange, onCancel } = props
+  const { formProp, onFieldsChange, onCancel } = props
+  const data = props.data as PatientData
   const msgApi = useMsgApi()
   const updateRepo = useUpdateRepo()
   const [form] = Form.useForm<PatientData>()
-  const patientData = { ...(data as PatientData) }
+  const patientData = { ...data }
   const stretchers = useStretchers()
   const freeStretchers =
     stretchers?.filter((stretcher) => !stretcher.patientId) ?? []
@@ -35,6 +36,10 @@ export default function EditablePatientForm(props: CustomFormProps) {
   }
 
   const handleSubmit = (values: unknown) => {
+    /**
+     * patient contiene el stretcherId que es un string que puede ser
+     * 'auto', el id de la cama, el label de la cama o un string vacio.
+     */
     const patient = (values as { patientId: PatientData }).patientId
     patient.stretcherId = patient.stretcherId || null
     if (patient.stretcherId === label)

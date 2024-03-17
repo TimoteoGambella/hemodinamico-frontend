@@ -88,7 +88,7 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
     )
   }
 
-  const handleSubmit = (values: Partial<StretcherData>) => {
+  const handleSubmit = async (values: Partial<StretcherData>) => {
     /* PATIENT */
     const shouldUpdatePatient = dirty.isDirty(values, 'patientId')
     let patient: PatientData | undefined
@@ -120,9 +120,9 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
       duration: 0,
     })
     /* SEND REQUEST */
-    const promiseArray = [onFinish(values as StretcherData)]
-    if (patient) promiseArray.push(onPatientFinish(patient))
-    Promise.all(promiseArray).finally(() => updateRepo())
+    await onFinish(values as StretcherData)
+  if (patient) await onPatientFinish(patient)
+    await updateRepo()
   }
 
   useEffect(() => {

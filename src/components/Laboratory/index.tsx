@@ -36,7 +36,13 @@ const Laboratory = () => {
     {
       label: 'Resumen',
       key: 'summary',
-      children: <LabSummary versions={versions} currentTab={currentTab} />,
+      children: data && (
+        <LabSummary
+          versions={versions}
+          currentTab={currentTab}
+          patientId={(data.patientId as PatientData)._id}
+        />
+      ),
     },
     {
       label: 'Gráficos y tendencias',

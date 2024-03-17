@@ -55,7 +55,7 @@ export default function LabForm({ formProp, data }: CustomFormProps) {
     }
   )
 
-  const handleSubmit = (values: LaboratoryData) => {
+  const handleSubmit = async (values: LaboratoryData) => {
     /* REMOVE PATIENT ID FROM LABORATORY */
     const lab: Partial<LaboratoryData> = JSON.parse(JSON.stringify(values))
     delete lab.patientId
@@ -88,9 +88,9 @@ export default function LabForm({ formProp, data }: CustomFormProps) {
       duration: 0,
     })
     /* SEND REQUEST */
-    const promiseArray = [onFinishLab(lab as LaboratoryData)]
-    if (patient) promiseArray.push(onFinishPatient(patient))
-    Promise.all(promiseArray).finally(() => updateRepo())
+    if (patient) await onFinishPatient(patient)
+    await onFinishLab(lab as LaboratoryData)
+    await updateRepo()
   }
 
   useEffect(() => {

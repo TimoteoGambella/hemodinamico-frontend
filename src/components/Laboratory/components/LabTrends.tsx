@@ -27,7 +27,7 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
   const [KP, setKP] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
 
   useEffect(() => {
-    if (!versions) return
+    if (!versions || versions.length === 0) return
     const versionsCopy: LaboratoryData[] = (
       JSON.parse(JSON.stringify(versions)) as LaboratoryData[]
     ).reverse()

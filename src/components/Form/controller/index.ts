@@ -71,6 +71,8 @@ export function FormController(
           })
       }
       if (callback) callback(res)
+      if (res instanceof AxiosError) return Promise.reject(res)
+      return Promise.resolve(res)
     },
     onFinishFailed: () => {
       formProp.setFormProp?.({

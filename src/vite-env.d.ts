@@ -206,7 +206,7 @@ interface Diagnostic {
 
 interface LaboratoryData {
   _id: string
-  patientId: string | PatientData
+  patientId: PatientData
   hematology: Hematology
   liver_profile: LiverProfile
   cardiac_profile: CardiacProfile
@@ -258,7 +258,7 @@ type CascaderOption = {
 }
 
 type CreatedTypesOfLab = {
-  patientId: PatientData
+  patient: PatientData
   hematology: Hematology
   liver_profile: LiverProfile
   cardiac_profile: CardiacProfile
@@ -287,7 +287,7 @@ interface LabVersions extends Omit<LaboratoryData, 'isDeleted'> {
   /**
    * Should be a ObjectId of a patient - required
    */
-  patientId: PatientData | null
+  patientId: PatientData
   /**
    * Refers to the _id prop of a document in the laboratory collection 
    */

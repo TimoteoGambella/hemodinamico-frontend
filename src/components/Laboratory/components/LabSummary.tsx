@@ -6,11 +6,11 @@ type LabDataWithKey = LaboratoryData & { key: React.Key }
 interface LabSummaryProps {
   versions: LaboratoryData[] | null
   currentTab: TabsKeys
+  patientId: string
 }
 
-export default function LabSummary({ versions, currentTab }: LabSummaryProps) {
+export default function LabSummary({ versions, currentTab, patientId }: LabSummaryProps) {
   const [data, setData] = useState<LabDataWithKey[] | null>(null)
-  const [patientId, setPatientId] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -23,11 +23,11 @@ export default function LabSummary({ versions, currentTab }: LabSummaryProps) {
   }, [versions])
 
   useEffect(() => {
-    if (data) {
-      const patientId = data[0].patientId
-      if (typeof patientId === 'string') setPatientId(patientId)
+    if (!data || data.length === 0) {
       setIsLoading(false)
+      return
     }
+    setIsLoading(false)
   }, [data])
 
   return (

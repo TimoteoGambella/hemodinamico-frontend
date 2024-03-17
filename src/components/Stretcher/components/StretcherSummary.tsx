@@ -4,16 +4,16 @@ import CustomTable from '../../Table'
 interface StretcherSummaryProps {
   stretcher: PopulatedStretcher[] | null
   currentTab: TabsKeys
+  patient: string
 }
 
 export default function StretcherSummary(props: StretcherSummaryProps) {
-  const { stretcher, currentTab } = props
-  const patientId = stretcher ? stretcher[0].patientId?._id || null : null
+  const { stretcher, currentTab, patient } = props
 
   return (
     <>
       <div style={{ marginBottom: '1.5rem' }}>
-        <CustomTable.User patientId={patientId} />
+        <CustomTable.User patientId={patient} />
       </div>
       <div>
         <CustomTable.Monitoring

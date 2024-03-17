@@ -1,26 +1,33 @@
-import StretcherSummarySchema from '../Table/constants/StretcherSummarySchema'
+import StretcherReportSchema from '../Table/constants/StretcherReportSchema'
 import LabReportSchema from '../Table/constants/LabReportSchema'
-import { fetchReportLabs } from './controller'
+import { fetchReportLabs, fetchReportStretchers } from './controller'
 import { Flex, Space, Typography } from 'antd'
 import useMsgApi from '../../hooks/useMsgApi'
 import { useEffect, useState } from 'react'
-import useLabs from '../../hooks/useLabs'
 import CustomTable from '../Table'
 
 export interface LabReportType extends LaboratoryData {
   children: (LabVersions & { key: React.Key })[]
 }
+export interface StretcherReportType extends StretcherData {
+  children: (StretcherData & { key: React.Key })[]
+}
 
 
 export default function Database() {
+  const [stretcherReport, setLabsS] = useState<StretcherReportType[]>()
   const [labsResport, setLabsR] = useState<LabReportType[]>()
-  const labs = useLabs() as unknown as Record<string, unknown>[]
   const msgApi = useMsgApi()
 
   useEffect(() => {
-    if (!labs || labsResport) return
+    if (labsResport) return
     fetchReportLabs({ msgApi, setter: setLabsR })
-  }, [labs, labsResport, msgApi])
+  }, [labsResport, msgApi])
+
+  useEffect(() => {
+    if (stretcherReport) return
+    fetchReportStretchers({ msgApi, setter: setLabsS })
+  }, [stretcherReport, msgApi])
 
   return (
     <>
@@ -39,8 +46,8 @@ export default function Database() {
         <Space direction="vertical" size="large">
           <CustomTable.Default
             title="Camas"
-            schema={StretcherSummarySchema}
-            source={[]}
+            schema={StretcherReportSchema}
+            source={stretcherReport}
           />
         </Space>
       </Flex>

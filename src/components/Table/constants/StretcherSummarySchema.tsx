@@ -40,12 +40,13 @@ const StretcherSummarySchema: TableColumnsType<SchemaType> = [
     dataIndex: 'resistenciaSistemica',
     width: 225,
     render: (_, record) => {
-      return util.calcSysEndurance(
+      const val = util.calcSysEndurance(
         record.cateter.presion.mediaSistemica ?? 0,
         record.cateter.presion.AD ?? 0,
         record.cateter.gasto ?? 0,
         'up'
       )
+      return isNaN(val) ? 'N/A' : val
     },
   },
   {
@@ -100,11 +101,12 @@ const StretcherSummarySchema: TableColumnsType<SchemaType> = [
     key: 'PAPi',
     width: 65,
     render: (_, record) => {
-      return util.calcPAPi(
+      const val = util.calcPAPi(
         record.cateter.PAP.sistolica ?? 0,
         record.cateter.PAP.diastolica ?? 0,
         record.cateter.presion.AD ?? 0
       )
+      return isNaN(val) ? 'N/A' : val
     },
   },
   {

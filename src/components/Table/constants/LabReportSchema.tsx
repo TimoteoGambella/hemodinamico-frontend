@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TableColumnsType } from 'antd'
-import LabSummarySchema from './LabSummarySchema'
 import useStretchers from '../../../hooks/useStretchers'
+import LabSummarySchema from './LabSummarySchema'
+import { TableColumnsType } from 'antd'
 
 type SchemaType = LaboratoryData & { key: React.Key }
 
@@ -41,7 +41,7 @@ const LabReportSchema: TableColumnsType<SchemaType> = [
         dataIndex: ['patientId', 'stretcherId'],
         key: 'stretcher',
         width: 100,
-        render: (stretcherId) => <Test id={stretcherId} />,
+        render: (stretcherId) => <LabelRender id={stretcherId} />,
       },
       {
         title: 'Fecha de creación',
@@ -136,7 +136,7 @@ const LabReportSchema: TableColumnsType<SchemaType> = [
 
 LabReportSchema.push(...LabSummarySchema.slice(2))
 
-function Test({ id }: { id: string }) {
+function LabelRender({ id }: { id: string }) {
   const label = useStretchers()?.find(
     (stretcher) => stretcher._id === id
   )?.label

@@ -128,6 +128,13 @@ export default class AxiosController {
     })
   }
 
+  async getStretcherVersions(populate: boolean): Promise<AxiosError | AxiosResponse> {
+    return await this.request({
+      url: `/stretcher/list/versions?populate=${populate}`,
+      method: 'GET'
+    })
+  }
+
   async updateStretcher(id: string, body: StretcherData): Promise<AxiosError | AxiosResponse> {
     return await this.request({
       url: `/stretcher/update/${id}`,
@@ -197,6 +204,7 @@ export default class AxiosController {
   private async request<T>(config: AxiosRequestConfig): Promise<AxiosError | AxiosResponse<T>> {
     try {
       const response = await this.axiosInstance.request<T>(config)
+      if (response.status === 401) window.location.replace('/login')
       return response
     } catch (error) {
       return error as AxiosError

@@ -3,6 +3,7 @@ import { Empty, Flex, Space, Typography } from 'antd'
 import { useState, useEffect } from 'react'
 import FloatBtn from '../../FloatBtn'
 import CustomForm from '../../Form'
+import usePatients from '../../../hooks/usePatients'
 
 interface MainContentProps {
   msgApi: MessageInstance
@@ -10,8 +11,10 @@ interface MainContentProps {
 }
 
 const LabContent = ({ data, msgApi }: MainContentProps) => {
-  const { editedAt, createdAt } = data
-  const { patientId: patientInfo } = data
+  const lab = JSON.parse(JSON.stringify(data)) as LaboratoryData
+  const { editedAt, createdAt } = lab
+  const patients = usePatients()
+  const [patientInfo, setPatientInfo] = useState<PatientData | null>(null)
   const editedBy = new Date(editedAt ? editedAt : createdAt).toLocaleString()
   const [labInfo, setLabInfo] = useState<LaboratoryData | null>(null)
   const [formProp, setFormProp] = useState<FormPropType>({
@@ -32,9 +35,24 @@ const LabContent = ({ data, msgApi }: MainContentProps) => {
   }
 
   useEffect(() => {
-    if (labInfo?._id === data._id) return
-    setLabInfo(data)
-  }, [labInfo, data])
+    if (labInfo?._id === lab._id) return
+    const getCurrentPatient = async () => {
+      const res = patients.find((p) => p._id === lab.patientId._id)
+      if (!res) {
+        msgApi.error('Error al obtener información del paciente.')
+        return
+      } else {
+        lab.patientId = res
+        setLabInfo(lab)
+      }
+    }
+    getCurrentPatient()
+  }, [labInfo, lab, msgApi, patients])
+
+  useEffect(() => {
+    if (!labInfo) return
+    setPatientInfo(labInfo.patientId)
+  }, [labInfo])
 
   useEffect(() => {
     if (formProp.shouldSubmit) return
@@ -57,13 +75,13 @@ const LabContent = ({ data, msgApi }: MainContentProps) => {
     }
   }, [formProp, msgApi])
 
-  if (typeof patientInfo === 'string') return <Empty description="Sin datos" />
+  if (!patientInfo) return <Empty description="Sin datos" />
   return (
     <>
       <div className="form-lab-header">
         <Typography.Title className='title' level={2}>EXÁMEN DE LABORATORIO</Typography.Title>
         <Typography.Text className='text'>
-          {data.editedAt ? 'Última vez editado: ' : 'Creado el: '}
+          {lab.editedAt ? 'Última vez editado: ' : 'Creado el: '}
           {editedBy}
         </Typography.Text>
       </div>

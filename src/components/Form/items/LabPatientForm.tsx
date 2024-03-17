@@ -146,7 +146,7 @@ const LabPatientForm = ({ freeStretchers, showTitle = true, form }: LabPatientFo
       {freeStretchers && (
         <Form.Item
           name={['patientId', 'stretcherId']}
-          label="Camilla"
+          label="Cama"
           {...itemProps}
         >
           <Select>

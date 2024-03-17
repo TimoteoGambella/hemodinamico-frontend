@@ -38,7 +38,11 @@ const Stretcher = () => {
       label: 'Resumen',
       key: 'summary',
       children: stretcherData ? (
-        <StretcherSummary stretcher={versions} currentTab={currentTab} />
+        <StretcherSummary
+          stretcher={versions}
+          currentTab={currentTab}
+          patient={stretcherData.patientId!._id}
+        />
       ) : (
         <Empty description="Sin datos" />
       ),
