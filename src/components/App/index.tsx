@@ -5,6 +5,7 @@ import useLoginStatus from '../../hooks/useLoginStatus'
 import useStretchers from '../../hooks/useStretchers'
 import useUserInfo from '../../hooks/useUserInfo'
 import { Button, Layout, Menu, Spin } from 'antd'
+import routeSchema from './constants/routeSchema'
 import * as Controller from './controller'
 import * as Router from 'react-router-dom'
 import useLabs from '../../hooks/useLabs'
@@ -86,17 +87,36 @@ const App = () => {
             <Router.Routes>
               <Router.Route
                 path="/"
-                element={<Router.Navigate to="/dashboard" replace />}
+                element={
+                  <Router.Navigate to={routeSchema.dashboard.path} replace />
+                }
               />
-              <Router.Route path="/dashboard" element={<Dashboard />} />
-              <Router.Route path="/usuarios" element={<Users />} />
-              <Router.Route path="/pacientes" element={<Patients />} />
-              <Router.Route path="/cama/:id" element={<Stretcher />} />
-              <Router.Route path="/database" element={<Database />} />
-              <Router.Route path="/laboratorio/:id" element={<Laboratory />} />
+              <Router.Route
+                path={routeSchema.dashboard.path}
+                element={<Dashboard />}
+              />
+              <Router.Route path={routeSchema.users.path} element={<Users />} />
+              <Router.Route
+                path={routeSchema.patients.path}
+                element={<Patients />}
+              />
+              <Router.Route
+                path={`${routeSchema.stretchers.path}/:id`}
+                element={<Stretcher />}
+              />
+              <Router.Route
+                path={routeSchema.report.path}
+                element={<Database />}
+              />
+              <Router.Route
+                path={`${routeSchema.labs.path}/:id`}
+                element={<Laboratory />}
+              />
               <Router.Route
                 path="*"
-                element={<Router.Navigate to="/404" replace />}
+                element={
+                  <Router.Navigate to={routeSchema.notFound.path} replace />
+                }
               />
             </Router.Routes>
           </Content>

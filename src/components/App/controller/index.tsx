@@ -10,6 +10,7 @@ import { Link, NavigateFunction } from 'react-router-dom'
 import { MessageInstance } from 'antd/es/message/interface'
 import AxiosController from '../../../utils/axios.controller'
 import Icon from '../../Icon'
+import routeSchema from '../constants/routeSchema'
 
 const axios = new AxiosController()
 
@@ -102,18 +103,48 @@ export async function getItems({
     )
 
     const items = [
-      getItem('Dashboard', 'dashboard', <PieChartOutlined />),
-      getItem('Pacientes', 'pacientes', <TeamOutlined />),
-      getItem('Laboratorio', 'laboratorio', <Icon.Flask />, laboratories),
-      getItem('Camas', 'cama', <AppstoreOutlined />, stretchers),
+      getItem(
+        routeSchema.dashboard.label,
+        routeSchema.dashboard.path.slice(1),
+        <PieChartOutlined />
+      ),
+      getItem(
+        routeSchema.patients.label,
+        routeSchema.patients.path.slice(1),
+        <TeamOutlined />
+      ),
+      getItem(
+        routeSchema.labs.label,
+        routeSchema.labs.path.slice(1),
+        <Icon.Flask />,
+        laboratories
+      ),
+      getItem(
+        routeSchema.stretchers.label,
+        routeSchema.stretchers.path.slice(1),
+        <AppstoreOutlined />,
+        stretchers
+      ),
     ]
 
     if (isAdmin) {
-      items.splice(1, 0, getItem('Usuarios', 'usuarios', <TeamOutlined />))
+      items.splice(
+        1,
+        0,
+        getItem(
+          routeSchema.users.label,
+          routeSchema.users.path.slice(1),
+          <TeamOutlined />
+        )
+      )
       items.splice(
         items.length,
         0,
-        getItem('Base de datos', 'database', <DatabaseOutlined />)
+        getItem(
+          routeSchema.report.label,
+          routeSchema.report.path.slice(1),
+          <DatabaseOutlined />
+        )
       )
     }
     return resolve(items)
