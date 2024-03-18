@@ -232,7 +232,7 @@ newSchema.splice(
           patient.height,
           record.patientHeartRate ?? 0
         )
-        return isNaN(val) ? 'N/A' : val 
+        return isNaN(val) ? 'N/A' : val
       },
     },
     {
@@ -250,7 +250,7 @@ newSchema.splice(
           patient.height,
           record.patientHeartRate ?? 0
         )
-        return isNaN(val) ? 'N/A' : val 
+        return isNaN(val) ? 'N/A' : val
       },
     },
   ] as TableColumnsType<SchemaType>)

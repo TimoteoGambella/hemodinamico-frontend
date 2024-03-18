@@ -1,5 +1,4 @@
 import { PatientWithStretcher } from '../components/UserSummaryTable'
-import { ColumnsType } from 'antd/es/table'
 import { Link } from 'react-router-dom'
 
 export default [
@@ -23,4 +22,4 @@ export default [
       return <Link to={`/cama/${stretcher._id}`}>{stretcher.label}</Link>
     },
   },
-] as ColumnsType<PatientWithStretcher>
+] as TableSchema<PatientWithStretcher>[]

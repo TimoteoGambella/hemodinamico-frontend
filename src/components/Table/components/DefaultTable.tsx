@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { TableColumnsType, Typography, Table } from 'antd'
-import useCollapsed from '../../../hooks/useCollapsed'
-import { useEffect, useState } from 'react'
+import { CloudDownloadOutlined, DownOutlined } from '@ant-design/icons'
 import routeSchema from '../../App/constants/routeSchema'
+import useStretchers from '../../../hooks/useStretchers'
+import useCollapsed from '../../../hooks/useCollapsed'
+import { useEffect, useRef, useState } from 'react'
+import exportToPDF from '../controller/exportToPDF'
+import * as Ant from 'antd'
 
 type SourceType = {
   [k: string]: any
@@ -14,19 +17,25 @@ type SourceType = {
 
 interface DefaultTableProps {
   scroll?: { y?: number; x?: number }
-  schema: TableColumnsType<any>
+  schema: Ant.TableColumnsType<any>
   source?: SourceType[]
+  printeable?: boolean
   title?: string
 }
 export default function DefaultTable(props: DefaultTableProps) {
-  const { schema, source, scroll, title } = props
+  const { schema, source, scroll, title, printeable } = props
   const [sourceWithKeys, setSource] = useState<SourceType['children'] | null>(
     null
   )
-  const [isLoading, setIsLoading] = useState(true)
+  const [selected, setSelected] = useState<string | undefined>()
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
   const defaultScroll = scroll || { y: 280 }
+  const selectRef = useRef<any>(null)
   const isCollapsed = useCollapsed()
+  const stretchers = useStretchers()
+  const [form] = Ant.Form.useForm()
 
   const validateChildrens = (source: Record<string, unknown>[]) => {
     return source.some((item) => {
@@ -34,6 +43,17 @@ export default function DefaultTable(props: DefaultTableProps) {
         return item.children.some((child) => child.key === undefined)
       }
       return false
+    })
+  }
+
+  const handleOk = () => {
+    form.validateFields().then(() => {
+      const val = selected?.split(' [')[2]
+      const id = val?.replace(']', '')
+      form.resetFields()
+      const body = source?.find((item) => item._id === id) as any
+      exportToPDF(body, schema as TableSchema<unknown>[], stretchers!)
+      setIsOpen(false)
     })
   }
 
@@ -57,7 +77,7 @@ export default function DefaultTable(props: DefaultTableProps) {
     //Elimina el estilo al desmontar el componente
     return () => {
       //Si no es la ruta de reporte, se elimina el estilo
-      if (window.location.pathname !== routeSchema.report.path){
+      if (window.location.pathname !== routeSchema.report.path) {
         main.style.width = ''
       }
     }
@@ -75,14 +95,77 @@ export default function DefaultTable(props: DefaultTableProps) {
     if (sourceWithKeys) setIsLoading(false)
   }, [sourceWithKeys])
 
+  const suffix = (
+    <>
+      <span>
+        {selected ? 1 : 0} / {1}
+      </span>
+      <DownOutlined />
+    </>
+  )
+
   return (
     <>
       {title && (
-        <Typography.Title level={3} style={{ margin: '0 !important' }}>
-          {title}
-        </Typography.Title>
+        <div style={{ position: 'relative' }}>
+          <Ant.Typography.Title level={3} style={{ margin: '0 !important' }}>
+            {title}
+          </Ant.Typography.Title>
+          {printeable && (
+            <Ant.Tooltip title="Descargar reporte" placement="right">
+              <Ant.Button
+                style={{ position: 'absolute', top: '3px' }}
+                type="primary"
+                onClick={() => setIsOpen(true)}
+                icon={<CloudDownloadOutlined />}
+              />
+            </Ant.Tooltip>
+          )}
+        </div>
       )}
-      <Table
+      <Ant.Modal
+        open={isOpen}
+        onOk={handleOk}
+        onCancel={() => setIsOpen(false)}
+      >
+        <Ant.Typography.Title level={4}>
+          Exportar Reporte de Paciente
+        </Ant.Typography.Title>
+        {source && (
+          <Ant.Form form={form}>
+            <Ant.Form.Item
+              label="Paciente"
+              name="patient"
+              rules={[
+                {
+                  required: true,
+                  message: 'Elige un paciente',
+                },
+              ]}
+            >
+              <Ant.Select
+                ref={selectRef}
+                mode="multiple"
+                value={selected ? [selected] : []}
+                suffixIcon={suffix}
+                maxCount={1}
+                onChange={(value: string[]) => {
+                  setSelected(value[0] as string)
+                  selectRef.current?.blur()
+                }}
+                options={source.map((item) => ({
+                  value:
+                    item.patientId.fullname +
+                    ` [${item.patientId.dni}]` +
+                    ` [${item._id}]`,
+                  label: item.patientId.fullname + ` [${item.patientId.dni}]`,
+                }))}
+              />
+            </Ant.Form.Item>
+          </Ant.Form>
+        )}
+      </Ant.Modal>
+      <Ant.Table
         columns={schema}
         dataSource={sourceWithKeys as []}
         loading={isLoading}

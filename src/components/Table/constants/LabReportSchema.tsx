@@ -1,11 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import useStretchers from '../../../hooks/useStretchers'
 import LabSummarySchema from './LabSummarySchema'
-import { TableColumnsType } from 'antd'
 
 type SchemaType = LaboratoryData & { key: React.Key }
 
-const LabReportSchema: TableColumnsType<SchemaType> = [
+const LabReportSchema: TableSchema<SchemaType>[] = [
   {
     title: 'PACIENTE',
     dataIndex: 'patientId',
@@ -95,9 +93,9 @@ const LabReportSchema: TableColumnsType<SchemaType> = [
         dataIndex: ['diagnostic', 'type'],
         key: 'diagnostic_type',
         width: 110,
-        render: (type: string | null) => {
-          if (!type) return 'N/A'
-          return type.charAt(0).toUpperCase() + type.slice(1)
+        render: (value: string | null) => {
+          if (!value) return 'N/A'
+          return value.charAt(0).toUpperCase() + value.slice(1)
         },
       },
       {
@@ -105,9 +103,9 @@ const LabReportSchema: TableColumnsType<SchemaType> = [
         dataIndex: ['diagnostic', 'subtype'],
         key: 'diagnostic_subtype',
         width: 110,
-        render: (type: string | null) => {
-          if (!type) return 'N/A'
-          return type.charAt(0).toUpperCase() + type.slice(1)
+        render: (value: string | null) => {
+          if (!value) return 'N/A'
+          return value.charAt(0).toUpperCase() + value.slice(1)
         },
       },
       {
@@ -115,9 +113,9 @@ const LabReportSchema: TableColumnsType<SchemaType> = [
         dataIndex: ['diagnostic', 'child'],
         key: 'diagnostic_child',
         width: 110,
-        render: (type: string | null) => {
-          if (!type) return 'N/A'
-          return type.charAt(0).toUpperCase() + type.slice(1)
+        render: (value: string | null) => {
+          if (!value) return 'N/A'
+          return value.charAt(0).toUpperCase() + value.slice(1)
         },
       },
       {
@@ -125,9 +123,9 @@ const LabReportSchema: TableColumnsType<SchemaType> = [
         dataIndex: ['diagnostic', 'FEVI'],
         key: 'FEVI',
         width: 110,
-        render: (type: string | null) => {
-          if (!type) return 'N/A'
-          return type.charAt(0).toUpperCase() + type.slice(1)
+        render: (value: string | null) => {
+          if (!value) return 'N/A'
+          return value.charAt(0).toUpperCase() + value.slice(1)
         },
       },
     ],

@@ -1,13 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import RenderCultivos from '../../Laboratory/components/RenderCultivos'
 import { calcTFG } from '../../../utils/formulas'
-import { TableColumnsType } from 'antd'
 
 type SchemaType = LaboratoryData & { key: React.Key }
 type LabKeys = keyof LaboratoryData | string
 
 function sortNums( a: SchemaType | number, b: SchemaType | number, key?: LabKeys[]) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let firstValue: any = a
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let secondValue: any = b
 
   if (!key) {
@@ -41,7 +41,7 @@ function sortNums( a: SchemaType | number, b: SchemaType | number, key?: LabKeys
   return isNaN(result) ? 0 : result
 }
 
-const LabSummarySchema: TableColumnsType<SchemaType> = [
+const LabSummarySchema: TableSchema<SchemaType>[] = [
   {
     title: 'Fecha de creación',
     dataIndex: 'createdAt',
