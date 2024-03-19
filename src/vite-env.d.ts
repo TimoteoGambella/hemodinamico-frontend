@@ -119,7 +119,20 @@ declare global {
       subtype: 'intermacs_1' | 'intermacs_2' | 'intermacs_3' | null
     }
     createdAt: number
+    editedAt: number | null
+    isDeleted: boolean
     __v: number
+  }
+
+  interface StretcherVersions extends Omit<StretcherData, 'isDeleted'> {
+    /**
+     * Should be a ObjectId of a patient - required
+     */
+    patientId: PatientData
+    /**
+     * Refers to the _id prop of a document in the laboratory collection
+     */
+    refId: string
   }
 
   type FormPropType = {

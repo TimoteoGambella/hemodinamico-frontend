@@ -6,6 +6,7 @@ import useCollapsed from '../../../hooks/useCollapsed'
 import { useEffect, useRef, useState } from 'react'
 import exportToPDF from '../controller/exportToPDF'
 import * as Ant from 'antd'
+import useMsgApi from '../../../hooks/useMsgApi'
 
 interface DefaultTableProps {
   scroll?: { y?: number; x?: number }
@@ -29,6 +30,7 @@ export default function DefaultTable(props: DefaultTableProps) {
   const isCollapsed = useCollapsed()
   const stretchers = useStretchers()
   const [form] = Ant.Form.useForm()
+  const msgApi = useMsgApi()
 
   if (printeable && !schemaType) {
     throw new Error('The schemaType prop is required when printeable is true')
@@ -47,10 +49,15 @@ export default function DefaultTable(props: DefaultTableProps) {
     form.validateFields().then(() => {
       const val = selected?.split(' [')[2]
       const id = val?.replace(']', '')
-      form.resetFields()
       const body = source?.find((item) => item._id === id)
-      exportToPDF(body!, schema, stretchers!, schemaType!)
-      setIsOpen(false)
+      const status = exportToPDF(body!, schema, stretchers!, schemaType!)
+      if (status) {
+        setIsOpen(false)
+        form.resetFields()
+        msgApi.success('Reporte generado con éxito.')
+      } else {
+        msgApi.error('Error al generar el reporte. Intente de nuevo.')
+      }
     })
   }
 
@@ -115,6 +122,7 @@ export default function DefaultTable(props: DefaultTableProps) {
                 type="primary"
                 onClick={() => setIsOpen(true)}
                 icon={<CloudDownloadOutlined />}
+                disabled={isLoading}
               />
             </Ant.Tooltip>
           )}

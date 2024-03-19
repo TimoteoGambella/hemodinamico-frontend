@@ -4,7 +4,7 @@ import CustomTable from '../../Table'
 interface StretcherSummaryProps {
   stretcher: PopulatedStretcher[] | null
   currentTab: TabsKeys
-  patient: string
+  patient: string | null
 }
 
 export default function StretcherSummary(props: StretcherSummaryProps) {

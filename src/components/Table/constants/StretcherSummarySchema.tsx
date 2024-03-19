@@ -37,7 +37,7 @@ const StretcherSummarySchema: TableSchema<SchemaType>[] = [
   },
   {
     title: 'Resistencia Sistémica (DYNAS)',
-    dataIndex: 'resistenciaSistemica',
+    key: 'resistenciaSistemica',
     width: 225,
     render: (_, record) => {
       const val = util.calcSysEndurance(

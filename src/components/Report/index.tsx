@@ -71,6 +71,8 @@ export default function Database() {
         <Space direction="vertical" size="large">
           <CustomTable.Default
             title="Camas"
+            printeable={true}
+            schemaType='stretcher'
             schema={StretcherReportSchema}
             source={stretcherReport}
           />

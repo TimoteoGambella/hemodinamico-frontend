@@ -34,6 +34,9 @@ const StretcherReportSchema: TableSchema<SchemaType>[] = [
             width: 200,
             onHeaderCell: textCenter,
             render: (value: StretcherData['diagnostic']['type']) => {
+
+              if (!value) return <>N/A</>
+
               if (value === 'falla_avanzada') {
                 return <>FALLA AVANZADA</>
               } else if (value === 'shock') {
@@ -50,6 +53,8 @@ const StretcherReportSchema: TableSchema<SchemaType>[] = [
             width: 200,
             onHeaderCell: textCenter,
             render: (value: StretcherData['diagnostic']['subtype']) => {
+              if (!value) return <>N/A</>
+
               if (value === 'intermacs_1') {
                 return <>INTERMACS I</>
               } else if (value === 'intermacs_2') {
@@ -67,7 +72,10 @@ const StretcherReportSchema: TableSchema<SchemaType>[] = [
         key: 'date',
         width: 100,
         onHeaderCell: textCenter,
-        render: (value) => new Date(value).toLocaleDateString(),
+        render: (value, record) => {
+          if (!value) return new Date(record.createdAt).toLocaleDateString()
+          return new Date(value).toLocaleDateString()
+        },
       },
       {
         title: 'Hora',
@@ -75,7 +83,10 @@ const StretcherReportSchema: TableSchema<SchemaType>[] = [
         key: 'time',
         width: 100,
         onHeaderCell: textCenter,
-        render: (value) => new Date(value).toLocaleTimeString(),
+        render: (value, record) => {
+          if (!value) return new Date(record.createdAt).toLocaleTimeString()
+          return new Date(value).toLocaleTimeString()
+        },
       },
       {
         title: 'PACIENTE',

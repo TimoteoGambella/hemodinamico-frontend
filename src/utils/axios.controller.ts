@@ -107,9 +107,9 @@ export default class AxiosController {
     })
   }
 
-  async getStretchers(populate = false): Promise<AxiosError | AxiosResponse> {
+  async getStretchers(populate = false, includeDeleted = false): Promise<AxiosError | AxiosResponse> {
     return await this.request({
-      url: `/stretcher/list?populate=${populate}`,
+      url: `/stretcher/list?populate=${populate}&includeDeleted=${includeDeleted}`,
       method: 'GET'
     })
   }

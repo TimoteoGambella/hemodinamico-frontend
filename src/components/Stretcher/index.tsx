@@ -41,7 +41,7 @@ const Stretcher = () => {
         <StretcherSummary
           stretcher={versions}
           currentTab={currentTab}
-          patient={stretcherData.patientId!._id}
+          patient={stretcherData.patientId?._id ?? null}
         />
       ) : (
         <Empty description="Sin datos" />
