@@ -43,19 +43,19 @@ const LabReportSchema: TableSchema<SchemaType>[] = [
       },
       {
         title: 'Fecha de creación',
-        dataIndex: 'createdAt',
+        dataIndex: 'editedAt',
         width: 150,
         children: [
           {
             title: 'Fecha',
-            dataIndex: 'createdAt',
+            dataIndex: 'editedAt',
             key: 'createdDate',
             width: 100,
             render: (value) => new Date(value).toLocaleDateString(),
           },
           {
             title: 'Hora',
-            dataIndex: 'createdAt',
+            dataIndex: 'editedAt',
             key: 'createdTime',
             width: 100,
             render: (value) => new Date(value).toLocaleTimeString(),

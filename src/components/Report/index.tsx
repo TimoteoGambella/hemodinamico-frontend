@@ -62,6 +62,7 @@ export default function Database() {
         <Space direction="vertical" size="large">
           <CustomTable.Default
             printeable={true}
+            schemaType='lab'
             title="Laboratorios"
             schema={LabReportSchema}
             source={labsResport}

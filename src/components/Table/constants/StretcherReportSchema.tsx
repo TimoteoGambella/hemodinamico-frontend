@@ -1,6 +1,5 @@
 import StretcherSummarySchema from './StretcherSummarySchema'
 import * as util from '../../../utils/formulas'
-import { TableColumnsType } from 'antd'
 
 type SchemaType = StretcherData & { key: React.Key }
 
@@ -12,7 +11,7 @@ const textCenter = (): React.HTMLAttributes<HTMLTableCellElement> => ({
   style: { textAlign: 'center' },
 })
 
-const StretcherReportSchema: TableColumnsType<SchemaType> = [
+const StretcherReportSchema: TableSchema<SchemaType>[] = [
   {
     title: 'CAMA',
     key: 'stretcher',
@@ -173,7 +172,7 @@ if (index !== -1) {
           )
         },
       },
-    ] as TableColumnsType<SchemaType>)
+    ] as TableSchema<SchemaType>[])
   )
 }
 index = newSchema.findIndex((column) => column.title === 'Índice Cardíaco (TD)')
@@ -197,7 +196,7 @@ if (index !== -1) {
           return isNaN(val) ? 'N/A' : val
         },
       },
-    ] as TableColumnsType<SchemaType>)
+    ] as TableSchema<SchemaType>[])
   )
 }
 newSchema[index + 3].title = 'Poder cardiaco indexado (iPC)'
@@ -253,7 +252,7 @@ newSchema.splice(
         return isNaN(val) ? 'N/A' : val
       },
     },
-  ] as TableColumnsType<SchemaType>)
+  ] as TableSchema<SchemaType>[])
 )
 
 StretcherReportSchema.push(...newSchema)

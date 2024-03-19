@@ -1,9 +1,18 @@
 /// <reference types="vite/client" />
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ColumnGroupType } from 'antd/es/table'
 
 declare global {
   interface TableSchema<T> extends Partial<ColumnGroupType<T>> {
     dataIndex?: string[] | string
+  }
+
+  type DefaultTableSourceType = {
+    [k: string]: any
+    children?: Array<{
+      [k: string]: any
+      key: React.Key
+    }>
   }
 
   type FormLogin = {

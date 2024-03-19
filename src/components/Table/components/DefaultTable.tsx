@@ -7,24 +7,17 @@ import { useEffect, useRef, useState } from 'react'
 import exportToPDF from '../controller/exportToPDF'
 import * as Ant from 'antd'
 
-type SourceType = {
-  [k: string]: any
-  children?: Array<{
-    [k: string]: any
-    key: React.Key
-  }>
-}
-
 interface DefaultTableProps {
   scroll?: { y?: number; x?: number }
-  schema: Ant.TableColumnsType<any>
-  source?: SourceType[]
+  schema: TableSchema<any>[]
+  source?: DefaultTableSourceType[]
   printeable?: boolean
+  schemaType?: 'lab' | 'stretcher'
   title?: string
 }
 export default function DefaultTable(props: DefaultTableProps) {
-  const { schema, source, scroll, title, printeable } = props
-  const [sourceWithKeys, setSource] = useState<SourceType['children'] | null>(
+  const { schema, source, scroll, title, printeable, schemaType } = props
+  const [sourceWithKeys, setSource] = useState<DefaultTableSourceType['children'] | null>(
     null
   )
   const [selected, setSelected] = useState<string | undefined>()
@@ -36,6 +29,10 @@ export default function DefaultTable(props: DefaultTableProps) {
   const isCollapsed = useCollapsed()
   const stretchers = useStretchers()
   const [form] = Ant.Form.useForm()
+
+  if (printeable && !schemaType) {
+    throw new Error('The schemaType prop is required when printeable is true')
+  }
 
   const validateChildrens = (source: Record<string, unknown>[]) => {
     return source.some((item) => {
@@ -51,8 +48,8 @@ export default function DefaultTable(props: DefaultTableProps) {
       const val = selected?.split(' [')[2]
       const id = val?.replace(']', '')
       form.resetFields()
-      const body = source?.find((item) => item._id === id) as any
-      exportToPDF(body, schema as TableSchema<unknown>[], stretchers!)
+      const body = source?.find((item) => item._id === id)
+      exportToPDF(body!, schema, stretchers!, schemaType!)
       setIsOpen(false)
     })
   }
