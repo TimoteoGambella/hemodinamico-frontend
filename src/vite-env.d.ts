@@ -286,7 +286,7 @@ declare global {
   }
 
   type CreatedTypesOfLab = {
-    patient: PatientData
+    patientId: PatientData
     hematology: Hematology
     liver_profile: LiverProfile
     cardiac_profile: CardiacProfile
