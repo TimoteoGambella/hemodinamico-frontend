@@ -1,8 +1,8 @@
-import autoTable, { RowInput, Styles } from 'jspdf-autotable'
 import getNestedValue from '../../../utils/nestValues'
+import exportToPDF from '../../../utils/exportToPDF'
+import { RowInput, Styles } from 'jspdf-autotable'
 import * as utils from '../../../utils/formulas'
 import { ColumnType } from 'antd/es/table'
-import jsPDF from 'jspdf'
 
 type SchemaTypes = 'lab' | 'stretcher'
 
@@ -12,11 +12,75 @@ type ExportHeaders = {
   CHILDS: (string | null)[]
 }
 
-function schemaToHeaders(
-  schema: TableSchema<unknown>[],
-  body: DefaultTableSourceType,
+interface SchemaToPdfProps {
+  body: DefaultTableSourceType
+  schema: TableSchema<unknown>[]
+  stretchers: StretcherData[]
   schemaType: SchemaTypes
-): ExportHeaders | null {
+}
+
+export function schemaToPDF(props: SchemaToPdfProps) {
+  const { body, schema, stretchers, schemaType } = props
+  try {
+    const bodyCopy = JSON.parse(JSON.stringify(body))
+    const schemaCopy = JSON.parse(JSON.stringify(schema))
+
+    const headers = schemaToHeaders({
+      schema: schemaCopy,
+      body: bodyCopy,
+      schemaType,
+    })
+
+    if (!headers) return false
+
+    const { HEADERS, CHILDS } = headers
+
+    validateContent(headers)
+
+    const BODY = bodyGenerator({
+      body: bodyCopy,
+      ExportHeaders: headers,
+      stretchers,
+      schemaType,
+    })
+
+    validateContent(headers, BODY)
+
+    const columnStyles: { [key: string]: Partial<Styles> } = {}
+    const styles: Partial<Styles> = { halign: 'center', lineWidth: 0.3 }
+
+    if (schemaType == 'lab') {
+      columnStyles['34'] = { cellPadding: 1, fontSize: 3 }
+      columnStyles['35'] = { cellPadding: 1, fontSize: 3 }
+      columnStyles['36'] = { cellPadding: 1, fontSize: 3 }
+      styles.fontSize = 4
+    } else if (schemaType == 'stretcher') {
+      styles.fontSize = 6
+    }
+
+    const patientName = bodyCopy.patientId.fullname as string
+
+    return exportToPDF({
+      body: BODY,
+      childs: CHILDS,
+      headers: HEADERS,
+      fileName: `Reporte_${schemaType}_${patientName.replace(' ', '_')}.pdf`,
+      options: { columnStyles, styles },
+    })
+  } catch (error) {
+    console.error('Error en exportToPDF: ', error)
+    return false
+  }
+}
+
+interface SchemaToHeadersProps {
+  schema: TableSchema<unknown>[]
+  body: DefaultTableSourceType
+  schemaType: SchemaTypes
+}
+
+function schemaToHeaders(props: SchemaToHeadersProps) {
+  const { schema, body, schemaType } = props
   try {
     const HEADERS: ExportHeaders['HEADERS'] = []
     const CHILDS: ExportHeaders['CHILDS'] = []
@@ -116,19 +180,22 @@ function schemaToHeaders(
         CHILDS.push(null)
       }
     })
-    return { HEADERS, CHILDS, KEYS }
+    return { HEADERS, CHILDS, KEYS } as ExportHeaders
   } catch (error) {
     console.error('Error en schemaToHeaders: ', error)
     return null
   }
 }
 
-function bodyGenerator(
-  body: DefaultTableSourceType,
-  ExportHeaders: ExportHeaders,
-  stretchers: StretcherData[],
+interface BodyGeneratorProps {
+  body: DefaultTableSourceType
+  ExportHeaders: ExportHeaders
+  stretchers: StretcherData[]
   schemaType: SchemaTypes
-) {
+}
+
+function bodyGenerator(props: BodyGeneratorProps) {
+  const { body, ExportHeaders, stretchers, schemaType } = props
   const { HEADERS, KEYS } = ExportHeaders
 
   let bodyList: DefaultTableSourceType[] | undefined
@@ -229,65 +296,6 @@ function bodyGenerator(
     BODY.push(arr)
   }
   return BODY
-}
-
-export default function exportToPDF(
-  body: DefaultTableSourceType,
-  schema: TableSchema<unknown>[],
-  stretchers: StretcherData[],
-  schemaType: SchemaTypes
-) {
-  try {
-    const bodyCopy = JSON.parse(JSON.stringify(body))
-    const schemaCopy = JSON.parse(JSON.stringify(schema))
-
-    const headers = schemaToHeaders(schemaCopy, bodyCopy, schemaType)
-
-    if (!headers) return false
-
-    const { HEADERS, CHILDS } = headers
-
-    validateContent(headers)
-
-    const BODY = bodyGenerator(bodyCopy, headers, stretchers, schemaType)
-
-    // return
-
-    validateContent(headers, BODY)
-
-    const columnStyles: { [key: string]: Partial<Styles> } = {}
-    const styles: Partial<Styles> = { halign: 'center', lineWidth: 0.3 }
-
-    if (schemaType == 'lab') {
-      columnStyles['34'] = { cellPadding: 1, fontSize: 3 }
-      columnStyles['35'] = { cellPadding: 1, fontSize: 3 }
-      columnStyles['36'] = { cellPadding: 1, fontSize: 3 }
-      styles.fontSize = 4
-    } else if (schemaType == 'stretcher') {
-      styles.fontSize = 6
-    }
-
-    const doc = new jsPDF({
-      orientation: 'landscape',
-      compress: true,
-      format: 'a3',
-    })
-
-    autoTable(doc, {
-      styles,
-      columnStyles,
-      head: [HEADERS, CHILDS],
-      body: BODY,
-      tableWidth: 'auto',
-      margin: 2,
-    })
-    const patientName = bodyCopy.patientId.fullname as string
-    doc.save(`Reporte_${schemaType}_${patientName.replace(' ', '_')}.pdf`)
-    return true
-  } catch (error) {
-    console.error('Error en exportToPDF: ', error)
-    return false
-  }
 }
 
 function validateContent(exported: ExportHeaders, body?: RowInput[]) {
@@ -795,7 +803,7 @@ function handlerStretcherReport(props: handlerReportType) {
     const res = getNestedValue(
       arrItem as unknown as Record<string, unknown>,
       path
-    ) as unknown as (SuppliedDrugs[])
+    ) as unknown as SuppliedDrugs[]
 
     if (res.length < index + 1) {
       arr.push('N/A')

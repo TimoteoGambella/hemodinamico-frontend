@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CloudDownloadOutlined, DownOutlined } from '@ant-design/icons'
+import * as ctlr from '../controller/defaultTable.controller'
 import routeSchema from '../../App/constants/routeSchema'
 import useStretchers from '../../../hooks/useStretchers'
 import useCollapsed from '../../../hooks/useCollapsed'
 import { useEffect, useRef, useState } from 'react'
-import exportToPDF from '../controller/exportToPDF'
-import * as Ant from 'antd'
 import useMsgApi from '../../../hooks/useMsgApi'
+import * as Ant from 'antd'
 
 interface DefaultTableProps {
   scroll?: { y?: number; x?: number }
@@ -18,9 +18,9 @@ interface DefaultTableProps {
 }
 export default function DefaultTable(props: DefaultTableProps) {
   const { schema, source, scroll, title, printeable, schemaType } = props
-  const [sourceWithKeys, setSource] = useState<DefaultTableSourceType['children'] | null>(
-    null
-  )
+  const [sourceWithKeys, setSource] = useState<
+    DefaultTableSourceType['children'] | null
+  >(null)
   const [selected, setSelected] = useState<string | undefined>()
   const [isExpanded, setIsExpanded] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -50,7 +50,13 @@ export default function DefaultTable(props: DefaultTableProps) {
       const val = selected?.split(' [')[2]
       const id = val?.replace(']', '')
       const body = source?.find((item) => item._id === id)
-      const status = exportToPDF(body!, schema, stretchers!, schemaType!)
+      const status = ctlr.schemaToPDF({
+        body: body!,
+        schema,
+        stretchers: stretchers!,
+        schemaType: schemaType!,
+      })
+
       if (status) {
         setIsOpen(false)
         form.resetFields()
