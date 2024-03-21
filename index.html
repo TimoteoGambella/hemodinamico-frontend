@@ -1,15 +1,143 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
-      INSTITUTO NACIONAL CARDIOVASCULAR
-    </title>
+    <title>INSTITUTO NACIONAL CARDIOVASCULAR</title>
+    <style>
+      :root {
+        --tmp-ant-color-bg-mask: rgba(0, 0, 0, 0.45);
+        --tmp-ant-z-index-popup-base: 0.2s;
+        --tmp-ant-motion-duration-mid: 0.3s;
+        --tmp-ant-spin-dot-size: 20px;
+        --tmp-ant-color-white: #fff;
+        --tmp-ant-margin-xxs: 4px;
+        --tmp-ant-font-size: 14px;
+        --tmp-ant-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+      }
+      .init.ant-spin-fullscreen {
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        background-color: var(--tmp-ant-color-bg-mask);
+        z-index: var(--tmp-ant-z-index-popup-base);
+        inset: 0;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all var(--tmp-ant-motion-duration-mid);
+      }
+      .init.ant-spin .ant-spin-dot-spin {
+        transform: rotate(45deg);
+        animation-name: antRotate;
+        animation-duration: 1.2s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+      }
+      .init.ant-spin .ant-spin-dot {
+        position: relative;
+        display: inline-block;
+        font-size: var(--tmp-ant-spin-dot-size);
+        width: 1em;
+        height: 1em;
+      }
+      .init.css-var-r1k.ant-spin {
+        --ant-spin-content-height: 400px;
+        --tmp-ant-spin-dot-size: 20px;
+        --tmp-ant-spin-dot-size-sm: 14px;
+        --tmp-ant-spin-dot-size-lg: 32px;
+      }
+      .init.ant-spin .ant-spin-dot-item:nth-child(1) {
+        top: 0;
+        inset-inline-start: 0;
+        animation-delay: 0s;
+      }
+      .init.ant-spin .ant-spin-dot-item:nth-child(2) {
+        top: 0;
+        inset-inline-end: 0;
+        animation-delay: 0.4s;
+      }
+      .init.ant-spin .ant-spin-dot-item:nth-child(3) {
+        inset-inline-end: 0;
+        bottom: 0;
+        animation-delay: 0.8s;
+      }
+      .init.ant-spin .ant-spin-dot-item:nth-child(4) {
+        bottom: 0;
+        inset-inline-start: 0;
+        animation-delay: 1.2s;
+      }
+      .init.ant-spin-fullscreen .ant-spin-dot .ant-spin-dot-item {
+        background-color: var(--tmp-ant-color-white);
+      }
+      .init.ant-spin .ant-spin-dot-item {
+        position: absolute;
+        display: block;
+        width: calc(
+          (var(--tmp-ant-spin-dot-size) - var(--tmp-ant-margin-xxs) / 2) / 2
+        );
+        height: calc(
+          (var(--tmp-ant-spin-dot-size) - var(--tmp-ant-margin-xxs) / 2) / 2
+        );
+        background-color: var(--ant-color-primary);
+        border-radius: 100%;
+        transform: scale(0.75);
+        transform-origin: 50% 50%;
+        opacity: 0.3;
+        animation-name: antSpinMove;
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+        animation-direction: alternate;
+      }
+      .init.ant-spin {
+        font-family: var(--tmp-ant-font-family);
+      }
+      .init.ant-spin-text {
+        color: var(--tmp-ant-color-white);
+      }
+      .init.ant-spin .ant-spin-text {
+        font-size: var(--tmp-ant-font-size);
+        padding-top: calc(
+          (var(--tmp-ant-spin-dot-size) - var(--tmp-ant-font-size)) / 2 + 2px
+        );
+      }
+      @keyframes antRotate {
+        100% {
+          transform: rotate(405deg);
+        }
+      }
+      @keyframes antSpinMove {
+        100% {
+          opacity: 1;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div
+        class="init ant-spin ant-spin-fullscreen css-var-r1k"
+        aria-live="polite"
+        aria-busy="false"
+        style="opacity: 1; visibility: visible"
+        id="mainLoader"
+      >
+        <span class="init ant-spin-dot ant-spin-dot-spin"
+          ><i class="init ant-spin-dot-item"></i
+          ><i class="init ant-spin-dot-item"></i
+          ><i class="init ant-spin-dot-item"></i
+          ><i class="init ant-spin-dot-item"></i
+        ></span>
+        <div class="init ant-spin-text">Cargando...</div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

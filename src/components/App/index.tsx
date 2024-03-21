@@ -54,7 +54,12 @@ const App = () => {
     Controller.selectDefaultController(location.pathname, setDefaultSelectedKey)
   }, [location])
 
-  if (!isLogged) return null
+  useEffect(() => {
+    const loader = document.querySelector('#mainLoader')
+    if (loader) loader.remove()
+  }, [])
+
+  if (!isLogged) return <Spin spinning tip="Cargando..." fullscreen />
 
   return (
     <>
