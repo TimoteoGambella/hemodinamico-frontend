@@ -1,3 +1,4 @@
+import { suppliedSchema } from '../../Form/constants/suppliedSchemaDrugs'
 import { Modal, Table, TableColumnsType } from 'antd'
 import { useEffect, useState } from 'react'
 
@@ -17,6 +18,21 @@ export default function RenderDrugs({ drugs }: { drugs: SuppliedDrugs[] }) {
       key: 'dose',
       width: 150,
     },
+    {
+      title: 'Unidades',
+      key: 'units',
+      width: 150,
+      render: (_, record) => {
+        const data = record as Supplied['drogas'][number]
+        for (const item of suppliedSchema) {
+          const drug = item.children.find((child) => child.value === data.name)
+          if (drug) {
+            return drug.unidad
+          }
+        }
+        return '-'
+      }
+    }
   ]
 
   useEffect(() => {

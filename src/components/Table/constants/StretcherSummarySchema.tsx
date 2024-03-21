@@ -2,6 +2,10 @@ import RenderDrugs from '../../Stretcher/components/RenderDrugs'
 import * as util from '../../../utils/formulas'
 import { Tag } from 'antd'
 
+/**
+ * IMPORTANTE: CAMBIAR EL ESQUEMA IMPLICA VERIFICAR EL CORRECTO FUNCIONAMIENTO DE LA EXPORTACIÓN A PDF Y EXCEL
+ */
+
 type SchemaType = StretcherData & { key: React.Key }
 
 const StretcherSummarySchema: TableSchema<SchemaType>[] = [

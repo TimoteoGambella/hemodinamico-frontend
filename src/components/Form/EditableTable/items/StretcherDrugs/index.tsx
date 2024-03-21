@@ -70,12 +70,12 @@ export default function StretcherDrugs({ form }: StretcherProps) {
       render: (_, record) => {
         const data = record as Supplied['drogas'][number]
         for (const item of suppliedSchema) {
-          if (item.children.find((child) => child.value === data.name)) {
-            return item.children.find((child) => child.value === data.name)
-              ?.unidad
+          const drug = item.children.find((child) => child.value === data.name)
+          if (drug) {
+            return drug.unidad
           }
         }
-        return ''
+        return '-'
       },
     },
     {

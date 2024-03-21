@@ -1,7 +1,7 @@
 import StretcherReportSchema from '../Table/constants/StretcherReportSchema'
 import columnSearchGenerator from './controller/columnSearchGenerator'
 import { fetchReportLabs, fetchReportStretchers } from './controller'
-import LabReportSchema from '../Table/constants/LabReportSchema'
+import getLabReportSchema from '../Table/constants/LabReportSchema'
 import { Flex, InputRef, Space, Typography } from 'antd'
 import { useEffect, useRef, useState } from 'react'
 import useMsgApi from '../../hooks/useMsgApi'
@@ -15,7 +15,8 @@ export interface StretcherReportType extends StretcherData {
 }
 
 export default function Database() {
-  const [stretcherReport, setLabsS] = useState<StretcherReportType[]>()
+  const [LabReportSchema, setLabRSchema] = useState<TableSchema<unknown>[]>([])
+  const [stretcherReport, setStretcherR] = useState<StretcherReportType[]>()
   const [labsResport, setLabsR] = useState<LabReportType[]>()
   const msgApi = useMsgApi()
 
@@ -29,19 +30,6 @@ export default function Database() {
     searchInput,
   })
 
-  const index = LabReportSchema.findIndex((item) => item.title === 'PACIENTE')
-  if (index !== -1 && Array.isArray(LabReportSchema[index].children)) {
-    const index1 = LabReportSchema[index].children!.findIndex(
-      (item) => item.title === 'Nombre completo'
-    )
-    if (index1 !== -1) {
-      LabReportSchema[index].children![index1] = {
-        ...LabReportSchema[index].children![index1],
-        ...getColumnSearchProps('patientId.fullname'),
-      }
-    }
-  }
-
   useEffect(() => {
     if (labsResport) return
     fetchReportLabs({ msgApi, setter: setLabsR })
@@ -49,8 +37,32 @@ export default function Database() {
 
   useEffect(() => {
     if (stretcherReport) return
-    fetchReportStretchers({ msgApi, setter: setLabsS })
+    fetchReportStretchers({ msgApi, setter: setStretcherR })
   }, [stretcherReport, msgApi])
+
+  useEffect(() => {
+    if (!stretcherReport) return
+    if (LabReportSchema.length > 1) return
+    /**
+     * ESTA PORCION DE CODIGO ES PARA APLICAR EL FILTRO DE BUSQUEDA EN LA TABLA
+     */
+    const schema = getLabReportSchema(stretcherReport)
+
+    const index = schema.findIndex((item) => item.title === 'PACIENTE')
+    if (index !== -1 && Array.isArray(schema[index].children)) {
+      const index1 = schema[index].children!.findIndex(
+        (item) => item.title === 'Nombre completo'
+      )
+      if (index1 !== -1) {
+        schema[index].children![index1] = {
+          ...schema[index].children![index1],
+          ...getColumnSearchProps('patientId.fullname'),
+        }
+      }
+    }
+
+    setLabRSchema(schema as unknown as TableSchema<unknown>[])
+  }, [LabReportSchema.length, getColumnSearchProps, stretcherReport])
 
   return (
     <>
@@ -62,7 +74,7 @@ export default function Database() {
         <Space direction="vertical" size="large">
           <CustomTable.Default
             printeable={true}
-            schemaType='lab'
+            schemaType="lab"
             title="Laboratorios"
             schema={LabReportSchema}
             source={labsResport}
@@ -72,7 +84,7 @@ export default function Database() {
           <CustomTable.Default
             title="Camas"
             printeable={true}
-            schemaType='stretcher'
+            schemaType="stretcher"
             schema={StretcherReportSchema}
             source={stretcherReport}
           />

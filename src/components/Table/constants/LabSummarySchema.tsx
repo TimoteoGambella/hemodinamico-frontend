@@ -1,6 +1,10 @@
 import RenderCultivos from '../../Laboratory/components/RenderCultivos'
 import { calcTFG } from '../../../utils/formulas'
 
+/**
+ * IMPORTANTE: CAMBIAR EL ESQUEMA IMPLICA VERIFICAR EL CORRECTO FUNCIONAMIENTO DE LA EXPORTACIÓN A PDF Y EXCEL
+ */
+
 type SchemaType = LaboratoryData & { key: React.Key }
 type LabKeys = keyof LaboratoryData | string
 

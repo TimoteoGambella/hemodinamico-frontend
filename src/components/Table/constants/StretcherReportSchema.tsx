@@ -1,6 +1,10 @@
 import StretcherSummarySchema from './StretcherSummarySchema'
 import * as util from '../../../utils/formulas'
 
+/**
+ * IMPORTANTE: CAMBIAR EL ESQUEMA IMPLICA VERIFICAR EL CORRECTO FUNCIONAMIENTO DE LA EXPORTACIÓN A PDF Y EXCEL
+ */
+
 type SchemaType = StretcherData & { key: React.Key }
 
 /**
@@ -127,7 +131,7 @@ if (index !== -1) {
         key: 'PAP',
         children: [
           {
-            title: 'Sistólica',
+            title: 'Sistólica de arteria pulmonar',
             dataIndex: ['cateter', 'PAP', 'sistolica'],
             key: 'systolicPAP',
             width: 100,
@@ -135,7 +139,7 @@ if (index !== -1) {
             render: (value) => value ?? 'N/A',
           },
           {
-            title: 'Diastólica',
+            title: 'Diastólica de arteria pulmonar',
             dataIndex: ['cateter', 'PAP', 'diastolica'],
             key: 'dyastolicPAP',
             width: 100,
@@ -143,7 +147,7 @@ if (index !== -1) {
             render: (value) => value ?? 'N/A',
           },
           {
-            title: 'Media',
+            title: 'Media de arteria pulmonar',
             key: 'mediaPAP',
             width: 100,
             onHeaderCell: textCenter,
@@ -157,7 +161,7 @@ if (index !== -1) {
         ],
       },
       {
-        title: 'Presión media sistemática',
+        title: 'Presión media sistémica',
         dataIndex: ['cateter', 'presion', 'mediaSistemica'],
         key: 'systemicPressure',
         width: 200,

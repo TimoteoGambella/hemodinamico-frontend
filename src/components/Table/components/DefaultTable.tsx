@@ -2,7 +2,6 @@
 import { CloudDownloadOutlined, DownOutlined } from '@ant-design/icons'
 import * as ctlr from '../controller/defaultTable.controller'
 import routeSchema from '../../App/constants/routeSchema'
-import useStretchers from '../../../hooks/useStretchers'
 import useCollapsed from '../../../hooks/useCollapsed'
 import { useEffect, useRef, useState } from 'react'
 import useMsgApi from '../../../hooks/useMsgApi'
@@ -18,6 +17,7 @@ interface DefaultTableProps {
 }
 export default function DefaultTable(props: DefaultTableProps) {
   const { schema, source, scroll, title, printeable, schemaType } = props
+  const [allStretchers, setStretchers] = useState<StretcherData[] | undefined>()
   const [sourceWithKeys, setSource] = useState<
     DefaultTableSourceType['children'] | null
   >(null)
@@ -28,7 +28,6 @@ export default function DefaultTable(props: DefaultTableProps) {
   const defaultScroll = scroll || { y: 280 }
   const selectRef = useRef<any>(null)
   const isCollapsed = useCollapsed()
-  const stretchers = useStretchers()
   const [form] = Ant.Form.useForm()
   const msgApi = useMsgApi()
 
@@ -46,6 +45,11 @@ export default function DefaultTable(props: DefaultTableProps) {
   }
 
   const handleOk = () => {
+    if (!allStretchers) {
+      msgApi.error('Sin la información de las camas no es posible realizar esta acción.')
+      return
+    }
+
     form.validateFields().then(() => {
       const val = selected?.split(' [')[2]
       const id = val?.replace(']', '')
@@ -53,7 +57,7 @@ export default function DefaultTable(props: DefaultTableProps) {
       const status = ctlr.schemaToPDF({
         body: body!,
         schema,
-        stretchers: stretchers!,
+        stretchers: allStretchers,
         schemaType: schemaType!,
       })
 
@@ -65,6 +69,27 @@ export default function DefaultTable(props: DefaultTableProps) {
         msgApi.error('Error al generar el reporte. Intente de nuevo.')
       }
     })
+  }
+  const handleExportDB = () => {
+    if (!allStretchers) {
+      msgApi.error('Sin la información de las camas no es posible realizar esta acción.')
+      return
+    }
+
+    ctlr
+      .schemaToExcel({
+        body: source!,
+        schema,
+        stretchers: allStretchers,
+        schemaType: schemaType!,
+      })
+      .then((status) => {
+        if (status) {
+          msgApi.success('BD general exportado con éxito.')
+        } else {
+          msgApi.error('Error al generar el excel. Intente de nuevo.')
+        }
+      })
   }
 
   useEffect(() => {
@@ -100,6 +125,20 @@ export default function DefaultTable(props: DefaultTableProps) {
       throw new Error('All items in children must have a key property')
     setSource(source.map((item, index) => ({ ...item, key: index })))
   }, [source])
+
+  useEffect(() => {
+    if (printeable && schemaType) {
+      const fetchStretchers = async () => {
+        const stretchers = await ctlr.getAllStretchers()
+        if (!stretchers) {
+          msgApi.error('Error al obtener las camas. Intente de nuevo.')
+          return
+        }
+        setStretchers(stretchers)
+      }
+      fetchStretchers()
+    }
+  }, [printeable, schemaType, msgApi])
 
   useEffect(() => {
     if (sourceWithKeys) setIsLoading(false)
@@ -171,6 +210,13 @@ export default function DefaultTable(props: DefaultTableProps) {
                     ` [${item._id}]`,
                   label: item.patientId.fullname + ` [${item.patientId.dni}]`,
                 }))}
+              />
+            </Ant.Form.Item>
+            <Ant.Form.Item label="Exportar Base de Datos">
+              <Ant.Button
+                type="primary"
+                icon={<CloudDownloadOutlined />}
+                onClick={handleExportDB}
               />
             </Ant.Form.Item>
           </Ant.Form>
