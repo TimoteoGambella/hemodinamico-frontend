@@ -2,7 +2,7 @@ import StretcherReportSchema from '../Table/constants/StretcherReportSchema'
 import columnSearchGenerator from './controller/columnSearchGenerator'
 import { fetchReportLabs, fetchReportStretchers } from './controller'
 import getLabReportSchema from '../Table/constants/LabReportSchema'
-import { Flex, InputRef, Space, Typography } from 'antd'
+import { Flex, InputRef, Space, Spin, Typography } from 'antd'
 import { useEffect, useRef, useState } from 'react'
 import useMsgApi from '../../hooks/useMsgApi'
 import CustomTable from '../Table'
@@ -18,6 +18,7 @@ export default function Database() {
   const [LabReportSchema, setLabRSchema] = useState<TableSchema<unknown>[]>([])
   const [stretcherReport, setStretcherR] = useState<StretcherReportType[]>()
   const [labsResport, setLabsR] = useState<LabReportType[]>()
+  const isLoaded = useRef(false)
   const msgApi = useMsgApi()
 
   const searchTextRef = useRef('')
@@ -62,7 +63,19 @@ export default function Database() {
     }
 
     setLabRSchema(schema as unknown as TableSchema<unknown>[])
+    isLoaded.current = true
   }, [LabReportSchema.length, getColumnSearchProps, stretcherReport])
+
+  if (!isLoaded.current)
+    return (
+      <Spin
+        spinning
+        tip="Cargando..."
+        style={{ marginTop: 'calc(100dvh - 50%)' }}
+      >
+        <></>
+      </Spin>
+    )
 
   return (
     <>
