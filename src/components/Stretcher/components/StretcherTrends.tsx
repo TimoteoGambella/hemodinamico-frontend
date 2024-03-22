@@ -57,32 +57,30 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
       }
     })
 
-    setCTR1((prev) => {
-      const newArr = [...prev]
-      newArr.unshift(
-        ...content.map((stretcher) => {
-          const copy = { ...stretcher } as any
-          delete copy['Poder cardiaco']
-          delete copy['Índice de poder cardiaco']
-          delete copy['PAPi']
-          return copy
-        })
-      )
-      return newArr
-    })
+    const newCTRArr = new Array(39).fill(null)
+    newCTRArr.unshift(
+      ...content.map((stretcher) => {
+        const copy = { ...stretcher } as any
+        delete copy['Poder cardiaco']
+        delete copy['Índice de poder cardiaco']
+        delete copy['PAPi']
+        return copy
+      })
+    )
 
-    setCTR2((prev) => {
-      const newArr = [...prev]
-      newArr.unshift(
-        ...content.map((stretcher) => {
-          const copy = { ...stretcher } as any
-          delete copy['Gasto cardiaco (TD)']
-          delete copy['Indice cardiaco (TD)']
-          return copy
-        })
-      )
-      return newArr
-    })
+    setCTR1(newCTRArr)
+
+    const newCTR2Arr = new Array(39).fill(null)
+    newCTR2Arr.unshift(
+      ...content.map((stretcher) => {
+        const copy = { ...stretcher } as any
+        delete copy['Gasto cardiaco (TD)']
+        delete copy['Indice cardiaco (TD)']
+        return copy
+      })
+    )
+
+    setCTR2(newCTR2Arr)
   }, [versions])
 
   return (
