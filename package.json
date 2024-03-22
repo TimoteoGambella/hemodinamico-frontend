@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.0",
+    "@dicebear/collection": "^8.0.0",
+    "@dicebear/core": "^8.0.0",
     "@types/file-saver": "^2.0.7",
     "antd": "^5.14.0",
     "axios": "^1.6.7",
@@ -19,6 +21,7 @@
     "jspdf": "^2.5.1",
     "jspdf-autotable": "^3.8.2",
     "react": "^18.2.0",
+    "react-animated-numbers": "^0.18.0",
     "react-dom": "^18.2.0",
     "react-highlight-words": "^0.20.0",
     "react-router-dom": "^6.22.0",

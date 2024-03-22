@@ -1,8 +1,9 @@
-import AntIcon from '@ant-design/icons'
-import { GetProps } from 'antd'
 import CloseSession from './assets/CloseSession'
+import Stretcher from './assets/Stretcher'
+import AntIcon from '@ant-design/icons'
 import Flask from './assets/Flask'
 import Sync from './assets/Sync'
+import { GetProps } from 'antd'
 
 type CustomIconComponentProps = GetProps<typeof AntIcon>
 
@@ -22,11 +23,7 @@ Icon.CloseSession = (props: CustomIconComponentProps) => (
 Icon.Flask = (props: CustomIconComponentProps) => (
   <AntIcon
     component={() => (
-      <Flask
-        width={props.width}
-        height={props.height}
-        style={props.style}
-      />
+      <Flask width={props.width} height={props.height} style={props.style} />
     )}
     {...props}
   />
@@ -35,7 +32,16 @@ Icon.Flask = (props: CustomIconComponentProps) => (
 Icon.Sync = (props: CustomIconComponentProps) => (
   <AntIcon
     component={() => (
-      <Sync
+      <Sync width={props.width} height={props.height} style={props.style} />
+    )}
+    {...props}
+  />
+)
+
+Icon.Stretcher = (props: CustomIconComponentProps) => (
+  <AntIcon
+    component={() => (
+      <Stretcher
         width={props.width}
         height={props.height}
         style={props.style}
