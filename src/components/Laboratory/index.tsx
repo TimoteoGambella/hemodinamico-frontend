@@ -4,7 +4,7 @@ import LabContent from './components/LabContent'
 import LabTrends from './components/LabTrends'
 import useMsgApi from '../../hooks/useMsgApi'
 import { getLabVersions } from './controller'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import useLabs from '../../hooks/useLabs'
 import { Empty, Spin, Tabs } from 'antd'
 import { AxiosError } from 'axios'
@@ -51,20 +51,7 @@ const Laboratory = () => {
     },
   ]
 
-  useEffect(() => {
-    const res = labs.find((lab) => lab._id === id) || null
-    setData(res)
-    setIsLoading(false)
-  }, [id, labs])
-
-  useEffect(() => {
-    if (!data && !isLoading && id && labs.length > 0) {
-      const res = labs.find((lab) => lab._id === id)
-      if (!res) navigateTo('/404')
-    }
-  }, [data, id, isLoading, labs, navigateTo])
-
-  useEffect(() => {
+  const handleUpdateSummary = useCallback(() => {
     if (!id) return
     const fetchApi = async () => {
       const res = await getLabVersions(id)
@@ -79,7 +66,24 @@ const Laboratory = () => {
       }
     }
     fetchApi()
-  }, [setVersions, id, msgApi])
+  }, [id, msgApi])
+
+  useEffect(() => {
+    const res = labs.find((lab) => lab._id === id) || null
+    setData(res)
+    setIsLoading(false)
+  }, [id, labs])
+
+  useEffect(() => {
+    handleUpdateSummary()
+  }, [handleUpdateSummary, data])
+
+  useEffect(() => {
+    if (!data && !isLoading && id && labs.length > 0) {
+      const res = labs.find((lab) => lab._id === id)
+      if (!res) navigateTo('/404')
+    }
+  }, [data, id, isLoading, labs, navigateTo])
 
   return (
     <Tabs
