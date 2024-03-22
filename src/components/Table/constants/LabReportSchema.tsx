@@ -57,14 +57,18 @@ export default function getLabReportSchema(stretchersVersions: StretcherData[]) 
               dataIndex: 'editedAt',
               key: 'createdDate',
               width: 100,
-              render: (value) => new Date(value).toLocaleDateString(),
+              render: (value, record) => {
+                return new Date(value ?? record.createdAt).toLocaleDateString()
+              },
             },
             {
               title: 'Hora',
               dataIndex: 'editedAt',
               key: 'createdTime',
               width: 100,
-              render: (value) => new Date(value).toLocaleTimeString(),
+              render: (value, record) => {
+                return new Date(value ?? record.createdAt).toLocaleTimeString()
+              },
             },
           ],
         },
