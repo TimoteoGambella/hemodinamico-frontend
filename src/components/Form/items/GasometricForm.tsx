@@ -20,23 +20,68 @@ const GasometricForm = ({ form }: GasometricFormProps) => {
 
       <Flex vertical>
         <Typography.Title level={5}>VENA</Typography.Title>
-        <Form.Item name={['muestra', 'vena', 'sat']} label="Sat O2">
+        <Form.Item
+          name={['muestra', 'vena', 'sat']}
+          label="Sat O2"
+          rules={[
+            {
+              required: true,
+              message: 'Debe ingresar la saturación de oxígeno de la vena',
+            },
+          ]}
+        >
           <InputNumber />
         </Form.Item>
-        <Form.Item name={['muestra', 'vena', 'pC02']} label="pCO2">
+        <Form.Item
+          name={['muestra', 'vena', 'pC02']}
+          label="pCO2"
+          rules={[
+            {
+              required: true,
+              message: 'Debe ingresar la presión de CO2 de la vena',
+            },
+          ]}
+        >
           <InputNumber />
         </Form.Item>
       </Flex>
 
       <Flex vertical>
         <Typography.Title level={5}>ARTERIA</Typography.Title>
-        <Form.Item name={['muestra', 'arteria', 'sat']} label="Sat O2">
+        <Form.Item
+          name={['muestra', 'arteria', 'sat']}
+          label="Sat O2"
+          rules={[
+            {
+              required: true,
+              message: 'Debe ingresar la saturación de oxígeno de la arteria',
+            },
+          ]}
+        >
           <InputNumber />
         </Form.Item>
-        <Form.Item name={['muestra', 'arteria', 'pC02']} label="pCO2">
+        <Form.Item
+          name={['muestra', 'arteria', 'pC02']}
+          label="pCO2"
+          rules={[
+            {
+              required: true,
+              message: 'Debe ingresar la presión de CO2 de la arteria',
+            },
+          ]}
+        >
           <InputNumber />
         </Form.Item>
-        <Form.Item name={['muestra', 'arteria', 'lactato']} label="Lacto">
+        <Form.Item
+          name={['muestra', 'arteria', 'lactato']}
+          label="Lacto"
+          rules={[
+            {
+              required: true,
+              message: 'Debe ingresar el lactato de la arteria',
+            },
+          ]}
+        >
           <InputNumber />
         </Form.Item>
       </Flex>

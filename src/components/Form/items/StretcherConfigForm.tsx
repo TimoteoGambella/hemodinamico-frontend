@@ -1,16 +1,19 @@
-import { Form, Input, Select, SelectProps, Tag, Typography } from 'antd'
+import * as Ant from 'antd'
 
-const options = [
-  { value: 'ecmo' },
-  { value: 'balon' }
-]
+const options = [{ value: 'ecmo' }, { value: 'balon' }]
 
 const StretcherConfing = () => {
+  const handleUpdate = (form: Ant.FormInstance) => {
+    const val = form.getFieldValue('aid') as string[]
+    if (val.length > 1) {
+      form.setFieldValue('aid', val.slice(1))
+    }
+  }
   return (
     <>
-      <Typography.Title level={4}>CONFIGURACIÓN DE CAMA</Typography.Title>
+      <Ant.Typography.Title level={4}>CONFIGURACIÓN DE CAMA</Ant.Typography.Title>
 
-      <Form.Item
+      <Ant.Form.Item
         name="label"
         label="Etiqueta"
         rules={[
@@ -20,31 +23,41 @@ const StretcherConfing = () => {
           },
         ]}
       >
-        <Input />
-      </Form.Item>
+        <Ant.Input />
+      </Ant.Form.Item>
 
-      <Form.Item
-        name="aid"
+      <Ant.Form.Item
         label="Asistencia"
-        rules={[
-          {
-            required: true,
-            message: 'Por favor selecione al menos una etiqueta',
-          },
-        ]}
+        shouldUpdate={(curValue, prevValue) => curValue.aid !== prevValue.aid}
       >
-        <Select
-          mode="multiple"
-          tagRender={tagRender}
-          style={{ width: '100%' }}
-          options={options}
-        />
-      </Form.Item>
+        {(form) => {
+          return (
+            <Ant.Form.Item
+              name="aid"
+              rules={[
+                {
+                  required: true,
+                  message: 'Por favor selecione al menos una etiqueta',
+                },
+              ]}
+              noStyle
+            >
+              <Ant.Select
+                mode="multiple"
+                tagRender={tagRender}
+                onChange={() => handleUpdate(form)}
+                style={{ width: '100%' }}
+                options={options}
+              />
+            </Ant.Form.Item>
+          )
+        }}
+      </Ant.Form.Item>
     </>
   )
 }
 
-type TagRender = SelectProps['tagRender']
+type TagRender = Ant.SelectProps['tagRender']
 
 const tagRender: TagRender = (props) => {
   const { label, value, closable, onClose } = props
@@ -53,7 +66,7 @@ const tagRender: TagRender = (props) => {
     event.stopPropagation()
   }
   return (
-    <Tag
+    <Ant.Tag
       color={value === 'ecmo' ? 'blue' : 'red'}
       onMouseDown={onPreventMouseDown}
       closable={closable}
@@ -61,7 +74,7 @@ const tagRender: TagRender = (props) => {
       style={{ marginRight: 3 }}
     >
       {label}
-    </Tag>
+    </Ant.Tag>
   )
 }
 

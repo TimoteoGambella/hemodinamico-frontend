@@ -33,7 +33,12 @@ const FickForm = ({ form }: FickFormProps) => {
   return (
     <>
       <Typography.Title level={4}>FICK INDIRECTO</Typography.Title>
-      <Form.Item name={['fick', 'hemoglobina']} label="Hemoglobina">
+      <Form.Item name={['fick', 'hemoglobina']} label="Hemoglobina" rules={[
+            {
+              required: true,
+              message: 'Debe ingresar la hemoglobina del paciente',
+            },
+          ]}>
         <InputNumber />
       </Form.Item>
 
@@ -116,7 +121,8 @@ const FickForm = ({ form }: FickFormProps) => {
             arteria.sat,
             'down'
           )
-          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
+          
+          return <InputNumber value={isFinite(value) ? value : '-'} disabled />
         }}
       </Form.Item>
 
@@ -138,7 +144,7 @@ const FickForm = ({ form }: FickFormProps) => {
             'up'
           )
           const value = index
-          return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
+          return <InputNumber value={isFinite(value) ? value : '-'} disabled />
         }}
       </Form.Item>
     </>

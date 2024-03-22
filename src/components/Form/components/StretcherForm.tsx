@@ -121,7 +121,7 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
     })
     /* SEND REQUEST */
     await onFinish(values as StretcherData)
-  if (patient) await onPatientFinish(patient)
+    if (patient) await onPatientFinish(patient)
     await updateRepo()
   }
 
@@ -162,7 +162,16 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
             return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
           }}
         </Form.Item>
-        <Form.Item name="patientHeartRate" label="Frecuencia Cardíaca">
+        <Form.Item
+          name="patientHeartRate"
+          label="Frecuencia Cardíaca"
+          rules={[
+            {
+              required: true,
+              message: 'Debe ingresar la frecuencia cardiaca del paciente',
+            },
+          ]}
+        >
           <InputNumber />
         </Form.Item>
       </>

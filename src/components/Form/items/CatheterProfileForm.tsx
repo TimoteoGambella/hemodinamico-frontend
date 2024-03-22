@@ -36,33 +36,81 @@ const CatheterForm = ({ form }: CatheterFormProps) => {
     <>
       <Typography.Title level={4}>CATETER DE ARTERIA PULMONAR</Typography.Title>
 
-      <Form.Item name={['cateter', 'presion', 'AD']} label="Presion AD">
+      <Form.Item
+        name={['cateter', 'presion', 'AD']}
+        label="Presion AD"
+        rules={[
+          {
+            required: true,
+            message: 'Debe ingresar la presión AD del paciente',
+          },
+        ]}
+      >
         <InputNumber />
       </Form.Item>
 
       <Form.Item
         name={['cateter', 'presion', 'capilar']}
         label="Presión Capilar"
+        rules={[
+          {
+            required: true,
+            message: 'Debe ingresar la presión capilar del paciente',
+          },
+        ]}
       >
         <InputNumber />
       </Form.Item>
 
-      <Form.Item name={['cateter', 'PAP', 'sistolica']} label="PAP sistólica">
+      <Form.Item
+        name={['cateter', 'PAP', 'sistolica']}
+        label="PAP sistólica"
+        rules={[
+          {
+            required: true,
+            message: 'Debe ingresar un valor válido para la PAP sistólica',
+          },
+        ]}
+      >
         <InputNumber />
       </Form.Item>
 
-      <Form.Item name={['cateter', 'PAP', 'diastolica']} label="PAP diastólica">
+      <Form.Item
+        name={['cateter', 'PAP', 'diastolica']}
+        label="PAP diastólica"
+        rules={[
+          {
+            required: true,
+            message: 'Debe ingresar un valor válido para la PAP diastólica',
+          },
+        ]}
+      >
         <InputNumber />
       </Form.Item>
 
       <Form.Item
         name={['cateter', 'presion', 'mediaSistemica']}
-        label="Presión media sistemática"
+        label="Presión media sistémica"
+        rules={[
+          {
+            required: true,
+            message: 'Debe ingresar la presión media sistémica del paciente',
+          },
+        ]}
       >
         <InputNumber />
       </Form.Item>
 
-      <Form.Item name={['cateter', 'gasto']} label="Gasto cardíaco (TD)">
+      <Form.Item
+        name={['cateter', 'gasto']}
+        label="Gasto cardíaco (TD)"
+        rules={[
+          {
+            required: true,
+            message: 'Debe ingresar el gasto cardíaco del paciente',
+          },
+        ]}
+      >
         <InputNumber />
       </Form.Item>
 
