@@ -88,9 +88,16 @@ export default function LabForm({ formProp, data }: CustomFormProps) {
       duration: 0,
     })
     /* SEND REQUEST */
-    if (patient) await onFinishPatient(patient)
-    await onFinishLab(lab as LaboratoryData)
-    await updateRepo()
+    try {
+      if (patient) await onFinishPatient(patient)
+      await onFinishLab(lab as LaboratoryData)
+      await updateRepo()
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+      msgApi.destroy('lab-form')
+    }
   }
 
   useEffect(() => {

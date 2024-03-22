@@ -120,9 +120,16 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
       duration: 0,
     })
     /* SEND REQUEST */
-    await onFinish(values as StretcherData)
-    if (patient) await onPatientFinish(patient)
-    await updateRepo()
+    try {
+      await onFinish(values as StretcherData)
+      if (patient) await onPatientFinish(patient)
+      await updateRepo()
+    } catch(error) {
+      console.error(error)
+    } finally {
+      setIsLoading(false)
+      msgApi.destroy('update-lab')
+    }
   }
 
   useEffect(() => {
