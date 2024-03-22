@@ -7,7 +7,7 @@ import './style.css'
 
 export interface CustomFormProps {
   formProp: FormPropType
-  data?: LaboratoryData | PatientData | StretcherData
+  data?: LaboratoryData | PatientData | StretcherData | PopulatedPatient
   onFieldsChange?: () => void
   onCancel?: () => void
 }

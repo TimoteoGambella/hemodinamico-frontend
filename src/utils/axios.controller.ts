@@ -70,9 +70,9 @@ export default class AxiosController {
     })
   }
 
-  async getPatients(): Promise<AxiosError | AxiosResponse> {
+  async getPatients(populate?: boolean): Promise<AxiosError | AxiosResponse> {
     return await this.request({
-      url: '/patient/list',
+      url: `/patient/list?populate=${populate ?? false}`,
       method: 'GET'
     })
   }

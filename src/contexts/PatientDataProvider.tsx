@@ -7,7 +7,7 @@ import useMsgApi from '../hooks/useMsgApi'
 const axios = new AxiosController()
 
 interface IPatientDataContext {
-  patients: PatientData[]
+  patients: PopulatedPatient[]
   updatePatients: () => Promise<void>
   flushPatients: () => void
 }
@@ -25,11 +25,11 @@ export const PatientDataProvider = ({
 }) => {
   const msgApi = useMsgApi()
   const isLogged = useLoginStatus()
-  const [patients, setPatients] = useState<PatientData[]>([])
+  const [patients, setPatients] = useState<PopulatedPatient[]>([])
 
   const fetchData = useCallback(async () => {
     if (!isLogged) return
-    const res = await axios.getPatients()
+    const res = await axios.getPatients(true)
     if (res instanceof AxiosError) {
       console.error(res)
       msgApi.error('No se pudo obtener la información de los pacientes.', 5)

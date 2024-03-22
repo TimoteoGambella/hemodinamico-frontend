@@ -56,6 +56,10 @@ declare global {
     __v: number
   }
 
+  interface PopulatedPatient extends Omit<PatientData, 'editedBy'> {
+    editedBy: UserData | null
+  }
+
   interface GasometricSamples {
     vena: {
       sat: number | null

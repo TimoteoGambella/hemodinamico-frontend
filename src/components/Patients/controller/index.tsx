@@ -6,7 +6,7 @@ import { MessageInstance } from 'antd/es/message/interface'
 
 const axios = new AxiosController()
 
-export function getColumns(): TableProps<PatientData>['columns'] {
+export function getColumns(): TableProps<PatientData | PopulatedPatient>['columns'] {
   return [
     {
       title: 'DNI',
@@ -54,7 +54,7 @@ export function getColumns(): TableProps<PatientData>['columns'] {
 }
 
 interface HandleAssignLabProps {
-  patient: PatientData | undefined
+  patient: PatientData | PopulatedPatient | undefined
   updateLabs: () => Promise<void>
   updatePatients: () => Promise<void>
   msgApi: MessageInstance

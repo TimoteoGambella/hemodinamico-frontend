@@ -283,7 +283,7 @@ function bodyGenerator(props: BodyGeneratorProps) {
           const res = getNestedValue(
             arrItem as unknown as Record<string, unknown>,
             path
-          )
+          ) as string[]
 
           arr.push(res)
         }
@@ -309,7 +309,7 @@ function bodyGenerator(props: BodyGeneratorProps) {
         const res = getNestedValue(
           arrItem as unknown as Record<string, unknown>,
           path
-        )
+        ) as string[]
 
         arr.push(res)
         counter += 1
@@ -459,7 +459,7 @@ function handlerLabReport(props: handlerReportType) {
       const res = getNestedValue(
         arrItem as unknown as Record<string, unknown>,
         path
-      )
+      ) as string
 
       if (!res) {
         arr.push('-')
@@ -1071,7 +1071,7 @@ function bodyExcelGenerator(props: BodyExcelGeneratorProps) {
       const res = getNestedValue(
         currentItem as unknown as Record<string, unknown>,
         path
-      )
+      ) as string
 
       container.push(res ? res : 'N/A')
       counter += 1
@@ -1373,7 +1373,7 @@ function handlerLabExport(props: HandlerExportProps) {
       const res = getNestedValue(
         currentItem as unknown as Record<string, unknown>,
         path
-      )
+      ) as string
 
       if (!res) {
         container.push('-')

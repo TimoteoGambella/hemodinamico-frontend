@@ -42,7 +42,7 @@ const LabContent = ({ data, msgApi }: MainContentProps) => {
         msgApi.error('Error al obtener información del paciente.')
         return
       } else {
-        lab.patientId = res
+        lab.patientId = res as PatientData
         setLabInfo(lab)
       }
     }
