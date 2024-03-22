@@ -16,7 +16,7 @@ const Laboratory = () => {
   const msgApi = useMsgApi()
   const navigateTo = useNavigate()
   const [isLoading, setIsLoading] = useState(true)
-  const [data, setData] = useState<LaboratoryData | null>(null)
+  const [data, setData] = useState<PopulatedLab | null>(null)
   const [currentTab, setCurrentTab] = useState<TabsKeys>('general-info')
   const [versions, setVersions] = useState<LaboratoryData[] | null>(null)
   const tabs = [

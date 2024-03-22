@@ -72,8 +72,8 @@ export async function handleLogout(
 }
 
 interface GetItemsProps {
-  reqStretchers: StretcherData[] | AxiosError
-  reqLabs: LaboratoryData[] | AxiosError
+  reqStretchers: StretcherData[] | PopulatedStretcher[] | AxiosError
+  reqLabs: LaboratoryData[] | PopulatedLab[] | AxiosError
   isAdmin: boolean
 }
 
@@ -96,7 +96,7 @@ export async function getItems({
       getItem(
         typeof lab.patientId === 'string'
           ? lab.patientId
-          : lab.patientId.fullname ?? lab._id,
+          : lab.patientId?.fullname ?? lab._id,
         lab._id,
         <SolutionOutlined />
       )

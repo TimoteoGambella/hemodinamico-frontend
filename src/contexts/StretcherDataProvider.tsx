@@ -7,7 +7,7 @@ import useMsgApi from '../hooks/useMsgApi'
 const axios = new AxiosController()
 
 interface IStretcherDataContext {
-  stretchers: StretcherData[] | null
+  stretchers: PopulatedStretcher[] | null
   updateStretchers: () => Promise<void>
   flushStretchers: () => void
 }
@@ -25,7 +25,7 @@ export const StretcherDataProvider = ({
 }) => {
   const msgApi = useMsgApi()
   const isLogged = useLoginStatus()
-  const [stretchers, setStretchers] = useState<StretcherData[] | null>(null)
+  const [stretchers, setStretchers] = useState<PopulatedStretcher[] | null>(null)
 
   const fetchData = useCallback(async () => {
     if (!isLogged) return

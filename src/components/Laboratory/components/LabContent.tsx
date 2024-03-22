@@ -7,7 +7,7 @@ import usePatients from '../../../hooks/usePatients'
 
 interface MainContentProps {
   msgApi: MessageInstance
-  data: LaboratoryData
+  data: LaboratoryData | PopulatedLab
 }
 
 const LabContent = ({ data, msgApi }: MainContentProps) => {

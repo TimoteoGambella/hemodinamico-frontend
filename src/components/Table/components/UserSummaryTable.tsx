@@ -38,7 +38,7 @@ export default function UserSummaryTable({ patientId }: UsrSumProps) {
     if (patient) {
       if (patient.stretcherId) {
         const stretcher = findStretcher(patient.stretcherId as string)
-        if (stretcher) patient.stretcherId = stretcher
+        if (stretcher) patient.stretcherId = stretcher as StretcherData
       }
       patient.key = 0
       setPatient([patient])

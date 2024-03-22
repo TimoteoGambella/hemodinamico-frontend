@@ -10,7 +10,7 @@ import { validateInputNumber } from '../controller'
 
 interface LabPatientFormProps {
   showTitle?: boolean
-  freeStretchers?: StretcherData[]
+  freeStretchers?: StretcherData[] | PopulatedStretcher[]
   form?: FormInstance
 }
 

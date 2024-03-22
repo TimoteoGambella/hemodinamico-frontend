@@ -47,7 +47,7 @@ declare global {
     height: number
     weight: number
     age: number
-    dni: number
+    dni: string
     bloodType: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
     createdAt: number
     editedAt: number | null
@@ -123,9 +123,15 @@ declare global {
       subtype: 'intermacs_1' | 'intermacs_2' | 'intermacs_3' | null
     }
     createdAt: number
+    editedBy: string | null
     editedAt: number | null
     isDeleted: boolean
     __v: number
+  }
+
+  interface PopulatedStretcher extends Omit<StretcherData, 'patientId' | 'editedBy'> {
+    patientId: PatientData | null
+    editedBy: UserData | null
   }
 
   interface StretcherVersions extends Omit<StretcherData, 'isDeleted'> {
@@ -249,6 +255,11 @@ declare global {
     editedAt: number | null
     createdAt: number
     __v: number
+  }
+
+  interface PopulatedLab extends Omit<LaboratoryData, 'patientId' | 'editedBy'> {
+    patientId: PatientData | null
+    editedBy: UserData | null
   }
 
   interface IStretcherFormType extends StretcherData {

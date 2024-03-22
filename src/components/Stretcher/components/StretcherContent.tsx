@@ -4,7 +4,7 @@ import CustomForm from "../../Form"
 import { useState } from "react"
 
 interface MainContentProps {
-  stretcherData: StretcherData
+  stretcherData: StretcherData | PopulatedStretcher
 }
 
 const StretcherContent = ({ stretcherData }: MainContentProps) => {

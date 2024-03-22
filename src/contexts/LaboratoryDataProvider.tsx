@@ -7,7 +7,7 @@ import useMsgApi from '../hooks/useMsgApi'
 const axios = new AxiosController()
 
 interface ILaboratoryDataContext {
-  labs: LaboratoryData[]
+  labs: PopulatedLab[]
   updateLabs: () => Promise<void>
   flushLabs: () => void
 }
@@ -25,7 +25,7 @@ export const LaboratoryDataProvider = ({
 }) => {
   const msgApi = useMsgApi()
   const isLogged = useLoginStatus()
-  const [labs, setLabs] = useState<LaboratoryData[]>([])
+  const [labs, setLabs] = useState<PopulatedLab[]>([])
 
   const fetchData = useCallback(async () => {
     if (!isLogged) return

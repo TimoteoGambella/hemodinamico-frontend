@@ -6,7 +6,7 @@ import Graphs from '../../Graph'
 import { Flex } from 'antd'
 
 interface TrendsProps {
-  versions: StretcherData[] | null
+  versions: StretcherData[] | PopulatedStretcher[] | null
   currentTab: string
 }
 
