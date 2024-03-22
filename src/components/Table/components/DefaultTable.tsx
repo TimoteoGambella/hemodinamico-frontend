@@ -213,13 +213,14 @@ export default function DefaultTable(props: DefaultTableProps) {
                   setSelected(value[0] as string)
                   selectRef.current?.blur()
                 }}
-                options={source.map((item) => ({
-                  value:
-                    item.patientId.fullname +
-                    ` [${item.patientId.dni}]` +
-                    ` [${item._id}]`,
-                  label: item.patientId.fullname + ` [${item.patientId.dni}]`,
-                }))}
+                options={source.map((item) => {
+                  const label = item.patientId.fullname + ` [${item.patientId.dni}]`
+                  const value = label + ` [${item._id}]`
+                  return {
+                    label: label + ` [${new Date(item.createdAt).toLocaleDateString()}]`,
+                    value,
+                  }
+                })}
               />
             </Ant.Form.Item>
             <Ant.Form.Item label="Exportar Base de Datos">
