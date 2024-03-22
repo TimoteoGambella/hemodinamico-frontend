@@ -60,3 +60,16 @@
   overflow: auto;
   z-index: 1;
 }
+.dash-botom-container > div {
+  padding: 0 1rem;
+}
+.dash-rigth-content {
+  border-left: 1px solid rgba(5, 5, 5, 0.06);
+  text-align: center;
+  min-width: 500px;
+  flex-grow: 1;
+
+  & > .logo {
+    max-width: 300px;
+  }
+}
