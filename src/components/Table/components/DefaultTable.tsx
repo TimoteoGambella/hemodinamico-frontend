@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CloudDownloadOutlined, DownOutlined } from '@ant-design/icons'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import * as ctlr from '../controller/defaultTable.controller'
 import routeSchema from '../../App/constants/routeSchema'
 import useCollapsed from '../../../hooks/useCollapsed'
-import { useEffect, useRef, useState } from 'react'
 import useMsgApi from '../../../hooks/useMsgApi'
 import * as Ant from 'antd'
 
@@ -46,7 +46,9 @@ export default function DefaultTable(props: DefaultTableProps) {
 
   const handleOk = () => {
     if (!allStretchers) {
-      msgApi.error('Sin la información de las camas no es posible realizar esta acción.')
+      msgApi.error(
+        'Sin la información de las camas no es posible realizar esta acción.'
+      )
       return
     }
 
@@ -72,7 +74,9 @@ export default function DefaultTable(props: DefaultTableProps) {
   }
   const handleExportDB = () => {
     if (!allStretchers) {
-      msgApi.error('Sin la información de las camas no es posible realizar esta acción.')
+      msgApi.error(
+        'Sin la información de las camas no es posible realizar esta acción.'
+      )
       return
     }
 
@@ -92,7 +96,7 @@ export default function DefaultTable(props: DefaultTableProps) {
       })
   }
 
-  useEffect(() => {
+  const handleWindowChange = useCallback(() => {
     const width = isCollapsed ? 80 : 200
     const innerHeight = window.innerHeight
     const main = document.querySelector('main')!
@@ -104,7 +108,9 @@ export default function DefaultTable(props: DefaultTableProps) {
      * de la tabla para que no se muestre el scroll horizontal
      */
     if (innerHeight < clientHeight) {
-      main.style.width = `calc(100dvw - ${isExpanded ? width + 20 : width}px)`
+      main.style.width = `calc(100dvw - ${
+        isExpanded ? width + 20 : width + 20
+      }px)`
     } else {
       main.style.width = `calc(100dvw - ${width}px)`
     }
@@ -117,6 +123,10 @@ export default function DefaultTable(props: DefaultTableProps) {
       }
     }
   }, [isCollapsed, isExpanded])
+
+  useEffect(() => {
+    handleWindowChange()
+  }, [handleWindowChange])
 
   useEffect(() => {
     if (!source) return
