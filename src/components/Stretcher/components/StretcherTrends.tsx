@@ -57,7 +57,11 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
       }
     })
 
-    const newCTRArr = new Array(39).fill(null)
+    let LENGTH = content.length
+
+    if (LENGTH < 39) LENGTH = 39
+
+    const newCTRArr = new Array(LENGTH).fill(null)
     newCTRArr.unshift(
       ...content.map((stretcher) => {
         const copy = { ...stretcher } as any
@@ -70,7 +74,7 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
 
     setCTR1(newCTRArr)
 
-    const newCTR2Arr = new Array(39).fill(null)
+    const newCTR2Arr = new Array(LENGTH).fill(null)
     newCTR2Arr.unshift(
       ...content.map((stretcher) => {
         const copy = { ...stretcher } as any

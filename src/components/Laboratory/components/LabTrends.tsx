@@ -18,13 +18,41 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
    * CP: Cardiac Profile
    * INF: Infective
    */
-  const [LP2, setLP2] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
-  const [HB2, setHB2] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
-  const [LP1, setLP1] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
-  const [CP, setCP] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
-  const [HB1, setHB1] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
-  const [INF, setINF] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
-  const [KP, setKP] = useState<ObjectOnlyNumbers[]>(new Array(39).fill(null))
+  const [LP2, setLP2] = useState<ObjectOnlyNumbers[]>(
+    new Array(versions && versions?.length < 39 ? 39 : versions?.length).fill(
+      null
+    )
+  )
+  const [HB2, setHB2] = useState<ObjectOnlyNumbers[]>(
+    new Array(versions && versions?.length < 39 ? 39 : versions?.length).fill(
+      null
+    )
+  )
+  const [LP1, setLP1] = useState<ObjectOnlyNumbers[]>(
+    new Array(versions && versions?.length < 39 ? 39 : versions?.length).fill(
+      null
+    )
+  )
+  const [CP, setCP] = useState<ObjectOnlyNumbers[]>(
+    new Array(versions && versions?.length < 39 ? 39 : versions?.length).fill(
+      null
+    )
+  )
+  const [HB1, setHB1] = useState<ObjectOnlyNumbers[]>(
+    new Array(versions && versions?.length < 39 ? 39 : versions?.length).fill(
+      null
+    )
+  )
+  const [INF, setINF] = useState<ObjectOnlyNumbers[]>(
+    new Array(versions && versions?.length < 39 ? 39 : versions?.length).fill(
+      null
+    )
+  )
+  const [KP, setKP] = useState<ObjectOnlyNumbers[]>(
+    new Array(versions && versions?.length < 39 ? 39 : versions?.length).fill(
+      null
+    )
+  )
 
   useEffect(() => {
     if (!versions || versions.length === 0) return
