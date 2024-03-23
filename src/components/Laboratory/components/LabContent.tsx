@@ -1,9 +1,9 @@
 import { MessageInstance } from 'antd/es/message/interface'
 import { Empty, Flex, Space, Typography } from 'antd'
+import usePatients from '../../../hooks/usePatients'
 import { useState, useEffect } from 'react'
 import FloatBtn from '../../FloatBtn'
 import CustomForm from '../../Form'
-import usePatients from '../../../hooks/usePatients'
 
 interface MainContentProps {
   msgApi: MessageInstance
@@ -14,6 +14,7 @@ const LabContent = ({ data, msgApi }: MainContentProps) => {
   const lab = JSON.parse(JSON.stringify(data)) as LaboratoryData
   const { editedAt, createdAt } = lab
   const patients = usePatients()
+  const [key, setKey] = useState(Math.random())
   const [patientInfo, setPatientInfo] = useState<PatientData | null>(null)
   const editedBy = new Date(editedAt ? editedAt : createdAt).toLocaleString()
   const [labInfo, setLabInfo] = useState<LaboratoryData | null>(null)
@@ -75,6 +76,10 @@ const LabContent = ({ data, msgApi }: MainContentProps) => {
     }
   }, [formProp, msgApi])
 
+  useEffect(() => {
+    setKey(Math.random())
+  }, [patients])
+
   if (!patientInfo) return <Empty description="Sin datos" />
   return (
     <>
@@ -92,6 +97,7 @@ const LabContent = ({ data, msgApi }: MainContentProps) => {
           <CustomForm.Laboratory
             formProp={formProp}
             data={labInfo!}
+            key={key}
           ></CustomForm.Laboratory>
         </Space>
       </Flex>
