@@ -1,4 +1,5 @@
 import { PatientWithKey } from '../components/UserSummaryTable'
+import routeSchema from '../../App/constants/routeSchema'
 import { Link } from 'react-router-dom'
 
 export default [
@@ -19,7 +20,7 @@ export default [
     render: (_, record: PatientWithKey) => {
       const stretcher = record.stretcherId as StretcherData
       if (!stretcher || !stretcher.label) return 'N/A'
-      return <Link to={`/cama/${stretcher._id}`}>{stretcher.label}</Link>
+      return <Link to={`${routeSchema.stretchers.path}/${stretcher._id}`}>{stretcher.label}</Link>
     },
   },
 ] as TableSchema<PatientWithKey>[]

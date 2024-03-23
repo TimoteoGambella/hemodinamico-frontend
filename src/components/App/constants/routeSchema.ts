@@ -16,8 +16,8 @@ export default {
     path: '/laboratorio',
   },
   stretchers: {
-    label: 'Camas',
-    path: '/cama',
+    label: 'Monitoreos H.',
+    path: '/monitoreo',
   },
   report: {
     label: 'Base de datos',
