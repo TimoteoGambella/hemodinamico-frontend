@@ -27,7 +27,7 @@ const Dashboard = () => {
 
       <Ant.Flex className="dash-botom-container">
         <Ant.Row gutter={[16, 16]}>
-          <Ant.Col span={12} style={{minWidth: 300}}>
+          <Ant.Col span={12} style={{ minWidth: 300 }}>
             <List
               source={patients}
               header="Últimos pacientes editados"
@@ -35,7 +35,7 @@ const Dashboard = () => {
             />
           </Ant.Col>
 
-          <Ant.Col span={12} style={{minWidth: 300}}>
+          <Ant.Col span={12} style={{ minWidth: 300 }}>
             <List
               source={stretchers}
               header="Últimas camas editadas"
@@ -43,7 +43,7 @@ const Dashboard = () => {
             />
           </Ant.Col>
 
-          <Ant.Col span={12} style={{minWidth: 300}}>
+          <Ant.Col span={12} style={{ minWidth: 300 }}>
             <List
               source={labs}
               header="Últimos laboratorios editados"

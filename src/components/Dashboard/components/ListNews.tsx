@@ -10,10 +10,22 @@ interface ListNewsProps {
 }
 
 export default function ListNews({ source, type, header }: ListNewsProps) {
+  const [data, setData] = useState<ListNewsProps['source']>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (source) {
+      const copy = JSON.parse(JSON.stringify(source)) as PopulatedPatient[]
+      copy.sort(
+        (a, b) => {
+          if (a.editedAt && b.editedAt) {
+            return b.editedAt - a.editedAt
+          } else {
+            return b.createdAt - a.createdAt
+          }
+        }
+      )
+      setData(copy)
       setIsLoading(false)
     }
   }, [source])
@@ -26,7 +38,7 @@ export default function ListNews({ source, type, header }: ListNewsProps) {
 
       <List
         loading={isLoading}
-        dataSource={(source as unknown[]) ?? []}
+        dataSource={(data as unknown[]) ?? []}
         className="listNews-content"
         renderItem={(item) => {
           if (type === 'patients')
