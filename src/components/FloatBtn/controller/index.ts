@@ -19,8 +19,8 @@ export const handleDeleteClick = async(id: string, msgApi: MessageInstance, type
 
   let res: AxiosResponse | AxiosError | undefined
 
-  if (type === 'lab') await axios.deleteLab(id)
-  else await axios.deleteStretcher(id)
+  if (type === 'lab') res = await axios.deleteLab(id)
+  else res = await axios.deleteStretcher(id)
 
   if (res instanceof AxiosError) {
     msgApi.error({
