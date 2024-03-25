@@ -117,7 +117,7 @@ function PopulatedStretchers({ item }: { item: PopulatedStretcher }) {
               {item.patientId ? item.patientId?.fullname : 'Disponible'}
             </span>
             <span>
-              Editado por: {item.editedBy ? item.editedBy.name : 'Desconocido'}
+              Editado por: {item.editedBy ? item.editedBy.username : 'Desconocido'}
             </span>
             <span>
               Fecha de edición:{' '}
