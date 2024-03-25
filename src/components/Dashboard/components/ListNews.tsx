@@ -1,7 +1,7 @@
 import { initials, miniavs } from '@dicebear/collection'
 import { Typography, List, Avatar, Space } from 'antd'
+import { useEffect, useMemo, useState } from 'react'
 import { createAvatar } from '@dicebear/core'
-import { useEffect, useState } from 'react'
 
 interface ListNewsProps {
   source: PopulatedPatient[] | PopulatedStretcher[] | PopulatedLab[] | null
@@ -16,15 +16,13 @@ export default function ListNews({ source, type, header }: ListNewsProps) {
   useEffect(() => {
     if (source) {
       const copy = JSON.parse(JSON.stringify(source)) as PopulatedPatient[]
-      copy.sort(
-        (a, b) => {
-          if (a.editedAt && b.editedAt) {
-            return b.editedAt - a.editedAt
-          } else {
-            return b.createdAt - a.createdAt
-          }
+      copy.sort((a, b) => {
+        if (a.editedAt && b.editedAt) {
+          return b.editedAt - a.editedAt
+        } else {
+          return b.createdAt - a.createdAt
         }
-      )
+      })
       setData(copy)
       setIsLoading(false)
     }
@@ -69,14 +67,16 @@ export default function ListNews({ source, type, header }: ListNewsProps) {
 }
 
 function PopulatedLaboratory({ item }: { item: PopulatedLab }) {
-  const avatar = createAvatar(initials, {
-    seed: item.patientId?.fullname,
-  })
+  const avatar = useMemo(() => {
+    return createAvatar(initials, {
+      seed: item.patientId?.fullname,
+    }).toDataUriSync()
+  }, [item.patientId?.fullname])
 
   return (
     <List.Item>
       <List.Item.Meta
-        avatar={<Avatar src={avatar.toDataUriSync()} />}
+        avatar={<Avatar src={avatar} />}
         title={<a>Laboratorio asignado a {item.patientId?.fullname}</a>}
         description={
           <Space direction="vertical" style={{ gap: 0 }}>
@@ -99,14 +99,16 @@ function PopulatedLaboratory({ item }: { item: PopulatedLab }) {
 }
 
 function PopulatedStretchers({ item }: { item: PopulatedStretcher }) {
-  const avatar = createAvatar(initials, {
-    seed: item.label!,
-  })
+  const avatar = useMemo(() => {
+    return createAvatar(initials, {
+      seed: item.label!,
+    }).toDataUriSync()
+  }, [item.label])
 
   return (
     <List.Item>
       <List.Item.Meta
-        avatar={<Avatar src={avatar.toDataUriSync()} />}
+        avatar={<Avatar src={avatar} />}
         title={<a>{item.label}</a>}
         description={
           <Space direction="vertical" style={{ gap: 0 }}>
@@ -129,20 +131,24 @@ function PopulatedStretchers({ item }: { item: PopulatedStretcher }) {
 }
 
 function PopulatedPatient({ item }: { item: PopulatedPatient }) {
-  const hair: miniavs.Options['hair'] = ['classic01']
+  const avatar = useMemo(() => {
+    const hair: miniavs.Options['hair'] = ['classic01']
+  
+    if (item.gender === 'F') hair[0] = 'long'
 
-  if (item.gender === 'F') hair[0] = 'long'
-
-  const avatar = createAvatar(miniavs, {
-    seed: item.fullname.split(' ')[0],
-    mouth: ['default'],
-    hair,
-  })
+    return createAvatar(miniavs, {
+      seed: item.fullname.split(' ')[0],
+      mouth: ['default'],
+      mustache: [],
+      glasses: [],
+      hair,
+    }).toDataUriSync()
+  }, [item.fullname, item.gender])
 
   return (
     <List.Item>
       <List.Item.Meta
-        avatar={<Avatar src={avatar.toDataUriSync()} />}
+        avatar={<Avatar src={avatar} />}
         title={<a>{item.fullname}</a>}
         description={
           <Space direction="vertical" style={{ gap: 0 }}>
