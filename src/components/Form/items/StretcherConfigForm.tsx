@@ -1,17 +1,16 @@
 import * as Ant from 'antd'
 
-const options = [{ value: 'ecmo' }, { value: 'balon' }]
+const options = [
+  { value: 'ecmo', label: 'ECMO V-A' },
+  { value: 'balon', label: 'BCIAO' },
+]
 
 const StretcherConfing = () => {
-  const handleUpdate = (form: Ant.FormInstance) => {
-    const val = form.getFieldValue('aid') as string[]
-    if (val.length > 1) {
-      form.setFieldValue('aid', val.slice(1))
-    }
-  }
   return (
     <>
-      <Ant.Typography.Title level={4}>CONFIGURACIÓN DE CAMA</Ant.Typography.Title>
+      <Ant.Typography.Title level={4}>
+        CONFIGURACIÓN DE CAMA
+      </Ant.Typography.Title>
 
       <Ant.Form.Item
         name="label"
@@ -28,30 +27,20 @@ const StretcherConfing = () => {
 
       <Ant.Form.Item
         label="Asistencia"
-        shouldUpdate={(curValue, prevValue) => curValue.aid !== prevValue.aid}
+        name="aid"
+        rules={[
+          {
+            required: true,
+            message: 'Por favor selecione al menos una etiqueta',
+          },
+        ]}
       >
-        {(form) => {
-          return (
-            <Ant.Form.Item
-              name="aid"
-              rules={[
-                {
-                  required: true,
-                  message: 'Por favor selecione al menos una etiqueta',
-                },
-              ]}
-              noStyle
-            >
-              <Ant.Select
-                mode="multiple"
-                tagRender={tagRender}
-                onChange={() => handleUpdate(form)}
-                style={{ width: '100%' }}
-                options={options}
-              />
-            </Ant.Form.Item>
-          )
-        }}
+        <Ant.Select
+          mode="multiple"
+          tagRender={tagRender}
+          style={{ width: '100%' }}
+          options={options}
+        />
       </Ant.Form.Item>
     </>
   )

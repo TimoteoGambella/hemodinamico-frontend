@@ -89,6 +89,10 @@ export default function StretcherForm({ formProp, data }: CustomFormProps) {
   }
 
   const handleSubmit = async (values: Partial<StretcherData>) => {
+    if (!(data as PopulatedStretcher)!.patientId) {
+      msgApi.warning('No puedes editar una cama no asignada a un paciente.')
+      return
+    }
     /* PATIENT */
     const shouldUpdatePatient = dirty.isDirty(values, 'patientId')
     let patient: PatientData | undefined

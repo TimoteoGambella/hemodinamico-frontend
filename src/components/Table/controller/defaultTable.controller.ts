@@ -834,6 +834,28 @@ function handlerStretcherReport(props: handlerReportType) {
 
     arr.push(`${res[index].name} (${res[index].dose})`)
     return true
+  } else if (path.includes('aid')) {
+    let aid1 = stretcher.aid ? stretcher.aid[0] : 'N/A'
+    let aid2 = stretcher.aid ? stretcher.aid[1] : 'N/A'
+
+    if (aid1 === 'ecmo') aid1 = 'ECMO V-A'
+    else if (aid1 === 'balon') aid1 = 'BCIAO'
+
+    if (aid2 === 'ecmo') aid2 = 'ECMO V-A'
+    else if (aid2 === 'balon') aid2 = 'BCIAO'
+
+    console.log(aid1, aid2)
+
+    if ((aid1 === 'N/A' && aid2 === 'N/A') || (!aid1 && !aid2)) {
+      arr.push('N/A')
+      return true
+    } else if (aid2 === 'N/A' || !aid2) {
+      arr.push(aid1)
+      return true
+    } else {
+      arr.push(`${aid1} / ${aid2}`)
+      return true
+    }
   }
 
   return false
@@ -1277,8 +1299,27 @@ function handlerStretcherExport(props: HandlerExportProps) {
       path
     ) as unknown as StretcherData['aid']
 
-    container.push(res ? res[0].toUpperCase() : 'N/A')
-    return true
+    let aid1 = res ? res[0] : 'N/A'
+    let aid2 = res ? res[1] : 'N/A'
+
+    if (aid1 === 'ecmo') aid1 = 'ECMO V-A'
+    else if (aid1 === 'balon') aid1 = 'BCIAO'
+
+    if (aid2 === 'ecmo') aid2 = 'ECMO V-A'
+    else if (aid2 === 'balon') aid2 = 'BCIAO'
+
+    console.log(aid1, aid2)
+
+    if ((aid1 === 'N/A' && aid2 === 'N/A') || (!aid1 && !aid2)) {
+      container.push('N/A')
+      return true
+    } else if (aid2 === 'N/A' || !aid2) {
+      container.push(aid1)
+      return true
+    } else {
+      container.push(`${aid1} / ${aid2}`)
+      return true
+    }
   }
 
   return false
