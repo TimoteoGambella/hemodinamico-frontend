@@ -39,20 +39,18 @@ const CalculedVariables = ({ form }: CalculedVariablesProps) => {
 
       <Form.Item label="Poder Cardíaco" shouldUpdate>
         {() => {
-          const { gasto, sistolica, diastolica } = getCurrentFormValues()
-          const value = util.calcCardiacPower(gasto, sistolica, diastolica)
+          const { gasto, mediaSis } = getCurrentFormValues()
+          const value = util.calcCardiacPower(gasto, mediaSis)
           return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
       </Form.Item>
 
       <Form.Item label="Poder cardiaco indexado (iPC)" shouldUpdate>
         {() => {
-          const { gasto, sistolica, diastolica, weight, height } =
-            getCurrentFormValues()
+          const { gasto, mediaSis, weight, height } = getCurrentFormValues()
           const value = util.calcIndexedCardiacPower(
             gasto,
-            sistolica,
-            diastolica,
+            mediaSis,
             weight,
             height
           )
@@ -102,24 +100,8 @@ const CalculedVariables = ({ form }: CalculedVariablesProps) => {
 
       <Form.Item label="iTSVI" shouldUpdate>
         {() => {
-          const {
-            sistolica,
-            diastolica,
-            capilar,
-            gasto,
-            weight,
-            height,
-            heartRate,
-          } = getCurrentFormValues()
-          const value = util.calcITSVI(
-            sistolica,
-            diastolica,
-            capilar,
-            gasto,
-            weight,
-            height,
-            heartRate
-          )
+          const { mediaSis, capilar, gasto, heartRate } = getCurrentFormValues()
+          const value = util.calcITSVI(mediaSis, capilar, gasto, heartRate)
           return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
       </Form.Item>

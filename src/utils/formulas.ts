@@ -114,7 +114,7 @@ export function calcAvgPAP(
   diastolica: number,
   round: RoundTypes = 'none'
 ) {
-  const value = Number(((diastolica + 2 * sistolica) / 3).toFixed(2))
+  const value = Number((0.333 * sistolica + 0.666 * diastolica).toFixed(2))
   if (round === 'none') return value
   if (round === 'up') return Math.ceil(value)
   else return Math.floor(value)
@@ -177,24 +177,22 @@ export function calcCardiacIndexTD(
 
 export function calcCardiacPower(
   cardiacOutput: number,
-  sistolica: number,
-  diastolica: number
+  mediaSistemica: number,
 ) {
   return Number(
-    ((cardiacOutput * calcAvgPAP(sistolica, diastolica)) / 451).toFixed(2)
+    ((mediaSistemica * cardiacOutput) / 451).toFixed(2)
   )
 }
 
 export function calcIndexedCardiacPower(
   cardiacOutput: number,
-  sistolica: number,
-  diastolica: number,
+  mediaSistemica: number,
   weight: number,
   height: number
 ) {
   return Number(
     (
-      calcCardiacPower(cardiacOutput, sistolica, diastolica) /
+      calcCardiacPower(cardiacOutput, mediaSistemica) /
       calcASCValue(weight, height)
     ).toFixed(2)
   )
@@ -225,18 +223,16 @@ export function calcITSVD(
 }
 
 export function calcITSVI(
-  sistolica: number,
-  diastolica: number,
-  capilar: number,
-  gasto: number,
-  weight: number,
-  height: number,
+  mediaSistemica: number,
+  presionCapilar: number,
+  gastoCardiaco: number,
   heartRate: number
 ) {
-  const avgPAP = calcAvgPAP(sistolica, diastolica, 'up')
-  const cardiacIndex = calcCardiacIndexTD(gasto, weight, height)
   return Number(
-    (((avgPAP - capilar) * cardiacIndex * 13.6) / heartRate).toFixed(2)
+    (
+      ((mediaSistemica - presionCapilar) * gastoCardiaco * 13.6) /
+      heartRate
+    ).toFixed(2)
   )
 }
 
