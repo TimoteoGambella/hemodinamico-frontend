@@ -80,8 +80,7 @@ const StretcherSummarySchema: TableSchema<SchemaType>[] = [
     render: (_, record) => {
       return util.calcCardiacPower(
         record.cateter.gasto ?? 0,
-        record.cateter.PAP.sistolica ?? 0,
-        record.cateter.PAP.diastolica ?? 0
+        record.cateter.presion.mediaSistemica ?? 0
       )
     },
   },
@@ -93,8 +92,7 @@ const StretcherSummarySchema: TableSchema<SchemaType>[] = [
       const patient = record.patientId as PatientData
       return util.calcIndexedCardiacPower(
         record.cateter.gasto ?? 0,
-        record.cateter.PAP.sistolica ?? 0,
-        record.cateter.PAP.diastolica ?? 0,
+        record.cateter.presion.mediaSistemica ?? 0,
         patient.weight,
         patient.height
       )

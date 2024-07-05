@@ -46,13 +46,11 @@ export default function Trends({ versions, currentTab }: TrendsProps) {
         ),
         'Poder cardiaco': util.calcCardiacPower(
           cateter.gasto ?? NaN,
-          cateter.PAP.sistolica ?? NaN,
-          cateter.PAP.diastolica ?? NaN
+          cateter.presion.mediaSistemica ?? NaN
         ),
         'Índice de poder cardiaco': util.calcIndexedCardiacPower(
           cateter.gasto ?? NaN,
-          cateter.PAP.sistolica ?? NaN,
-          cateter.PAP.diastolica ?? NaN,
+          cateter.presion.mediaSistemica ?? NaN,
           patient.weight,
           patient.height
         ),

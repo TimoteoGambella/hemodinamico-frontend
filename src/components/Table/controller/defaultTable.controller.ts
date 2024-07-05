@@ -679,8 +679,7 @@ function handlerStretcherReport(props: handlerReportType) {
       } else if (props.item?.includes('(iPC)')) {
         const res = utils.calcIndexedCardiacPower(
           cateter.gasto ?? 0,
-          cateter.PAP.sistolica ?? 0,
-          cateter.PAP.diastolica ?? 0,
+          cateter.presion.mediaSistemica ?? 0,
           patient.weight,
           patient.height
         )
@@ -689,8 +688,7 @@ function handlerStretcherReport(props: handlerReportType) {
       } else if (props.item?.includes('Poder Cardíaco')) {
         const res = utils.calcCardiacPower(
           cateter.gasto ?? 0,
-          cateter.PAP.sistolica ?? 0,
-          cateter.PAP.diastolica ?? 0
+          cateter.presion.mediaSistemica ?? 0
         )
         arr.push(res)
         return true
@@ -722,12 +720,9 @@ function handlerStretcherReport(props: handlerReportType) {
         return true
       } else if (props.item?.includes('iTSVI')) {
         const res = utils.calcITSVI(
-          cateter.PAP.sistolica ?? 0,
-          cateter.PAP.diastolica ?? 0,
+          cateter.presion.mediaSistemica ?? 0,
           cateter.presion.capilar ?? 0,
           cateter.gasto ?? 0,
-          patient.weight,
-          patient.height,
           stretcher.patientHeartRate ?? 0
         )
         arr.push(isNaN(res) ? 'N/A' : res)
@@ -1159,8 +1154,7 @@ function handlerStretcherExport(props: HandlerExportProps) {
     } else if (props.item?.includes('(iPC)')) {
       const res = utils.calcIndexedCardiacPower(
         cateter.gasto ?? 0,
-        cateter.PAP.sistolica ?? 0,
-        cateter.PAP.diastolica ?? 0,
+        cateter.presion.mediaSistemica ?? 0,
         patient.weight,
         patient.height
       )
@@ -1169,8 +1163,7 @@ function handlerStretcherExport(props: HandlerExportProps) {
     } else if (props.item?.includes('Poder Cardíaco')) {
       const res = utils.calcCardiacPower(
         cateter.gasto ?? 0,
-        cateter.PAP.sistolica ?? 0,
-        cateter.PAP.diastolica ?? 0
+        cateter.presion.mediaSistemica ?? 0
       )
       container.push(res)
       return true
@@ -1202,12 +1195,9 @@ function handlerStretcherExport(props: HandlerExportProps) {
       return true
     } else if (props.item?.includes('iTSVI')) {
       const res = utils.calcITSVI(
-        cateter.PAP.sistolica ?? 0,
-        cateter.PAP.diastolica ?? 0,
+        cateter.presion.mediaSistemica ?? 0,
         cateter.presion.capilar ?? 0,
         cateter.gasto ?? 0,
-        patient.weight,
-        patient.height,
         (currentItem as StretcherVersions).patientHeartRate ?? 0
       )
       container.push(isNaN(res) ? 'N/A' : res)
