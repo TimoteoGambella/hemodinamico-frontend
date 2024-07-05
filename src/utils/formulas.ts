@@ -226,11 +226,14 @@ export function calcITSVI(
   mediaSistemica: number,
   presionCapilar: number,
   gastoCardiaco: number,
-  heartRate: number
+  heartRate: number,
+  weight: number,
+  height: number
 ) {
+  const cardiacIndex = calcCardiacIndexTD(gastoCardiaco, weight, height)
   return Number(
     (
-      ((mediaSistemica - presionCapilar) * gastoCardiaco * 13.6) /
+      ((mediaSistemica - presionCapilar) * cardiacIndex * 13.6) /
       heartRate
     ).toFixed(2)
   )

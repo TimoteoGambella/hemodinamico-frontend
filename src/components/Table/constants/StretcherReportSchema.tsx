@@ -254,11 +254,14 @@ newSchema.splice(
       key: 'iTSVI',
       width: 60,
       render: (_, record) => {
+        const patient = record.patientId as PatientData
         const val = util.calcITSVI(
           record.cateter.presion.mediaSistemica ?? 0,
           record.cateter.presion.capilar ?? 0,
           record.cateter.gasto ?? 0,
-          record.patientHeartRate ?? 0
+          record.patientHeartRate ?? 0,
+          patient.weight,
+          patient.height
         )
         return isNaN(val) ? 'N/A' : val
       },

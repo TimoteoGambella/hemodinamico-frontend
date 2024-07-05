@@ -723,7 +723,9 @@ function handlerStretcherReport(props: handlerReportType) {
           cateter.presion.mediaSistemica ?? 0,
           cateter.presion.capilar ?? 0,
           cateter.gasto ?? 0,
-          stretcher.patientHeartRate ?? 0
+          stretcher.patientHeartRate ?? 0,
+          patient.weight,
+          patient.height
         )
         arr.push(isNaN(res) ? 'N/A' : res)
         return true
@@ -1198,7 +1200,9 @@ function handlerStretcherExport(props: HandlerExportProps) {
         cateter.presion.mediaSistemica ?? 0,
         cateter.presion.capilar ?? 0,
         cateter.gasto ?? 0,
-        (currentItem as StretcherVersions).patientHeartRate ?? 0
+        (currentItem as StretcherVersions).patientHeartRate ?? 0,
+        patient.weight,
+        patient.height
       )
       container.push(isNaN(res) ? 'N/A' : res)
       return true

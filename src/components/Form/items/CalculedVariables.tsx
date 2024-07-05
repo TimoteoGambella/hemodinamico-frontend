@@ -100,8 +100,16 @@ const CalculedVariables = ({ form }: CalculedVariablesProps) => {
 
       <Form.Item label="iTSVI" shouldUpdate>
         {() => {
-          const { mediaSis, capilar, gasto, heartRate } = getCurrentFormValues()
-          const value = util.calcITSVI(mediaSis, capilar, gasto, heartRate)
+          const { mediaSis, capilar, gasto, heartRate, weight, height } =
+            getCurrentFormValues()
+          const value = util.calcITSVI(
+            mediaSis,
+            capilar,
+            gasto,
+            heartRate,
+            weight,
+            height
+          )
           return <InputNumber value={!isNaN(value) ? value : '-'} disabled />
         }}
       </Form.Item>
