@@ -1,10 +1,7 @@
 import { suppliedSchema } from '../../../../constants/suppliedSchemaDrugs'
-import React, { Ref, useContext, useEffect, useRef, useState } from 'react'
-import { Cascader, Form, Input, InputNumber } from 'antd'
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import { Cascader, Form, InputNumber } from 'antd'
 import { EditableContext, Item } from './EditableRow'
-import type { GetRef } from 'antd'
-
-type InputRef = GetRef<typeof Input>
 
 interface EditableCellProps {
   title: React.ReactNode
@@ -65,7 +62,7 @@ const EditableCell = ({ title, editable, children, dataIndex, record, handleSave
         ]}
       >
         <Cascader
-          ref={inputRef as Ref<InputRef>}
+          ref={inputRef}
           onChange={save}
           onBlur={save}
           options={suppliedSchema}
@@ -94,10 +91,11 @@ const EditableCell = ({ title, editable, children, dataIndex, record, handleSave
       >
         <InputNumber
           style={{ width: 100 }}
-          ref={inputRef as Ref<InputRef>}
+          ref={inputRef}
           onPressEnter={save}
           onBlur={save}
-          min={1}
+          min={0.1}
+          step={0.1}
         />
       </Form.Item>
     ) : (
